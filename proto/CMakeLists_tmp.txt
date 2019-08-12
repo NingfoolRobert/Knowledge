@@ -1,0 +1,20 @@
+
+cmake_minimum_required(VERSION 2.8)
+
+
+project(main)
+
+find_package(Protobuf, REQUIRED)
+if(PROTOBUF_FOUND)
+	message(STATUS "Protobuf libary found")
+else()
+	message(FATAL_ERROR "Protobuf library is needed but can't be found")
+
+endif()
+
+include_directories(${PROTOBUF_INCLUDE_DIRS})
+include_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS Test.proto)
+
+ADD_EXECUTABLE(main ${SRC_LIST} ${PROTO_SRCS} ${PROTO_HDRS})
+target_link_libraries(main ${PROTOBUF_LIBRARIES})
