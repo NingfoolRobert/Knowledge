@@ -1,0 +1,19 @@
+
+//设置环境变量
+sudo vi /etc/profile
+export PATH=$PATH:/usr/local/bin
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+cd ~
+vi .profile
+export PATH=$PATH:/usr/local/bin
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+//配置动态链接路径
+sudo vi /etc/ld.so.conf
+include /usr/local/lib
+
+
+sudo ldconfig
+
+
+
