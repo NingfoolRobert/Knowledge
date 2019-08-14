@@ -14,7 +14,12 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
+extern PROTOBUF_INTERNAL_EXPORT_Test_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_helloworld_ListTestEntry_DoNotUse_Test_2eproto;
 namespace lm {
+class helloworld_ListTestEntry_DoNotUseDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<helloworld_ListTestEntry_DoNotUse> _instance;
+} _helloworld_ListTestEntry_DoNotUse_default_instance_;
 class helloworldDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<helloworld> _instance;
@@ -31,14 +36,37 @@ static void InitDefaultsscc_info_helloworld_Test_2eproto() {
   ::lm::helloworld::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_helloworld_Test_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_helloworld_Test_2eproto}, {}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_helloworld_Test_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_helloworld_Test_2eproto}, {
+      &scc_info_helloworld_ListTestEntry_DoNotUse_Test_2eproto.base,}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_Test_2eproto[1];
+static void InitDefaultsscc_info_helloworld_ListTestEntry_DoNotUse_Test_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::lm::_helloworld_ListTestEntry_DoNotUse_default_instance_;
+    new (ptr) ::lm::helloworld_ListTestEntry_DoNotUse();
+  }
+  ::lm::helloworld_ListTestEntry_DoNotUse::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_helloworld_ListTestEntry_DoNotUse_Test_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_helloworld_ListTestEntry_DoNotUse_Test_2eproto}, {}};
+
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_Test_2eproto[2];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_Test_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_Test_2eproto = nullptr;
 
 const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_Test_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+  PROTOBUF_FIELD_OFFSET(::lm::helloworld_ListTestEntry_DoNotUse, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::lm::helloworld_ListTestEntry_DoNotUse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::lm::helloworld_ListTestEntry_DoNotUse, key_),
+  PROTOBUF_FIELD_OFFSET(::lm::helloworld_ListTestEntry_DoNotUse, value_),
+  0,
+  1,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::lm::helloworld, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -46,36 +74,60 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_Test_2eproto::offsets[] PROTOB
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::lm::helloworld, id_),
   PROTOBUF_FIELD_OFFSET(::lm::helloworld, str_),
+  PROTOBUF_FIELD_OFFSET(::lm::helloworld, list_test_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::lm::helloworld)},
+  { 0, 7, sizeof(::lm::helloworld_ListTestEntry_DoNotUse)},
+  { 9, -1, sizeof(::lm::helloworld)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::lm::_helloworld_ListTestEntry_DoNotUse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::lm::_helloworld_default_instance_),
 };
 
 const char descriptor_table_protodef_Test_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\nTest.proto\022\002lm\"%\n\nhelloworld\022\n\n\002id\030\001 \001"
-  "(\005\022\013\n\003str\030\002 \001(\tb\006proto3"
+  "\n\nTest.proto\022\002lm\"\207\001\n\nhelloworld\022\n\n\002id\030\001 "
+  "\001(\005\022\013\n\003str\030\002 \001(\t\022/\n\tlist_Test\030\003 \003(\0132\034.lm"
+  ".helloworld.ListTestEntry\032/\n\rListTestEnt"
+  "ry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001b\006prot"
+  "o3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_Test_2eproto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_Test_2eproto_sccs[1] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_Test_2eproto_sccs[2] = {
   &scc_info_helloworld_Test_2eproto.base,
+  &scc_info_helloworld_ListTestEntry_DoNotUse_Test_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_Test_2eproto_once;
 static bool descriptor_table_Test_2eproto_initialized = false;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Test_2eproto = {
-  &descriptor_table_Test_2eproto_initialized, descriptor_table_protodef_Test_2eproto, "Test.proto", 63,
-  &descriptor_table_Test_2eproto_once, descriptor_table_Test_2eproto_sccs, descriptor_table_Test_2eproto_deps, 1, 0,
+  &descriptor_table_Test_2eproto_initialized, descriptor_table_protodef_Test_2eproto, "Test.proto", 162,
+  &descriptor_table_Test_2eproto_once, descriptor_table_Test_2eproto_sccs, descriptor_table_Test_2eproto_deps, 2, 0,
   schemas, file_default_instances, TableStruct_Test_2eproto::offsets,
-  file_level_metadata_Test_2eproto, 1, file_level_enum_descriptors_Test_2eproto, file_level_service_descriptors_Test_2eproto,
+  file_level_metadata_Test_2eproto, 2, file_level_enum_descriptors_Test_2eproto, file_level_service_descriptors_Test_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
 static bool dynamic_init_dummy_Test_2eproto = (  ::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_Test_2eproto), true);
 namespace lm {
+
+// ===================================================================
+
+helloworld_ListTestEntry_DoNotUse::helloworld_ListTestEntry_DoNotUse() {}
+helloworld_ListTestEntry_DoNotUse::helloworld_ListTestEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+    : SuperType(arena) {}
+void helloworld_ListTestEntry_DoNotUse::MergeFrom(const helloworld_ListTestEntry_DoNotUse& other) {
+  MergeFromInternal(other);
+}
+::PROTOBUF_NAMESPACE_ID::Metadata helloworld_ListTestEntry_DoNotUse::GetMetadata() const {
+  return GetMetadataStatic();
+}
+void helloworld_ListTestEntry_DoNotUse::MergeFrom(
+    const ::PROTOBUF_NAMESPACE_ID::Message& other) {
+  ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom(other);
+}
+
 
 // ===================================================================
 
@@ -94,6 +146,7 @@ helloworld::helloworld(const helloworld& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  list_test_.MergeFrom(from.list_test_);
   str_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_str().empty()) {
     str_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.str_);
@@ -132,6 +185,7 @@ void helloworld::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  list_test_.Clear();
   str_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   id_ = 0;
   _internal_metadata_.Clear();
@@ -157,6 +211,18 @@ const char* helloworld::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(_internal_mutable_str(), ptr, ctx, "lm.helloworld.str");
           CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // map<int32, int32> list_Test = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(&list_test_, ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -217,6 +283,24 @@ bool helloworld::MergePartialFromCodedStream(
         break;
       }
 
+      // map<int32, int32> list_Test = 3;
+      case 3: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (26 & 0xFF)) {
+          helloworld_ListTestEntry_DoNotUse::Parser< ::PROTOBUF_NAMESPACE_ID::internal::MapField<
+              helloworld_ListTestEntry_DoNotUse,
+              ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32,
+              ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
+              ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
+              0 >,
+            ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 > > parser(&list_test_);
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessageNoVirtual(
+              input, &parser));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -260,6 +344,37 @@ failure:
         2, this->_internal_str(), target);
   }
 
+  // map<int32, int32> list_Test = 3;
+  if (!this->list_test().empty()) {
+    typedef ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >::const_pointer
+        ConstPtr;
+    typedef ::PROTOBUF_NAMESPACE_ID::internal::SortItem< ::PROTOBUF_NAMESPACE_ID::int32, ConstPtr > SortItem;
+    typedef ::PROTOBUF_NAMESPACE_ID::internal::CompareByFirstField<SortItem> Less;
+
+    if (stream->IsSerializationDeterministic() &&
+        this->list_test().size() > 1) {
+      ::std::unique_ptr<SortItem[]> items(
+          new SortItem[this->list_test().size()]);
+      typedef ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >::size_type size_type;
+      size_type n = 0;
+      for (::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >::const_iterator
+          it = this->list_test().begin();
+          it != this->list_test().end(); ++it, ++n) {
+        items[static_cast<ptrdiff_t>(n)] = SortItem(&*it);
+      }
+      ::std::sort(&items[0], &items[static_cast<ptrdiff_t>(n)], Less());
+      for (size_type i = 0; i < n; i++) {
+        target = helloworld_ListTestEntry_DoNotUse::Funcs::InternalSerialize(3, items[static_cast<ptrdiff_t>(i)].second->first, items[static_cast<ptrdiff_t>(i)].second->second, target, stream);
+      }
+    } else {
+      for (::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >::const_iterator
+          it = this->list_test().begin();
+          it != this->list_test().end(); ++it) {
+        target = helloworld_ListTestEntry_DoNotUse::Funcs::InternalSerialize(3, it->first, it->second, target, stream);
+      }
+    }
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target, stream);
@@ -275,6 +390,15 @@ size_t helloworld::ByteSizeLong() const {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
+
+  // map<int32, int32> list_Test = 3;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->list_test_size());
+  for (::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >::const_iterator
+      it = this->list_test().begin();
+      it != this->list_test().end(); ++it) {
+    total_size += helloworld_ListTestEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
+  }
 
   // string str = 2;
   if (this->str().size() > 0) {
@@ -321,6 +445,7 @@ void helloworld::MergeFrom(const helloworld& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  list_test_.MergeFrom(from.list_test_);
   if (from.str().size() > 0) {
 
     str_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.str_);
@@ -351,6 +476,7 @@ bool helloworld::IsInitialized() const {
 void helloworld::InternalSwap(helloworld* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
+  list_test_.Swap(&other->list_test_);
   str_.Swap(&other->str_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(id_, other->id_);
@@ -364,6 +490,9 @@ void helloworld::InternalSwap(helloworld* other) {
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace lm
 PROTOBUF_NAMESPACE_OPEN
+template<> PROTOBUF_NOINLINE ::lm::helloworld_ListTestEntry_DoNotUse* Arena::CreateMaybeMessage< ::lm::helloworld_ListTestEntry_DoNotUse >(Arena* arena) {
+  return Arena::CreateInternal< ::lm::helloworld_ListTestEntry_DoNotUse >(arena);
+}
 template<> PROTOBUF_NOINLINE ::lm::helloworld* Arena::CreateMaybeMessage< ::lm::helloworld >(Arena* arena) {
   return Arena::CreateInternal< ::lm::helloworld >(arena);
 }

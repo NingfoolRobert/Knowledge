@@ -31,6 +31,9 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/map.h>  // IWYU pragma: export
+#include <google/protobuf/map_entry.h>
+#include <google/protobuf/map_field_inl.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -47,7 +50,7 @@ struct TableStruct_Test_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[1]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -58,13 +61,47 @@ namespace lm {
 class helloworld;
 class helloworldDefaultTypeInternal;
 extern helloworldDefaultTypeInternal _helloworld_default_instance_;
+class helloworld_ListTestEntry_DoNotUse;
+class helloworld_ListTestEntry_DoNotUseDefaultTypeInternal;
+extern helloworld_ListTestEntry_DoNotUseDefaultTypeInternal _helloworld_ListTestEntry_DoNotUse_default_instance_;
 }  // namespace lm
 PROTOBUF_NAMESPACE_OPEN
 template<> ::lm::helloworld* Arena::CreateMaybeMessage<::lm::helloworld>(Arena*);
+template<> ::lm::helloworld_ListTestEntry_DoNotUse* Arena::CreateMaybeMessage<::lm::helloworld_ListTestEntry_DoNotUse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace lm {
 
 // ===================================================================
+
+class helloworld_ListTestEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<helloworld_ListTestEntry_DoNotUse, 
+    ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
+    0 > {
+public:
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<helloworld_ListTestEntry_DoNotUse, 
+    ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
+    0 > SuperType;
+  helloworld_ListTestEntry_DoNotUse();
+  helloworld_ListTestEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const helloworld_ListTestEntry_DoNotUse& other);
+  static const helloworld_ListTestEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const helloworld_ListTestEntry_DoNotUse*>(&_helloworld_ListTestEntry_DoNotUse_default_instance_); }
+  static bool ValidateKey(void*) { return true; }
+  static bool ValidateValue(void*) { return true; }
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& other) final;
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_Test_2eproto);
+    return ::descriptor_table_Test_2eproto.file_level_metadata[0];
+  }
+
+  public:
+};
+
+// -------------------------------------------------------------------
 
 class helloworld :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:lm.helloworld) */ {
@@ -108,7 +145,7 @@ class helloworld :
                &_helloworld_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    1;
 
   friend void swap(helloworld& a, helloworld& b) {
     a.Swap(&b);
@@ -174,12 +211,22 @@ class helloworld :
 
   // nested types ----------------------------------------------------
 
+
   // accessors -------------------------------------------------------
 
   enum : int {
+    kListTestFieldNumber = 3,
     kStrFieldNumber = 2,
     kIdFieldNumber = 1,
   };
+  // map<int32, int32> list_Test = 3;
+  int list_test_size() const;
+  void clear_list_test();
+  const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >&
+      list_test() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >*
+      mutable_list_test();
+
   // string str = 2;
   void clear_str();
   const std::string& str() const;
@@ -206,6 +253,12 @@ class helloworld :
   class _Internal;
 
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::internal::MapField<
+      helloworld_ListTestEntry_DoNotUse,
+      ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
+      0 > list_test_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr str_;
   ::PROTOBUF_NAMESPACE_ID::int32 id_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -220,6 +273,8 @@ class helloworld :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // helloworld
 
 // int32 id = 1;
@@ -296,9 +351,29 @@ inline void helloworld::set_allocated_str(std::string* str) {
   // @@protoc_insertion_point(field_set_allocated:lm.helloworld.str)
 }
 
+// map<int32, int32> list_Test = 3;
+inline int helloworld::list_test_size() const {
+  return list_test_.size();
+}
+inline void helloworld::clear_list_test() {
+  list_test_.Clear();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >&
+helloworld::list_test() const {
+  // @@protoc_insertion_point(field_map:lm.helloworld.list_Test)
+  return list_test_.GetMap();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >*
+helloworld::mutable_list_test() {
+  // @@protoc_insertion_point(field_mutable_map:lm.helloworld.list_Test)
+  return list_test_.MutableMap();
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 

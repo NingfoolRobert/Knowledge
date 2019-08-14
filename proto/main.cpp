@@ -31,7 +31,41 @@ int main(int argc, char** argv)
 		std::cerr << "Fail to write example." << std::endl;
 		exit(-1);
 	}
-	//example.S
+
+	cout << example.id()<<endl;
+	cout << example.str()<<endl;
+
+	auto& map = *example.mutable_list_test();
+	///string str="TestOne";
+	//map->insert(1,32);
+	//map->insert(2,64);
+	//*(map)[1] = 32;
+	//*(map)[2] = 64;
+	
+	map[1] = 32;
+	map[2] =64;
+	if(map.empty())
+		cout << "empty" <<endl;
+	else
+		cout << "no empty"<<endl;
+
+	cout << map.size()<<endl;
+	//int nSize = example.list_Test_size();
+	//cout << "Size :  "<< nSize <<endl;
+	
+	for(auto it = example.list_test().begin(); it != example.list_test().end(); ++it)
+	{
+		cout << it->first <<  ":" << it->second <<endl;
+	}
+//	cout << map[1] <<endl;
+//	cout << map[2] <<endl;
+//
+//	auto it = example.list_test().find(1);
+//	if(it == example.list_test().end())
+//		cout << "fail..."<<endl;
+//	cout << it->second<<endl;
+
+//example.S
 	return 0;
 }
 
