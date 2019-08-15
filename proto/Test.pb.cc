@@ -75,6 +75,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_Test_2eproto::offsets[] PROTOB
   PROTOBUF_FIELD_OFFSET(::lm::helloworld, id_),
   PROTOBUF_FIELD_OFFSET(::lm::helloworld, str_),
   PROTOBUF_FIELD_OFFSET(::lm::helloworld, list_test_),
+  PROTOBUF_FIELD_OFFSET(::lm::helloworld, list_array_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 7, sizeof(::lm::helloworld_ListTestEntry_DoNotUse)},
@@ -87,11 +88,11 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_Test_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\nTest.proto\022\002lm\"\207\001\n\nhelloworld\022\n\n\002id\030\001 "
+  "\n\nTest.proto\022\002lm\"\233\001\n\nhelloworld\022\n\n\002id\030\001 "
   "\001(\005\022\013\n\003str\030\002 \001(\t\022/\n\tlist_Test\030\003 \003(\0132\034.lm"
-  ".helloworld.ListTestEntry\032/\n\rListTestEnt"
-  "ry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001b\006prot"
-  "o3"
+  ".helloworld.ListTestEntry\022\022\n\nlist_array\030"
+  "\004 \003(\005\032/\n\rListTestEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005v"
+  "alue\030\002 \001(\005:\0028\001b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_Test_2eproto_deps[1] = {
 };
@@ -102,7 +103,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_Tes
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_Test_2eproto_once;
 static bool descriptor_table_Test_2eproto_initialized = false;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Test_2eproto = {
-  &descriptor_table_Test_2eproto_initialized, descriptor_table_protodef_Test_2eproto, "Test.proto", 162,
+  &descriptor_table_Test_2eproto_initialized, descriptor_table_protodef_Test_2eproto, "Test.proto", 182,
   &descriptor_table_Test_2eproto_once, descriptor_table_Test_2eproto_sccs, descriptor_table_Test_2eproto_deps, 2, 0,
   schemas, file_default_instances, TableStruct_Test_2eproto::offsets,
   file_level_metadata_Test_2eproto, 2, file_level_enum_descriptors_Test_2eproto, file_level_service_descriptors_Test_2eproto,
@@ -144,7 +145,8 @@ helloworld::helloworld()
 }
 helloworld::helloworld(const helloworld& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      _internal_metadata_(nullptr) {
+      _internal_metadata_(nullptr),
+      list_array_(from.list_array_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   list_test_.MergeFrom(from.list_test_);
   str_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
@@ -186,6 +188,7 @@ void helloworld::Clear() {
   (void) cached_has_bits;
 
   list_test_.Clear();
+  list_array_.Clear();
   str_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   id_ = 0;
   _internal_metadata_.Clear();
@@ -223,6 +226,16 @@ const char* helloworld::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+        } else goto handle_unusual;
+        continue;
+      // repeated int32 list_array = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(mutable_list_array(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32) {
+          add_list_array(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr));
+          CHK_(ptr);
         } else goto handle_unusual;
         continue;
       default: {
@@ -295,6 +308,22 @@ bool helloworld::MergePartialFromCodedStream(
             ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 > > parser(&list_test_);
           DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadMessageNoVirtual(
               input, &parser));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // repeated int32 list_array = 4;
+      case 4: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (34 & 0xFF)) {
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPackedPrimitive<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
+                 input, this->mutable_list_array())));
+        } else if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
+          DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32>(
+                 1, 34u, input, this->mutable_list_array())));
         } else {
           goto handle_unusual;
         }
@@ -375,6 +404,15 @@ failure:
     }
   }
 
+  // repeated int32 list_array = 4;
+  {
+    int byte_size = _list_array_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          4, list_array_, byte_size, target);
+    }
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target, stream);
@@ -398,6 +436,21 @@ size_t helloworld::ByteSizeLong() const {
       it = this->list_test().begin();
       it != this->list_test().end(); ++it) {
     total_size += helloworld_ListTestEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
+  }
+
+  // repeated int32 list_array = 4;
+  {
+    size_t data_size = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      Int32Size(this->list_array_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _list_array_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
   }
 
   // string str = 2;
@@ -446,6 +499,7 @@ void helloworld::MergeFrom(const helloworld& from) {
   (void) cached_has_bits;
 
   list_test_.MergeFrom(from.list_test_);
+  list_array_.MergeFrom(from.list_array_);
   if (from.str().size() > 0) {
 
     str_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.str_);
@@ -477,6 +531,7 @@ void helloworld::InternalSwap(helloworld* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
   list_test_.Swap(&other->list_test_);
+  list_array_.InternalSwap(&other->list_array_);
   str_.Swap(&other->str_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(id_, other->id_);

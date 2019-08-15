@@ -216,6 +216,7 @@ class helloworld :
 
   enum : int {
     kListTestFieldNumber = 3,
+    kListArrayFieldNumber = 4,
     kStrFieldNumber = 2,
     kIdFieldNumber = 1,
   };
@@ -226,6 +227,17 @@ class helloworld :
       list_test() const;
   ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32 >*
       mutable_list_test();
+
+  // repeated int32 list_array = 4;
+  int list_array_size() const;
+  void clear_list_array();
+  ::PROTOBUF_NAMESPACE_ID::int32 list_array(int index) const;
+  void set_list_array(int index, ::PROTOBUF_NAMESPACE_ID::int32 value);
+  void add_list_array(::PROTOBUF_NAMESPACE_ID::int32 value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
+      list_array() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
+      mutable_list_array();
 
   // string str = 2;
   void clear_str();
@@ -259,6 +271,8 @@ class helloworld :
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_INT32,
       0 > list_test_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 > list_array_;
+  mutable std::atomic<int> _list_array_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr str_;
   ::PROTOBUF_NAMESPACE_ID::int32 id_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -367,6 +381,36 @@ inline ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_
 helloworld::mutable_list_test() {
   // @@protoc_insertion_point(field_mutable_map:lm.helloworld.list_Test)
   return list_test_.MutableMap();
+}
+
+// repeated int32 list_array = 4;
+inline int helloworld::list_array_size() const {
+  return list_array_.size();
+}
+inline void helloworld::clear_list_array() {
+  list_array_.Clear();
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 helloworld::list_array(int index) const {
+  // @@protoc_insertion_point(field_get:lm.helloworld.list_array)
+  return list_array_.Get(index);
+}
+inline void helloworld::set_list_array(int index, ::PROTOBUF_NAMESPACE_ID::int32 value) {
+  list_array_.Set(index, value);
+  // @@protoc_insertion_point(field_set:lm.helloworld.list_array)
+}
+inline void helloworld::add_list_array(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  list_array_.Add(value);
+  // @@protoc_insertion_point(field_add:lm.helloworld.list_array)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
+helloworld::list_array() const {
+  // @@protoc_insertion_point(field_list:lm.helloworld.list_array)
+  return list_array_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
+helloworld::mutable_list_array() {
+  // @@protoc_insertion_point(field_mutable_list:lm.helloworld.list_array)
+  return &list_array_;
 }
 
 #ifdef __GNUC__

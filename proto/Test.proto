@@ -7,5 +7,6 @@ message helloworld
 	int32	id	= 1;
 	string	str = 2;
 	map<int32, int32>  list_Test = 3;
+	repeated int32	list_array =4;
 }
 

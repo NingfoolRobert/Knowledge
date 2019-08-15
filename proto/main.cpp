@@ -41,6 +41,10 @@ int main(int argc, char** argv)
 	//map->insert(2,64);
 	//*(map)[1] = 32;
 	//*(map)[2] = 64;
+	example.add_list_array(32);	;
+	
+	example.add_list_array(78);
+	
 	
 	map[1] = 32;
 	map[2] =64;
@@ -65,6 +69,11 @@ int main(int argc, char** argv)
 //		cout << "fail..."<<endl;
 //	cout << it->second<<endl;
 
+	int nSize = example.list_array_size();
+	for(int i=0;i<nSize;++i)
+	{
+		cout << example.list_array(i) << endl;
+	}
 //example.S
 	return 0;
 }
