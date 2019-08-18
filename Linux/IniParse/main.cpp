@@ -12,6 +12,7 @@
 //#include<boost/property_tree/ini_parser.hpp>
 
 #include "IniParser.h"
+#include <unistd.h>
 
 using namespace std;
 
@@ -38,11 +39,14 @@ using namespace std;
 
 void TestBoostIni()
 {
-	CIniParser Conf("/home/ningbf/Test/IniParser/Svr.conf");
-	
+	char filepath[256]={0};
+	getcwd(filepath,256);
+	char ConfName[256]={0};
+	sprintf(ConfName,"%s/Svr.conf",filepath);
+	cout << ConfName <<endl;
+//	CIniParser ConfConf("/home/ningbf/Test/IniParser/Svr.conf");
+	CIniParser Conf(ConfName);	
 	cout<<"IP: "<< Conf.GetConfString("Settings","SvrAddress","")<< endl;
-	
-
 }
 
 int main()

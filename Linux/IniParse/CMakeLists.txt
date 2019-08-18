@@ -8,11 +8,13 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULITITHREADED ON)
 
 
+#include_directories(/usr/include ${PROJECT_SOURCE_DIR}/include)
+
 include_directories(/usr/include ${PROJECT_SOURCE_DIR}/include)
 
-include_directories(${PROJECT_BINARY_PATH}/include)
+#include_directories(${PROJECT_BINARY_PATH}/include)
 #add_definitions($Boost_LIB_DIAGNOSTIC_DEFINITIONS)
-add_subdirectory(src)
+#add_subdirectory(src)
 
 set(BOOST_COMPONENTS  date_time chrono filesystem iostreams	program_options regex system thread unit_test_framework)
 
