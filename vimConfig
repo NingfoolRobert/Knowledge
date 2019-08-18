@@ -1,4 +1,5 @@
-et nocompatible
+syntax on
+set nocompatible
 filetype on
  
 set rtp+=~/.vim/bundle/Vundle.vim
