@@ -50,7 +50,7 @@ struct TableStruct_Test_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -64,14 +64,165 @@ extern helloworldDefaultTypeInternal _helloworld_default_instance_;
 class helloworld_ListTestEntry_DoNotUse;
 class helloworld_ListTestEntry_DoNotUseDefaultTypeInternal;
 extern helloworld_ListTestEntry_DoNotUseDefaultTypeInternal _helloworld_ListTestEntry_DoNotUse_default_instance_;
+class person;
+class personDefaultTypeInternal;
+extern personDefaultTypeInternal _person_default_instance_;
 }  // namespace lm
 PROTOBUF_NAMESPACE_OPEN
 template<> ::lm::helloworld* Arena::CreateMaybeMessage<::lm::helloworld>(Arena*);
 template<> ::lm::helloworld_ListTestEntry_DoNotUse* Arena::CreateMaybeMessage<::lm::helloworld_ListTestEntry_DoNotUse>(Arena*);
+template<> ::lm::person* Arena::CreateMaybeMessage<::lm::person>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace lm {
 
 // ===================================================================
+
+class person :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:lm.person) */ {
+ public:
+  person();
+  virtual ~person();
+
+  person(const person& from);
+  person(person&& from) noexcept
+    : person() {
+    *this = ::std::move(from);
+  }
+
+  inline person& operator=(const person& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline person& operator=(person&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const person& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const person* internal_default_instance() {
+    return reinterpret_cast<const person*>(
+               &_person_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    0;
+
+  friend void swap(person& a, person& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(person* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline person* New() const final {
+    return CreateMaybeMessage<person>(nullptr);
+  }
+
+  person* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<person>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const person& from);
+  void MergeFrom(const person& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  #else
+  bool MergePartialFromCodedStream(
+      ::PROTOBUF_NAMESPACE_ID::io::CodedInputStream* input) final;
+  #endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(person* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "lm.person";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_Test_2eproto);
+    return ::descriptor_table_Test_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 2,
+    kIdFieldNumber = 1,
+  };
+  // string name = 2;
+  void clear_name();
+  const std::string& name() const;
+  void set_name(const std::string& value);
+  void set_name(std::string&& value);
+  void set_name(const char* value);
+  void set_name(const char* value, size_t size);
+  std::string* mutable_name();
+  std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // int32 id = 1;
+  void clear_id();
+  ::PROTOBUF_NAMESPACE_ID::int32 id() const;
+  void set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
+
+  // @@protoc_insertion_point(class_scope:lm.person)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+  ::PROTOBUF_NAMESPACE_ID::int32 id_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Test_2eproto;
+};
+// -------------------------------------------------------------------
 
 class helloworld_ListTestEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<helloworld_ListTestEntry_DoNotUse, 
     ::PROTOBUF_NAMESPACE_ID::int32, ::PROTOBUF_NAMESPACE_ID::int32,
@@ -95,7 +246,7 @@ public:
   private:
   static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
     ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_Test_2eproto);
-    return ::descriptor_table_Test_2eproto.file_level_metadata[0];
+    return ::descriptor_table_Test_2eproto.file_level_metadata[1];
   }
 
   public:
@@ -145,7 +296,7 @@ class helloworld :
                &_helloworld_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(helloworld& a, helloworld& b) {
     a.Swap(&b);
@@ -217,6 +368,7 @@ class helloworld :
   enum : int {
     kListTestFieldNumber = 3,
     kListArrayFieldNumber = 4,
+    kListPersonFieldNumber = 5,
     kStrFieldNumber = 2,
     kIdFieldNumber = 1,
   };
@@ -238,6 +390,17 @@ class helloworld :
       list_array() const;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
       mutable_list_array();
+
+  // repeated .lm.person list_person = 5;
+  int list_person_size() const;
+  void clear_list_person();
+  ::lm::person* mutable_list_person(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::lm::person >*
+      mutable_list_person();
+  const ::lm::person& list_person(int index) const;
+  ::lm::person* add_list_person();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::lm::person >&
+      list_person() const;
 
   // string str = 2;
   void clear_str();
@@ -273,6 +436,7 @@ class helloworld :
       0 > list_test_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 > list_array_;
   mutable std::atomic<int> _list_array_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::lm::person > list_person_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr str_;
   ::PROTOBUF_NAMESPACE_ID::int32 id_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -287,6 +451,84 @@ class helloworld :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// person
+
+// int32 id = 1;
+inline void person::clear_id() {
+  id_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 person::id() const {
+  // @@protoc_insertion_point(field_get:lm.person.id)
+  return id_;
+}
+inline void person::set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  id_ = value;
+  // @@protoc_insertion_point(field_set:lm.person.id)
+}
+
+// string name = 2;
+inline void person::clear_name() {
+  name_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline const std::string& person::name() const {
+  // @@protoc_insertion_point(field_get:lm.person.name)
+  return _internal_name();
+}
+inline void person::set_name(const std::string& value) {
+  _internal_set_name(value);
+  // @@protoc_insertion_point(field_set:lm.person.name)
+}
+inline std::string* person::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:lm.person.name)
+  return _internal_mutable_name();
+}
+inline const std::string& person::_internal_name() const {
+  return name_.GetNoArena();
+}
+inline void person::_internal_set_name(const std::string& value) {
+  
+  name_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+}
+inline void person::set_name(std::string&& value) {
+  
+  name_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:lm.person.name)
+}
+inline void person::set_name(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  name_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:lm.person.name)
+}
+inline void person::set_name(const char* value, size_t size) {
+  
+  name_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:lm.person.name)
+}
+inline std::string* person::_internal_mutable_name() {
+  
+  return name_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* person::release_name() {
+  // @@protoc_insertion_point(field_release:lm.person.name)
+  
+  return name_.ReleaseNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void person::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  name_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name);
+  // @@protoc_insertion_point(field_set_allocated:lm.person.name)
+}
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // helloworld
@@ -413,9 +655,41 @@ helloworld::mutable_list_array() {
   return &list_array_;
 }
 
+// repeated .lm.person list_person = 5;
+inline int helloworld::list_person_size() const {
+  return list_person_.size();
+}
+inline void helloworld::clear_list_person() {
+  list_person_.Clear();
+}
+inline ::lm::person* helloworld::mutable_list_person(int index) {
+  // @@protoc_insertion_point(field_mutable:lm.helloworld.list_person)
+  return list_person_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::lm::person >*
+helloworld::mutable_list_person() {
+  // @@protoc_insertion_point(field_mutable_list:lm.helloworld.list_person)
+  return &list_person_;
+}
+inline const ::lm::person& helloworld::list_person(int index) const {
+  // @@protoc_insertion_point(field_get:lm.helloworld.list_person)
+  return list_person_.Get(index);
+}
+inline ::lm::person* helloworld::add_list_person() {
+  // @@protoc_insertion_point(field_add:lm.helloworld.list_person)
+  return list_person_.Add();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::lm::person >&
+helloworld::list_person() const {
+  // @@protoc_insertion_point(field_list:lm.helloworld.list_person)
+  return list_person_;
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 

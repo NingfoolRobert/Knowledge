@@ -10,7 +10,7 @@
 #include "Test.pb.h"
 #include <string.h>
 #include <fstream>
-
+#include <stdlib.h>
 
 
 using namespace std;
@@ -31,6 +31,11 @@ int main(int argc, char** argv)
 		std::cerr << "Fail to write example." << std::endl;
 		exit(-1);
 	}
+//	auto& list_person = example.mutable_list_person();
+	auto person =	example.add_list_person();
+	person->set_id(10001);
+	person->set_name("Ning");
+
 
 	cout << example.id()<<endl;
 	cout << example.str()<<endl;
@@ -75,6 +80,12 @@ int main(int argc, char** argv)
 		cout << example.list_array(i) << endl;
 	}
 //example.S
+
+	const   lm::person&	personOne = example.list_person(0);
+	
+	cout << " person: " << personOne.id() << endl;
+	cout << " person: " << personOne.name() << endl;
+
 	return 0;
 }
 
