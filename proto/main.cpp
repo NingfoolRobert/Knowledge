@@ -86,6 +86,12 @@ int main(int argc, char** argv)
 	cout << " person: " << personOne.id() << endl;
 	cout << " person: " << personOne.name() << endl;
 
+	auto personPtr = example.mutable_list_person(0);
+	personPtr->set_id(1000010);
+	personPtr->set_name("Wang");
+
+	cout << " personptr:" << personPtr->id() <<endl;
+	cout << " personptr: " << personPtr->name() << endl;
 	return 0;
 }
 
