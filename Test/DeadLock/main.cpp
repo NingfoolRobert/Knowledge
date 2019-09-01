@@ -1,4 +1,4 @@
-/*************************************************************************
+/************************************************************************
 	> File Name: main.cpp
 	> Author: amoscykl
 	> Mail: amoscykl@163.com 
@@ -20,9 +20,20 @@ class Request
 {
 
 public:
-	void process();	//attribute_
-
+	void process()	//attribute_
+	{
+		CAutoLock locker(&_obj);
+		
+		print();
+		
+	}
+	
+	void print()
+	{
+		CAutoLock lock(&_obj);
+		cout << "Test world" << endl;
+	}
 
 private:
-	pthread_mutex_t	mutex;
+	CObjectLock	 _obj;
 }
