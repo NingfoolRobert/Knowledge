@@ -35,8 +35,10 @@ public:
 	int  Detach();
 	
 	bool GetPeerName(const char* pszAddress,int *pPeerPort);
+
 	bool GetSockName(const char* pszAddress,int *pSockPort);
 
+	bool SetNonBlocking();
 
 private:
 	int m_fdSocket;
