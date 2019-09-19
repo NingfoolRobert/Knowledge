@@ -33,11 +33,35 @@ bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= null
 
 bool CSocket::Bind(unsigned int nHostPort = 0, const char* pszHostAddress = nullptr)
 {
+	m_addr.sin_port = htons(nHostPort);
+	
+	if(pszAddress == nullptr)
+	{
+		m_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	}
+	else
+	{
+		m_addr.sin_addr.s_addr = htonl(pszAddress);
+	}
+
+	int nRet = bind(m_fdSocket,(struct sockaddr*)&m_addr,0);
+	if(nRet < 0)
+	{
+		//TODO Log
+		return false;
+	}
+
 	return true;
 }
 
 bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 {
+	m_addr.sin_port = htons(nPort);
+	m_addr.sin_addr.s_addr= htonl(pszHostAddress);
+
+	socklen_t len = 0;
+	int nRet = connect(m_fdSocket,(struct sockaddr*)&m_addr,&len);
+
 	return true;
 }
 
