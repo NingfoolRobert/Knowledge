@@ -41,5 +41,6 @@ public:
 	bool SetNonBlocking();
 
 private:
-	int m_fdSocket;
+	int					m_fdSocket;
+	struct sockaddr_in	m_addr;
 };
