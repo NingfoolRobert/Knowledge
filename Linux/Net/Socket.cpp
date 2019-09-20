@@ -1,4 +1,6 @@
 #include "Socket.h"
+#include "Protocol.h"
+
 #include <unistd.h>
 
 CSocket::CSocket()
@@ -10,7 +12,7 @@ CSocket:: ~CSocket()
 
 }
 
-bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= nullptr*/, int nSocketType/* = SOCK_STREAM*/, int nProtocl /*= AF_INET*/)
+bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= nullptr*/, int nSocketType/* = SOCK_STREAM*/, int nProtocol /*= AF_INET*/)
 {
 	m_addr.sin_family	= nPortocol;
 	m_addr.sin_port		= htons(nPort);
@@ -20,7 +22,7 @@ bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= null
 	}
 	else
 	{
-		m_addr.sin_addr.s_addr = htonl(pszAddress);
+		m_addr.sin_addr.s_addr = inet_addr(pszAddress);
 	}
 	m_fdSocket = socket(nPortocol,nSocketType,0);
 	if(m_fdSocket <= 0)
@@ -31,17 +33,18 @@ bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= null
 	return true;
 }
 
-bool CSocket::Bind(unsigned int nHostPort = 0, const char* pszHostAddress = nullptr)
+bool CSocket::Bind(unsigned int nHostPort/* = 0 */, const char* pszHostAddress/* = nullptr*/)
 {
+	m_addr.sin_family = AF_INET;
 	m_addr.sin_port = htons(nHostPort);
 	
-	if(pszAddress == nullptr)
+	if(pszHostAddress == nullptr)
 	{
 		m_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	}
 	else
 	{
-		m_addr.sin_addr.s_addr = htonl(pszAddress);
+		m_addr.sin_addr.s_addr = inet_addr(pszAddress);
 	}
 
 	int nRet = bind(m_fdSocket,(struct sockaddr*)&m_addr,0);
@@ -61,11 +64,15 @@ bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 
 	socklen_t len = 0;
 	int nRet = connect(m_fdSocket,(struct sockaddr*)&m_addr,&len);
-
+	if(nRet < 0)
+	{
+		//TODO 
+		return false;
+	}
 	return true;
 }
 
-int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags = 0, bool bRecvAll = false)
+int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags/* = 0*/, bool bRecvAll/* = false*/)
 {
 	
 	int nRecv = read(m_fdSocket,pBuf,sizeof(HEADER),nFlags);
@@ -98,6 +105,15 @@ int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags = 0, bool bRecvAll = false
 			{
 				nRecv = read(m_fdSocket,pBuf+ uRecved,nBufLen - uRecved,nFlags);
 
+				if(nRecv == -1)
+				{
+
+				}
+				else if(nRecv == EAGIN)
+				{
+					//TODO 链接已断开
+					
+				}
 			}while(nRecv == -1 || nRecv == EAGIN);
 
 		}
@@ -110,7 +126,7 @@ int  CSocket::Send(const void* pBuf ,int nBufLen, int nFlags/* = 0*/)
 	int nSended = 0;
 	while(nSended < nBufLen)
 	{		
-		int nSend = write(m_fdSocket, pBuf + nSended, nBufLen - nSended,nFlags);
+		int nSend = write(m_fdSocket, pBuf + nSended, nBufLen - nSended);
 		if(nSend < 0)
 		{
 			//TODO  log
@@ -138,7 +154,7 @@ inline int  CSocket::Detach()
 	return m_fdSocket;
 }
 
-bool CSocket::GetPeerName(const char* pszAddress,int *pPeerPort)		//获取连接对端地址
+bool CSocket::GetPeerName(char* pszAddress,int *pPeerPort)		//获取连接对端地址
 {
 	struct sockaddr_in PeerAddr;
 	memset(&PeerAddr,0,sizeof(PeerAddr));
@@ -156,12 +172,12 @@ bool CSocket::GetPeerName(const char* pszAddress,int *pPeerPort)		//获取连接
 	return true;
 }
 
-bool CSocket::GetSockName(const char* pszAddress,int *pSockPort)		//获取监听的地址及端口
+bool CSocket::GetSockName(char* pszAddress,int *pSockPort)		//获取监听的地址及端口
 {
 	struct sockaddr localaddr;
 	socklen_t len = sizeof(localaddr);
 	
-	int nRet =  getsockname(m_fdSocket,(struct sockaddr*)&m_addr,len);
+	int nRet =  getsockname(m_fdSocket,(struct sockaddr*)&m_addr,&len);
 	if(nRet < 0)
 	{
 		//TODO	
@@ -176,7 +192,6 @@ bool CSocket::GetSockName(const char* pszAddress,int *pSockPort)		//获取监听
 inline void CSocket::SetNonBlocking()
 {	
 	fcntl(m_fdSocket,F_SETFL,fcntl(m_fdSocket,F_GETFL,0) | O_NONBLOCK);
-	return true;
 }
 
 void CSocket::SetTimeOut(int nSecond)

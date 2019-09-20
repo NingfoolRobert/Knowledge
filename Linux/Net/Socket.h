@@ -20,7 +20,7 @@ public:
 	CSocket();
 	virtual ~CSocket();
 public:
-	bool Create(unsigned int nPort = 0, const char* pszAddress = nullptr, int nSocketType=SOCK_STREAM, int nProtocl= AF_INET,);
+	bool Create(unsigned int nPort = 0, const char* pszAddress = nullptr, int nSocketType=SOCK_STREAM, int nProtocl= AF_INET);
 
 	bool Bind(unsigned int nHostPort = 0, const char* pszHostAddress = nullptr);
 
@@ -37,9 +37,9 @@ public:
 
 	int  Detach();
 	
-	bool GetPeerName(const char* pszAddress,int *pPeerPort);
+	bool GetPeerName(char* pszAddress,int *pPeerPort);
 
-	bool GetSockName(const char* pszAddress,int *pSockPort);
+	bool GetSockName(char* pszAddress,int *pSockPort);
 
 	void SetNonBlocking();
 
