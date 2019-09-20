@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Socket.h"
 #include <sys/epoll.h>
 
@@ -23,6 +25,9 @@ public:
 	void	Poll(int timeout);
 	bool	Add(CSocket* pSocket);
 	bool	Del(int fd);
+
+protected:
+	
 private:
 	int m_fd;		//epoll_create 创建的套接字
 
