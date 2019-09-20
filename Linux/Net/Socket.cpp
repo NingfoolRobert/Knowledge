@@ -1,5 +1,5 @@
 #include "Socket.h"
-
+#include <unistd.h>
 
 CSocket::CSocket()
 {
@@ -67,6 +67,41 @@ bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 
 int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags = 0, bool bRecvAll = false)
 {
+	
+	int nRecv = read(m_fdSocket,pBuf,sizeof(HEADER),nFlags);
+	if(nRecv < 0)
+	{
+
+	}
+	else if(nRecv == 0)
+	{
+
+	}
+	else
+	{
+		if(!bRecvAll  && (nRecv == sizeof(HEADER)))
+		{
+			return nRecv;
+		}
+		else
+		{
+			unsigned int  uRecved = 0;
+			PHEADER pheader = (PHEADER)pBuf;
+			if(pheader == nullptr)
+			{
+				 //TODO
+				return 0;
+			}
+			uRecved += pheader->uLength;
+			unsigned int uRecv=	pheader->uLength ;
+			do
+			{
+				nRecv = read(m_fdSocket,pBuf+ uRecved,nBufLen - uRecved,nFlags);
+
+			}while(nRecv == -1 || nRecv == EAGIN);
+
+		}
+	}
 	return 0;
 }
 
@@ -75,7 +110,7 @@ int  CSocket::Send(const void* pBuf ,int nBufLen, int nFlags/* = 0*/)
 	int nSended = 0;
 	while(nSended < nBufLen)
 	{		
-		int nSend = send(m_fdSocket, pBuf + nSended, nBufLen - nSended,nFlags);
+		int nSend = write(m_fdSocket, pBuf + nSended, nBufLen - nSended,nFlags);
 		if(nSend < 0)
 		{
 			//TODO  log
@@ -109,6 +144,11 @@ bool CSocket::CSocket::GetPeerName()
 
 bool CSocket::SetNonBlocking()
 {
+	int Old_Option = fcntl(m_fdSocket,F_GETFL,)
 	fcntl(m_fdSocket,F_SETFL,O_NONBLOCK);
+	return true;
+}
+static bool isFile()
+{	
 	return true;
 }
