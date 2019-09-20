@@ -40,7 +40,13 @@ public:
 
 	bool SetNonBlocking();
 
+	int	 GetSockFD(){ return m_fdSocket; }
 private:
 	int					m_fdSocket;
+	int					m_nPort;
 	struct sockaddr_in	m_addr;
+
+	bool				m_bInit;
+
+	
 };

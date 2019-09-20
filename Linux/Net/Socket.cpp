@@ -148,7 +148,3 @@ bool CSocket::SetNonBlocking()
 	fcntl(m_fdSocket,F_SETFL,O_NONBLOCK);
 	return true;
 }
-static bool isFile()
-{	
-	return true;
-}
