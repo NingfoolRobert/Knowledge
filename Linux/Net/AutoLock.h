@@ -7,11 +7,22 @@ class CAutoLock
 {
 
 public:
-	CAutoLock() = default;
-	~CAutoLock() = default;
-	
+	explicit CAutoLock(CObjectLock* pLock);
+	{
+		assert(pLock != nullptr);
+		m_pLock = pLock;
+		m_pLock->Lock();
+	}
+	~CAutoLock()
+	{
+		m_pLock->UnLock();
+		m_pLock = nullptr;
+	}
+private:
 		
 	
+private:
+	CObjectLoc*		m_pLock;
 }
 
 

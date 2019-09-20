@@ -33,15 +33,15 @@ private:
 };
 
 
-class  CMutex
+class  CObjectLock
 {
 public:
-	CMutex() 
+	CObjectLock() 
 	{
 		int rc = pthread_mutex_init(&m_mutex, nullptr) ;
 		assert(rc == 0);
 	}
-	~CMutex()
+	~CObjectLock()
 	{
 		pthread_mutex_destroy(&m_mutex);
 	}

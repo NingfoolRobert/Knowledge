@@ -88,8 +88,8 @@ int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags = 0, bool bRecvAll = false
 			unsigned int  uRecved = 0;
 			PHEADER pheader = (PHEADER)pBuf;
 			if(pheader == nullptr)
-			{
-				 //TODO
+	 		{
+ 				 //TODO
 				return 0;
 			}
 			uRecved += pheader->uLength;
@@ -121,30 +121,95 @@ int  CSocket::Send(const void* pBuf ,int nBufLen, int nFlags/* = 0*/)
 	return nBufLen;
 }
 
-bool CSocket::Close()
+inline bool CSocket::Close()
 {
 	close(m_fdSocket);
 	return 0;
 }
 
-bool CSocket::Attach(int fd_socket)
+inline bool CSocket::Attach(int fd_socket)
 {
+	m_fdSocket = fd_socket;
 	return true;
 }
 
-int  CSocket::Detach()
+inline int  CSocket::Detach()
 {
-	return 0;
+	return m_fdSocket;
 }
 
-bool CSocket::CSocket::GetPeerName()
+bool CSocket::GetPeerName(const char* pszAddress,int *pPeerPort)		//获取连接对端地址
 {
+	struct sockaddr_in PeerAddr;
+	memset(&PeerAddr,0,sizeof(PeerAddr));
+	socklen_t len = sizeof(PeerAddr);
+	int nRet = getpeername(m_fdSocket,(struct sockaddr*)&PeerAddr,&len);
+	if(nRet < 0)
+	{
+		//TODO  
+		return false;
+	}
+	strcpy(pszAddress,inet_ntoa(PeerAddr.sin_addr));
+	
+	*pPeerPort = ntohs(PeerAddr.sin_port);
 
-}
-
-bool CSocket::SetNonBlocking()
-{
-	int Old_Option = fcntl(m_fdSocket,F_GETFL,)
-	fcntl(m_fdSocket,F_SETFL,O_NONBLOCK);
 	return true;
+}
+
+bool CSocket::GetSockName(const char* pszAddress,int *pSockPort)		//获取监听的地址及端口
+{
+	struct sockaddr localaddr;
+	socklen_t len = sizeof(localaddr);
+	
+	int nRet =  getsockname(m_fdSocket,(struct sockaddr*)&m_addr,len);
+	if(nRet < 0)
+	{
+		//TODO	
+		return false;
+	}
+	
+	strcpy(pszAddress,inet_ntoa(m_addr.sin_addr));
+	*pSockPort = ntohs(m_addr.sin_port);
+	return true;
+}
+
+inline void CSocket::SetNonBlocking()
+{	
+	fcntl(m_fdSocket,F_SETFL,fcntl(m_fdSocket,F_GETFL,0) | O_NONBLOCK);
+	return true;
+}
+
+void CSocket::SetTimeOut(int nSecond)
+{
+	struct timeval set_time;
+	set_time.tv_sec = nSecond;
+	set_time.tv_usec = 0;
+	setsockopt(m_fdSocket, SOL_SOCKET,SO_SNDTIMEO,&set_time,sizeof(struct timeval));
+	setsockopt(m_fdSocket, SOL_SOCKET,SO_RCVTIMEO,&set_time,sizeof(struct timeval));
+}
+
+
+void CSocket:: SetNoDelay(bool bNoDelay)
+{
+	int Opt = 0;
+	if(bNoDelay)
+		Opt = 1;
+	setsockopt(m_fdSocket,IPPROTO_TCP, TCP_NODELAY,&Opt,sizeof(int));
+}
+
+
+
+void CSocket::SetLinger(int nSecond)		// 设置容许数据逗留时间
+{
+	struct linger slinger;
+	slinger.I_onoff =1;	//closesocket() 调用后，但是还有数据没发送完毕时容许逗留 
+	slinger.I_linger = nSecond;
+	
+	setsockopt(m_fdSocket, SOL_SOCKET, SO_LINGER, (const char*)&slinger,sizeof(slinger));
+}
+
+void SetKeepAlive(bool bKeepAlive)
+{
+	int nKeepAlive = (int)bKeepAlive;
+	setsockopt(m_fdSocket,SOL_SOCKET, SO_KEEPALIVE, (char*)&nKeepAlive, sizeof(int));
 }

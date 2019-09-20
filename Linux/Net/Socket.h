@@ -21,6 +21,7 @@ public:
 	virtual ~CSocket();
 public:
 	bool Create(unsigned int nPort = 0, const char* pszAddress = nullptr, int nSocketType=SOCK_STREAM, int nProtocl= AF_INET,);
+
 	bool Bind(unsigned int nHostPort = 0, const char* pszHostAddress = nullptr);
 
 	bool Connect(const char* pszHostAddress, unsigned int nPort);
@@ -40,15 +41,21 @@ public:
 
 	bool GetSockName(const char* pszAddress,int *pSockPort);
 
-	bool SetNonBlocking();
+	void SetNonBlocking();
+
+	void SetTimeOut(int nSecond);		//设置发送和接受的超时事件(秒)
+
+	void SetNoDelay(bool bNoDelay);	//设置禁用Nagle算法
+
+	void SetLinger(int nSecond);		// 设置容许数据逗留时间
+
+	void SetKeepAlive(bool bKeepAlive);
 
 	int	 GetSockFD(){ return m_fdSocket; }
-private:
+protected:
 	int					m_fdSocket;
 	int					m_nPort;
 	struct sockaddr_in	m_addr;
 
 	bool				m_bInit;
-
-	
 };
