@@ -14,7 +14,7 @@ CSocket:: ~CSocket()
 
 bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= nullptr*/, int nSocketType/* = SOCK_STREAM*/, int nProtocol /*= AF_INET*/)
 {
-	m_addr.sin_family	= nPortocol;
+	m_addr.sin_family	= nProtocol;
 	m_addr.sin_port		= htons(nPort);
 	if(pszAddress == nullptr)
 	{
@@ -44,7 +44,7 @@ bool CSocket::Bind(unsigned int nHostPort/* = 0 */, const char* pszHostAddress/*
 	}
 	else
 	{
-		m_addr.sin_addr.s_addr = inet_addr(pszAddress);
+		m_addr.sin_addr.s_addr = inet_addr(pszHostAddress);
 	}
 
 	int nRet = bind(m_fdSocket,(struct sockaddr*)&m_addr,0);
@@ -60,7 +60,7 @@ bool CSocket::Bind(unsigned int nHostPort/* = 0 */, const char* pszHostAddress/*
 bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 {
 	m_addr.sin_port = htons(nPort);
-	m_addr.sin_addr.s_addr= htonl(pszHostAddress);
+	m_addr.sin_addr.s_addr= inet_addr(pszHostAddress);
 
 	socklen_t len = 0;
 	int nRet = connect(m_fdSocket,(struct sockaddr*)&m_addr,&len);
@@ -75,7 +75,7 @@ bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags/* = 0*/, bool bRecvAll/* = false*/)
 {
 	
-	int nRecv = read(m_fdSocket,pBuf,sizeof(HEADER),nFlags);
+	int nRecv = read(m_fdSocket,pBuf,sizeof(HEADER));
 	if(nRecv < 0)
 	{
 
@@ -103,7 +103,7 @@ int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags/* = 0*/, bool bRecvAll/* =
 			unsigned int uRecv=	pheader->uLength ;
 			do
 			{
-				nRecv = read(m_fdSocket,pBuf+ uRecved,nBufLen - uRecved,nFlags);
+				nRecv = read(m_fdSocket,pBuf+ uRecved,nBufLen - uRecved);
 
 				if(nRecv == -1)
 				{
@@ -113,7 +113,7 @@ int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags/* = 0*/, bool bRecvAll/* =
 				{
 					//TODO 链接已断开
 					
-				}
+				} 
 			}while(nRecv == -1 || nRecv == EAGIN);
 
 		}
