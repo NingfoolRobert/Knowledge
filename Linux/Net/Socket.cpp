@@ -89,7 +89,7 @@ int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags = 0, bool bRecvAll = false
 			PHEADER pheader = (PHEADER)pBuf;
 			if(pheader == nullptr)
 	 		{
- 				 //TODO
+				 //TODO
 				return 0;
 			}
 			uRecved += pheader->uLength;
@@ -208,8 +208,10 @@ void CSocket::SetLinger(int nSecond)		// 设置容许数据逗留时间
 	setsockopt(m_fdSocket, SOL_SOCKET, SO_LINGER, (const char*)&slinger,sizeof(slinger));
 }
 
-void SetKeepAlive(bool bKeepAlive)
+void CSocket::SetKeepAlive(bool bKeepAlive)
 {
 	int nKeepAlive = (int)bKeepAlive;
 	setsockopt(m_fdSocket,SOL_SOCKET, SO_KEEPALIVE, (char*)&nKeepAlive, sizeof(int));
 }
+
+
