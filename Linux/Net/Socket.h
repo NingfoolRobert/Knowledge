@@ -53,6 +53,7 @@ public:
 
 	int	 GetSockFD(){ return m_fdSocket; }
 protected:
+public:
 	int					m_fdSocket;
 	int					m_nPort;
 	struct sockaddr_in	m_addr;

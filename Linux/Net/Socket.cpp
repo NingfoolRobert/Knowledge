@@ -24,7 +24,7 @@ bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= null
 	{
 		m_addr.sin_addr.s_addr = inet_addr(pszAddress);
 	}
-	m_fdSocket = socket(nPortocol,nSocketType,0);
+	m_fdSocket = socket(nProtocol,nSocketType,0);
 	if(m_fdSocket <= 0)
 	{
 		//TODO
@@ -62,8 +62,8 @@ bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 	m_addr.sin_port = htons(nPort);
 	m_addr.sin_addr.s_addr= inet_addr(pszHostAddress);
 
-	socklen_t len = 0;
-	int nRet = connect(m_fdSocket,(struct sockaddr*)&m_addr,&len);
+	socklen_t len = sizeof(m_addr);
+	int nRet = connect(m_fdSocket,(struct sockaddr*)&m_addr,len);
 	if(nRet < 0)
 	{
 		//TODO 
