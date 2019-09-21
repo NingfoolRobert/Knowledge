@@ -136,6 +136,15 @@ int  CSocket::Send(const void* pBuf ,int nBufLen, int nFlags/* = 0*/)
 		int nSend = write(m_fdSocket, pBuf + nSended, nBufLen - nSended);
 		if(nSend < 0)
 		{
+			if( errno  == EAGAIN)
+			{
+				//对于非阻塞的socket而言，已全部发送成功
+				break;
+			}
+			else if(errno == EINTR)
+			{
+			//被信号中断
+			}
 			//TODO  log
 			return nSended;
 		}

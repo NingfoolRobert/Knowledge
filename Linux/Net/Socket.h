@@ -53,6 +53,7 @@ public:
 
 	int	 GetSockFD(){ return m_fdSocket; }
 protected:
+	void SetSockOpt();
 public:
 	int					m_fdSocket;
 	int					m_nPort;

@@ -27,7 +27,6 @@ public:
 
 		return sem_post(&m_sem) == 0;
 	}
-
 private:
 	sem_t m_sem;
 };

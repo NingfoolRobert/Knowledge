@@ -2,12 +2,13 @@
 
 
 #include "lock.h"
+#include <assert.h>
 
 class CAutoLock
 {
 
 public:
-	explicit CAutoLock(CObjectLock* pLock);
+	explicit CAutoLock(CObjectLock* pLock)
 	{
 		assert(pLock != nullptr);
 		m_pLock = pLock;
@@ -22,8 +23,8 @@ private:
 		
 	
 private:
-	CObjectLoc*		m_pLock;
-}
+	CObjectLock*		m_pLock;
+};
 
 
 

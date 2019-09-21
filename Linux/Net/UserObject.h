@@ -6,6 +6,8 @@
 class CUserObject
 {
 public:
+	friend class CNetClient;
+
 	CUserObject();
 	virtual ~CUserObject();
 public:
@@ -26,7 +28,7 @@ public:
 	
 public:
 	void	SetNetUserIP(unsigned int  uUserIP);
-	void	GetWaitMsgCount(int &cnSendWait, int & &cnRecvWait);
+	void	GetWaitMsgCount(int &cnSendWait, int& cnRecvWait);
 protected:
 	
 	CNetClient*		m_pNetClient;

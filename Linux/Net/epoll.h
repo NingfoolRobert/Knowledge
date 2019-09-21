@@ -29,8 +29,8 @@ protected:
 private:
 	int m_fd;		//epoll_create 创建的套接字
 
-	shared_ptr<CSocket>		m_HostSock;
+//	shared_ptr<CSocket>		m_HostSock;
 
-	std::unordered_map<int,shared_ptr<CSocket> > m_listUserObj;
-	std::unordered_set<shared_ptr<CSocket> > 
+//	std::unordered_map<int,shared_ptr<CSocket> > m_listUserObj;
+//	std::unordered_set<shared_ptr<CSocket> > 
 };

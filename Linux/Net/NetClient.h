@@ -1,10 +1,13 @@
 #pragma once
 #include "Socket.h"
+#include "Protocol.h"
 
+class CUserObject;
 
 class CNetClient: public CSocket
 {
 public:
+	friend class CUserObject;
 	CNetClient();
 	virtual ~CNetClient();
 public:
@@ -42,5 +45,5 @@ public:
 private:
 	//Buffer
 	//
-
+	CUserObject*			m_pUserObject;
 };
