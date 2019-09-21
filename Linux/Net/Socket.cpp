@@ -105,16 +105,23 @@ int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags/* = 0*/, bool bRecvAll/* =
 			{
 				nRecv = read(m_fdSocket,pBuf+ uRecved,nBufLen - uRecved);
 
-				if(nRecv == -1)
+				if(nRecv < 0)
 				{
+					if(nRecv  == EAGAIN)
+					{
+						
+					}
+					else if(nRecv == EINTR)
+					{
+						
+					}
+					else 
+					{
 
+					}
 				}
-				else if(nRecv == EAGIN)
-				{
-					//TODO 链接已断开
 					
-				} 
-			}while(nRecv == -1 || nRecv == EAGIN);
+			}while(nRecv == -1 || nRecv == EAGAIN);
 
 		}
 	}

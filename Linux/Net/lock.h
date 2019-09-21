@@ -38,7 +38,7 @@ class  CObjectLock
 public:
 	CObjectLock() 
 	{
-		int rc = pthread_mutex_init(&m_mutex, nullptr) ;
+		int rc = pthread_muex_init(&m_mutex, nullptr) ;
 		assert(rc == 0);
 	}
 	~CObjectLock()
@@ -78,7 +78,6 @@ public:
 
 	bool Wait()
 	{
-
 		int ans = 0;
 		pthread_mutex_lock(&m_mutex);
 		ans = pthread_cond_wait(&m_cond,&m_mutex);
