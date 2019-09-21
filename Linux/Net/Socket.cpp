@@ -12,19 +12,9 @@ CSocket:: ~CSocket()
 
 }
 
-bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= nullptr*/, int nSocketType/* = SOCK_STREAM*/, int nProtocol /*= AF_INET*/)
+bool CSocket::Create(int domain/* = PF_INET*/, int nSocketType/*=SOCK_STREAM*/, int nProtocol/* = 0*/)
 {
-	m_addr.sin_family	= nProtocol;
-	m_addr.sin_port		= htons(nPort);
-	if(pszAddress == nullptr)
-	{
-		m_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	}
-	else
-	{
-		m_addr.sin_addr.s_addr = inet_addr(pszAddress);
-	}
-	m_fdSocket = socket(nProtocol,nSocketType,0);
+	m_fdSocket = socket(domain,nSocketType,nProtocol);
 	if(m_fdSocket <= 0)
 	{
 		//TODO
@@ -35,19 +25,20 @@ bool CSocket::Create(unsigned int nPort /*= 0*/, const char* pszAddress /*= null
 
 bool CSocket::Bind(unsigned int nHostPort/* = 0 */, const char* pszHostAddress/* = nullptr*/)
 {
-	m_addr.sin_family = AF_INET;
-	m_addr.sin_port = htons(nHostPort);
+	struct sockaddr_in  Addr;
+	Addr.sin_family = AF_INET;
+	Addr.sin_port = htons(nHostPort);
 	
 	if(pszHostAddress == nullptr)
 	{
-		m_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		Addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	}
 	else
 	{
-		m_addr.sin_addr.s_addr = inet_addr(pszHostAddress);
+		Addr.sin_addr.s_addr = inet_addr(pszHostAddress);
 	}
 
-	int nRet = bind(m_fdSocket,(struct sockaddr*)&m_addr,0);
+	int nRet = bind(m_fdSocket,(struct sockaddr*)&Addr,0);
 	if(nRet < 0)
 	{
 		//TODO Log
@@ -59,11 +50,12 @@ bool CSocket::Bind(unsigned int nHostPort/* = 0 */, const char* pszHostAddress/*
 
 bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 {
-	m_addr.sin_port = htons(nPort);
-	m_addr.sin_addr.s_addr= inet_addr(pszHostAddress);
+	struct sockaddr_in Addr;
+	Addr.sin_port = htons(nPort);
+	Addr.sin_addr.s_addr= inet_addr(pszHostAddress);
 
 	socklen_t len = sizeof(m_addr);
-	int nRet = connect(m_fdSocket,(struct sockaddr*)&m_addr,len);
+	int nRet = connect(m_fdSocket,(struct sockaddr*)&Addr,len);
 	if(nRet < 0)
 	{
 		//TODO 
@@ -72,68 +64,95 @@ bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 	return true;
 }
 
-int  CSocket::Recv(void *pBuf, int nBufLen,int nFlags/* = 0*/, bool bRecvAll/* = false*/)
+//int CSocket::Recv(void* pBuf, int nBufLen, bool bRecvAll/*= false*/)
+//{
+//	//if((unsigned long)nBufLen < sizeof(HEADER))
+//	//	return 0;
+//	int nRecv = 0;
+//	if(!bRecvAll)
+//	{
+//		nRecv =	OnRecv(pBuf,sizeof(HEADER));
+//		if(nRecv == sizeof(HEADER))
+//			return nRecv;
+//		else 
+//		{
+//			while(1)
+//			{
+//				nRecv = OnRecv(pBuf,sizeof(HEADER));
+//				if(nRecv == 0)
+//					return ;
+//			}
+//		}
+//	}	
+//	if(nullptr == pMsg)
+//		return 0;
+//	nRecv = OnRecv((char*)pBuf + sizeof(HEADER), pMsg->uLength);
+//	if(nRecv != pMsg->uLength)
+//		return 0;
+//
+//	return sizeof(HEADER) + pMsg->uLength;
+//}
+int CSocket::Recv(void* pBuf, int nBufLen, bool bRecvAll /*= false*/)
 {
+	int nRecved = 0;
+	int nRecv  = 0;
+	do
+	{
+		nRecv = OnRecv(pBuf,nBufLen - nRecved);
+		nRecved += nBufLen;
 	
-	int nRecv = read(m_fdSocket,pBuf,sizeof(HEADER));
-	if(nRecv < 0)
-	{
-
-	}
-	else if(nRecv == 0)
-	{
-
-	}
-	else
-	{
-		if(!bRecvAll  && (nRecv == sizeof(HEADER)))
-		{
-			return nRecv;
-		}
-		else
-		{
-			unsigned int  uRecved = 0;
-			PHEADER pheader = (PHEADER)pBuf;
-			if(pheader == nullptr)
-	 		{
-				 //TODO
-				return 0;
-			}
-			uRecved += pheader->uLength;
-			unsigned int uRecv=	pheader->uLength ;
-			do
-			{
-				nRecv = read(m_fdSocket,pBuf+ uRecved,nBufLen - uRecved);
-
-				if(nRecv < 0)
-				{
-					if(nRecv  == EAGAIN)
-					{
-						
-					}
-					else if(nRecv == EINTR)
-					{
-						
-					}
-					else 
-					{
-
-					}
-				}
-					
-			}while(nRecv == -1 || nRecv == EAGAIN);
-
-		}
-	}
-	return 0;
+	}while(bRecvAll || nRecved == nBufLen);
+	return nRecved;
 }
 
-int  CSocket::Send(const void* pBuf ,int nBufLen, int nFlags/* = 0*/)
+int  CSocket::OnRecv(void *pBuf, int nBufLen)
+{
+	unsigned int  uRecved = 0;
+	int nRecv = 0;
+	do{
+		nRecv = read(m_fdSocket, pBuf, nBufLen - uRecved);
+		if(nRecv > 0)
+			uRecved  += nRecv;
+	}while(nRecv == -1 || errno == EAGAIN);
+
+
+//	int nRecv = read(m_fdSocket,pBuf, nBufLen);
+	
+//
+//	else
+//	{
+//		if(!bRecvAll  && (nRecv == sizeof(HEADER)))
+//		{
+//			return nRecv;
+//		}
+//		else
+//		{
+//			PHEADER pheader = (PHEADER)pBuf;
+//			if(pheader == nullptr)
+//	 		{
+//				 //TODO
+//				return 0;
+//			}
+//			uRecved += pheader->uLength;
+//			//unsigned int uRecv=	pheader->uLength ;
+//			do
+//			{
+//				nRecv = read(m_fdSocket,(char*)pBuf+ uRecved, pheader->uLength - uRecved);
+//				uRecved +=nRecv;
+//
+//			}while(nRecv == -1 || nRecv == EAGAIN);
+//
+//		}
+//	}
+	return uRecved;
+}
+
+int  CSocket::Send(const void* pBuf ,int nBufLen)
 {
 	int nSended = 0;
 	while(nSended < nBufLen)
 	{		
-		int nSend = write(m_fdSocket, pBuf + nSended, nBufLen - nSended);
+		int nSend = write(m_fdSocket,(char*)pBuf + nSended, nBufLen - nSended);
 		if(nSend < 0)
 		{
 			if( errno  == EAGAIN)
@@ -155,8 +174,9 @@ int  CSocket::Send(const void* pBuf ,int nBufLen, int nFlags/* = 0*/)
 
 inline bool CSocket::Close()
 {
-	close(m_fdSocket);
-	return 0;
+	int nRet  = close(m_fdSocket);
+	
+	return 0 == nRet;
 }
 
 inline bool CSocket::Attach(int fd_socket)
@@ -225,7 +245,7 @@ void CSocket:: SetNoDelay(bool bNoDelay)
 	int Opt = 0;
 	if(bNoDelay)
 		Opt = 1;
-	setsockopt(m_fdSocket,IPPROTO_TCP, TCP_NODELAY,&Opt,sizeof(int));
+//	setsockopt(m_fdSocket,IPPROTO_TCP, TCP_NODELAY,&Opt,sizeof(int));
 }
 
 
@@ -233,8 +253,8 @@ void CSocket:: SetNoDelay(bool bNoDelay)
 void CSocket::SetLinger(int nSecond)		// 设置容许数据逗留时间
 {
 	struct linger slinger;
-	slinger.I_onoff =1;	//closesocket() 调用后，但是还有数据没发送完毕时容许逗留 
-	slinger.I_linger = nSecond;
+//	slinger.I_onoff =1;	//closesocket() 调用后，但是还有数据没发送完毕时容许逗留 
+//	slinger.I_linger = nSecond;
 	
 	setsockopt(m_fdSocket, SOL_SOCKET, SO_LINGER, (const char*)&slinger,sizeof(slinger));
 }

@@ -25,6 +25,36 @@ void CNetClient::Terminate(bool bWhenSendOver/* = false*/)
 
 }
 
+bool CNetClient::OnMsg(PHEADER pMsg)
+{
+	if(nullptr == m_pUserObject)
+		return false;
+	m_pUserObject->OnMsg(pMsg);
+	return true;
+}
+
+bool CNetClient::OnConnect()
+{
+	if(nullptr == m_pUserObject)
+		return false;
+	m_pUserObject->OnConnect();
+	return true;
+}
+bool CNetClient::OnBreak()
+{
+	if(nullptr == m_pUserObject)
+		return false;
+	m_pUserObject->OnBreak();
+	return true;
+}
+bool CNetClient::OnTickCount()
+{
+	if(nullptr == m_pUserObject)
+		return false;
+	m_pUserObject->OnTickCount();
+	return true;
+}
+
 void CNetClient::SetMsgOrigine(unsigned short usMsgOrigine)
 {
 

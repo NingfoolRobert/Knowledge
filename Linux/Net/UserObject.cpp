@@ -22,6 +22,8 @@ bool CUserObject::OnInitialUpdate()
 
 bool CUserObject::OnConnect()				//网络建立连接
 {
+	if(nullptr == m_pNetClient)
+		return false;
 	return true;
 }
 
@@ -32,18 +34,23 @@ bool CUserObject::OnMsg(PHEADER pMsg)		//网络消息到达接口
 
 bool CUserObject::OnBreak()					//网络连接断开事件接口
 {
+	if(nullptr == m_pNetClient)
+		return false;
 	return true;
 }
 
 bool CUserObject::OnTickCount()				//网络连接分钟定时调用
 {
+	if(nullptr == m_pNetClient)
+		return false;
 	return true;
 }
 
 bool CUserObject::SendMsg(PHEADER pMsg)
 {
-
-	return true;
+	if(nullptr == pMsg || nullptr == m_pNetClient)
+		return false;
+	return m_pNetClient->SendMsg(pMsg);
 }
 
 void CUserObject::BindNetClient(CNetClient* pNetClient)
@@ -52,6 +59,8 @@ void CUserObject::BindNetClient(CNetClient* pNetClient)
 		return;
 
 	m_pNetClient = pNetClient;
+
+	m_nEnterPort = pNetClient->m_nEnterPort;
 }
 inline	CNetClient*	CUserObject::GetNetClient()
 {
@@ -67,6 +76,14 @@ bool CUserObject::IsBindNetClient()
 void CUserObject::SetNetUserIP(unsigned int  uUserIP)
 {
 	m_uUserIP = uUserIP;
+
+	struct in_addr addr;
+	memset(&addr,0, sizeof(struct in_addr));
+	addr.s_addr = uUserIP;
+	
+	strcpy(m_szUserIP,inet_ntoa(addr));
+
+
 }
 void CUserObject::GetWaitMsgCount(int &cnSendWait, int & &cnRecvWait)
 {

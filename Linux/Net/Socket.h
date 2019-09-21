@@ -20,15 +20,17 @@ public:
 	CSocket();
 	virtual ~CSocket();
 public:
-	bool Create(unsigned int nPort = 0, const char* pszAddress = nullptr, int nSocketType=SOCK_STREAM, int nProtocl= AF_INET);
+	bool Create(int domain = PF_INET, int nSocketType=SOCK_STREAM, int nProtocol = 0);
 
 	bool Bind(unsigned int nHostPort = 0, const char* pszHostAddress = nullptr);
 
 	bool Connect(const char* pszHostAddress, unsigned int nPort);
 	
-	int  Recv(void *pBuf, int nBufLen,int nFlags = 0, bool bRecvAll = false);
+	int  Recv(void *pBuf, int nBufLen,bool bRecvAll = false);
+	
+	int  OnRecv(void* pBuf, int nBufLen);
 
-	int  Send(const void* pBuf ,int nBufLen, int nFlags = 0);
+	int  Send(const void* pBuf ,int nBufLen);
 
 	bool Close();
 public:

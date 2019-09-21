@@ -1,6 +1,8 @@
 #pragma once
 #include "Socket.h"
 #include "Protocol.h"
+#include "Buffer.h"
+#include "ConcurrentQueueNew.h"
 
 class CUserObject;
 
@@ -11,10 +13,11 @@ public:
 	CNetClient();
 	virtual ~CNetClient();
 public:
-//	virtual  bool   OnMsg(PHEADER  pMsg) = 0;
-	virtual  bool	OnConnect()	= 0;
-	virtual	 bool	OnBreak() = 0;
-//	virtual  bool	OnAckMsg(PHEADER pMsg) = 0;
+	virtual  bool   OnMsg(PHEADER  pMsg);
+	virtual  bool	OnConnect();
+	virtual	 bool	OnBreak();
+	virtual  bool	OnAckMsg(PHEADER pMsg);
+	virtual  bool	OnTickCount();
 public:
 
 	bool	SendMsg(PHEADER pMsg);
@@ -26,7 +29,7 @@ public:
 	void	SetRecvIdleTime(int nSecond);
 	
 public:
-	void	BindUserObject();//TODO
+	void	BindUserObject(CUserObject* pUser);//TODO
 	
 	bool	IsBindUserObject();
 
@@ -46,4 +49,6 @@ private:
 	//Buffer
 	//
 	CUserObject*			m_pUserObject;
+	CICCTools::ConcurrentQueueNew<CBuffer*>  m_listSend;
+	CICCTools::ConcurrentQueueNew<CBuffer*>	 m_listRecv;
 };
