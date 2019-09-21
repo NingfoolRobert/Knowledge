@@ -3,7 +3,9 @@
 
 #include "ThreadPool.h"
 #include "NetClient.h"
-
+#include <map>
+#include <set>
+#include <vector>
 
 class CNetService
 {
@@ -34,10 +36,11 @@ public:
 	bool  AddClient(CNetClient* pNetClient);
 	bool  DelClient(CNetClient* pNetClient);
 private:
-	CObjectLock			m_clsLock;
+	CObjectLock							m_clsLock;
 	std::map<int, CNetClient*>			m_listNetClient;
 	
-	CSocket				m_fdListen;
-	Cond_Lock			m_condAccept;
-	
-}
+	CSocket								m_fdListen;
+	Cond_Lock							m_condAccept;
+//	std::vector<std::thread>			m_listThread;
+	ThreadPool							m_ThreadPool;
+};

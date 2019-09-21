@@ -1,5 +1,5 @@
 #include "NetClient.h"
-
+#include "UserObject.h"
 
 CNetClient::CNetClient()
 {
@@ -55,9 +55,9 @@ bool CNetClient::OnTickCount()
 	return true;
 }
 
-void CNetClient::SetMsgOrigine(unsigned short usMsgOrigine)
+inline void CNetClient::SetMsgOrigine(unsigned short usMsgOrigine)
 {
-
+	m_uMsgOrigin = usMsgOrigine;
 }
 
 void CNetClient::SetRecvIdleTime(int nSecond)

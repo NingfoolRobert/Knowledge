@@ -14,11 +14,13 @@
 class ThreadPool
 {
 public:
-	ThreadPool(size_t);
+	ThreadPool();
 	template<class F, class... Args>
 	auto enqueue(F&& f, Args&&... args)
 		->std::future<typename std::result_of<F(Args...)>::type>;
 	~ThreadPool();
+public:
+	bool Init(size_t cnThread);
 private:
 	// need to keep track of threads so we can join them
 	std::vector< std::thread > workers;
@@ -30,19 +32,23 @@ private:
 	std::condition_variable condition;
 	bool stop;
 
-public:
-	static ThreadPool* pool;
-	static void Initial(size_t);
-	static void Release();
+//public:
+//	static ThreadPool* pool;
+//	static void Initial(size_t);
+//	static void Release();
 
 
-	template<class F, class... Args>
-	static auto Enqueue(F&& f, Args&&... args)
-		->std::future<typename std::result_of<F(Args...)>::type>;
+	//template<class F, class... Args>
+	//static auto Enqueue(F&& f, Args&&... args)
+	//	->std::future<typename std::result_of<F(Args...)>::type>;
 };
 
 // the constructor just launches some amount of workers
-inline ThreadPool::ThreadPool(size_t threads)
+inline Thread::Thread()
+{
+
+}
+inline bool ThreadPool::Init(size_t threads)
 	: stop(false)
 {
 	for (size_t i = 0; i<threads; ++i)
@@ -67,6 +73,7 @@ inline ThreadPool::ThreadPool(size_t threads)
 		}
 	}
 	);
+	return true;
 }
 
 // add new work item to the pool
@@ -107,12 +114,12 @@ inline ThreadPool::~ThreadPool()
 }
 
 //by yyk
-template<class F, class... Args>
-inline auto ThreadPool::Enqueue(F&& f, Args&&... args)
-	->std::future<typename std::result_of<F(Args...)>::type>
-{
-	return pool->enqueue(std::forward<F>(f), std::forward<Args>(args)...);
-}
+//template<class F, class... Args>
+//inline auto ThreadPool::Enqueue(F&& f, Args&&... args)
+//	->std::future<typename std::result_of<F(Args...)>::type>
+//{
+//	return pool->enqueue(std::forward<F>(f), std::forward<Args>(args)...);
+//}
 
 
 #endif

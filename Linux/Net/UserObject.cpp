@@ -1,4 +1,5 @@
 #include "UserObject.h"
+#include "NetClient.h"
 
 
 CUserObject::CUserObject()
@@ -9,7 +10,7 @@ CUserObject::CUserObject()
 	m_nEnterPort = 0;
 }
 
-CUserObject::~CUserObject();
+CUserObject::~CUserObject()
 {
 	
 }
@@ -29,6 +30,8 @@ bool CUserObject::OnConnect()				//网络建立连接
 
 bool CUserObject::OnMsg(PHEADER pMsg)		//网络消息到达接口
 {
+	if(nullptr == pMsg)
+		return false;
 	return true;
 }
 
@@ -85,7 +88,7 @@ void CUserObject::SetNetUserIP(unsigned int  uUserIP)
 
 
 }
-void CUserObject::GetWaitMsgCount(int &cnSendWait, int & &cnRecvWait)
+void CUserObject::GetWaitMsgCount(int& cnSendWait, int& cnRecvWait)
 {
 	
 }

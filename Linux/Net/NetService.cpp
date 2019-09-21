@@ -2,10 +2,12 @@
 
 bool CNetService::OnInitialUpdate()
 {
-	return ture;
+	return true;
 }
 bool CNetService::OnTimeOut(struct tm* pTime)
 {
+	if(nullptr == pTime)
+		return false;
 	return true;
 }
 bool CNetService::OnSecondIdle()
@@ -35,6 +37,8 @@ bool OnNetConnect(CNetClient* pNetClient)
 }
 bool OnNetBreak(CNetClient* pNetClient)
 {
+	if(pNetClient == nullptr)
+		return false;
 	return true;
 }
 bool OnNetTickCount(CNetClient* pNetClient)
@@ -47,5 +51,7 @@ bool OnNetTickCount(CNetClient* pNetClient)
 
 bool CNetService::AddClient(CNetClient* pNetClient)
 {
+	if(pNetClient == nullptr)
+		return false;
 	return true;
 }

@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <semaphore.h>
+#include <assert.h>
 
 
 class sem_locker
@@ -16,7 +17,7 @@ public:
 	~sem_locker()
 	{
 
-		sem_destory(&m_sem);
+		sem_destroy(&m_sem);
 	}
 	bool wait()
 	{
@@ -37,7 +38,7 @@ class  CObjectLock
 public:
 	CObjectLock() 
 	{
-		int rc = pthread_muex_init(&m_mutex, nullptr) ;
+		int rc = pthread_mutex_init(&m_mutex, nullptr) ;
 		assert(rc == 0);
 	}
 	~CObjectLock()

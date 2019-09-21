@@ -1,12 +1,15 @@
 #pragma once
 
-#include "NetClient.h"
+#include "Protocol.h"
+//#include "NetClient.h"
+#include <time.h>
 
+class CNetClient;
 
 class CUserObject
 {
 public:
-	friend class CNetClient;
+//	friend class CNetClient;
 
 	CUserObject();
 	virtual ~CUserObject();

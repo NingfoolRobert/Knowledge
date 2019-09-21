@@ -54,7 +54,7 @@ bool CSocket::Connect(const char* pszHostAddress, unsigned int nPort)
 	Addr.sin_port = htons(nPort);
 	Addr.sin_addr.s_addr= inet_addr(pszHostAddress);
 
-	socklen_t len = sizeof(m_addr);
+	socklen_t len = sizeof(Addr);
 	int nRet = connect(m_fdSocket,(struct sockaddr*)&Addr,len);
 	if(nRet < 0)
 	{
@@ -210,18 +210,18 @@ bool CSocket::GetPeerName(char* pszAddress,int *pPeerPort)		//获取连接对端
 
 bool CSocket::GetSockName(char* pszAddress,int *pSockPort)		//获取监听的地址及端口
 {
-	struct sockaddr localaddr;
+	struct sockaddr_in localaddr;
 	socklen_t len = sizeof(localaddr);
 	
-	int nRet =  getsockname(m_fdSocket,(struct sockaddr*)&m_addr,&len);
+	int nRet =  getsockname(m_fdSocket,(struct sockaddr*)&localaddr, &len);
 	if(nRet < 0)
 	{
 		//TODO	
 		return false;
 	}
 	
-	strcpy(pszAddress,inet_ntoa(m_addr.sin_addr));
-	*pSockPort = ntohs(m_addr.sin_port);
+	strcpy(pszAddress,inet_ntoa(localaddr.sin_addr));
+	*pSockPort = ntohs(localaddr.sin_port);
 	return true;
 }
 
@@ -265,4 +265,9 @@ void CSocket::SetKeepAlive(bool bKeepAlive)
 	setsockopt(m_fdSocket,SOL_SOCKET, SO_KEEPALIVE, (char*)&nKeepAlive, sizeof(int));
 }
 
+bool CSocket::SetSockOpt(int nOptionName, const void* pOptionValue, int nOptionLen, int nLevel/* = SOL_SOCKET*/)
+{
+	int Ret = setsockopt(m_fdSocket, nLevel, nOptionName, pOptionValue, nOptionLen);
+	return Ret == 0;
+}
 

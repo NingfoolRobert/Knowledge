@@ -9,7 +9,7 @@ class CUserObject;
 class CNetClient: public CSocket
 {
 public:
-	friend class CUserObject;
+//	friend class CUserObject;
 	CNetClient();
 	virtual ~CNetClient();
 public:
@@ -43,12 +43,19 @@ public:
 	char					m_szIP[32];
 	int						m_nEnterPort;	//连接端口
 	
-
-
+private:
+	unsigned int			m_uSendSerial;			//序列号
+	unsigned int			m_uLastRecvSerial;		//序列号
+	unsigned short			m_uMsgOrigin;			//消息源
 private:
 	//Buffer
 	//
 	CUserObject*			m_pUserObject;
+private:
 	CICCTools::ConcurrentQueueNew<CBuffer*>  m_listSend;
+	CBuffer*				m_pSendBuf;
+private:
 	CICCTools::ConcurrentQueueNew<CBuffer*>	 m_listRecv;
+	CBuffer*				m_pRecvBuf;
+
 };

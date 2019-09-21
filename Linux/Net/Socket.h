@@ -38,7 +38,7 @@ public:
 	bool Attach(int fd_socket);
 
 	int  Detach();
-	
+public:
 	bool GetPeerName(char* pszAddress,int *pPeerPort);
 
 	bool GetSockName(char* pszAddress,int *pSockPort);
@@ -55,11 +55,23 @@ public:
 
 	int	 GetSockFD(){ return m_fdSocket; }
 protected:
-	void SetSockOpt();
+	//void SetSockOpt();
+	//
+	bool SetSockOpt(int nOptionName, const void* pOptionValue, int nOptionLen, int nLevel = SOL_SOCKET);
 public:
 	int					m_fdSocket;
-	int					m_nPort;
-	struct sockaddr_in	m_addr;
+//	int					m_nPort;
+//	struct sockaddr_in	m_addr;
 
-	bool				m_bInit;
+//	bool				m_bInit;
+
+
+private:
+	
+	static int			m_nDefaultRecvBufSize;			//默认接收缓冲区大小(0表示未修改) (16384)
+
+	static int			m_nDefaultSendBufSize;			//默认发送缓冲区大小(0表示未修改)(87380)
+
+	static int			m_nDefaultTimeout ;				//默认超时时间(0表示未修改)
+
 };
