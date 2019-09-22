@@ -9,7 +9,7 @@
 
 #include "AutoLock.h"
 
-#include "ThreaPool.h"
+#include "ThreadPool.h"
 
 
 

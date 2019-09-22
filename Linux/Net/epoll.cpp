@@ -67,4 +67,19 @@ bool CEpoll::Del(int fd)
 	return false;
 }
 
+void CEpoll::Poll(int nTimeout)
+{
+	int nSize = 100;
+	int nCount = epoll_wait(m_ep, &m_listFD[0], nSize, nTimeout);
+	
+	for(int i = 0; i < nCount; ++i)
+	{
+
+
+
+	}
+	
+	
+}
+
 
