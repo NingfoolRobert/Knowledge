@@ -32,7 +32,8 @@ public:
 	void	BindUserObject(CUserObject* pUser);//TODO
 	
 	bool	IsBindUserObject();
-
+private:
+	bool	MessageTrans(CBuffer* pBuffer, int& len);
 private:
 	bool	OnSend();
 	bool	OnReceive();
