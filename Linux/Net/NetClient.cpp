@@ -78,3 +78,43 @@ inline bool CNetClient::IsBindUserObject()
 		return false;
 	return true;
 }
+
+bool CNetClient::OnSend()
+{
+	if(nullptr == m_pSendBuf)
+	{
+		bool bRet  = m_listSend.Dequeue(m_pSendBuf);
+		if(!bRet)
+			return false;
+	}
+	
+	int nSend = Send(m_pSendBuf->GetBufPtr(), m_pSendBuf->GetBufLen());
+	
+	CBuffer * pSendBuf = nullptr;
+	if(nSend != m_pSendBuf->GetBufLen())
+	{
+
+		pSendBuf = new CBuffer;
+		if(pSendBuf == nullptr)
+		{
+			//TODO 
+			pSendBuf->Append(m_pSendBuf->GetBufPtr() + nSend, m_pSendBuf->GetBufLen() - nSend);
+			m_pSendBuf = pSendBuf;
+			return false;
+		}
+		
+	}
+	
+	
+	
+
+	return true;
+}
+bool CNetClient::OnReceive()
+{
+	return true;
+}
+bool CNetClient::OnActiveMsg()
+{
+	return true;
+}

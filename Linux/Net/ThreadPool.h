@@ -20,7 +20,7 @@ public:
 		->std::future<typename std::result_of<F(Args...)>::type>;
 	~ThreadPool();
 public:
-	bool Init(size_t cnThread);
+	bool Init(int cnThread);
 private:
 	// need to keep track of threads so we can join them
 	std::vector< std::thread > workers;
@@ -48,10 +48,10 @@ inline Thread::Thread()
 {
 
 }
-inline bool ThreadPool::Init(size_t threads)
+inline bool ThreadPool::Init(int cnThread)
 	: stop(false)
 {
-	for (size_t i = 0; i<threads; ++i)
+	for (int i = 0; i <  cnThread; ++i)
 		workers.emplace_back(
 		[this]
 	{

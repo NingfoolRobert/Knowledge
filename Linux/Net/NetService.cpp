@@ -55,3 +55,15 @@ bool CNetService::AddClient(CNetClient* pNetClient)
 		return false;
 	return true;
 }
+bool CNetService::OnAccept()
+{
+	return true;
+}
+
+bool CNetService::Accept(int fd, int nEnterPort, bool bEpoll = true)
+{
+	
+	return true;
+}
+
+

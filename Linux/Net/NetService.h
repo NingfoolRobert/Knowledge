@@ -41,6 +41,5 @@ private:
 	
 	CSocket								m_fdListen;
 	Cond_Lock							m_condAccept;
-//	std::vector<std::thread>			m_listThread;
 	ThreadPool							m_ThreadPool;
 };

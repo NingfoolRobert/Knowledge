@@ -20,7 +20,7 @@ public:
 	CSocket();
 	virtual ~CSocket();
 public:
-	bool Create(int domain = PF_INET, int nSocketType=SOCK_STREAM, int nProtocol = 0);
+	bool Create(int domain = PF_INET, int nSocketType=SOCK_STREAM, int nProtocol = IPPROTO_TCP);
 
 	bool Bind(unsigned int nHostPort = 0, const char* pszHostAddress = nullptr);
 
