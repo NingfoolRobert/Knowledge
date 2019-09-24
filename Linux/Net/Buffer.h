@@ -20,13 +20,12 @@ public:
 public:
 	void	SetExpandLen(int nlenExpand);
 	void	Clear(bool  bFree = false);
-
-
 public:
 	char*	GetBufPtr() { return m_pBuf; }
 	char*	GetDataPtr() { if (m_pBuf == NULL) { return NULL; } else { return m_pBuf; } }
 	
 	bool	Expand(int nExpand);
+	bool	ExpandTo(int nLength);
 	bool	Append(const void* pBuf, int nlen);
 	int		GetCapability() { return m_nlenCapability; }
 	int		GetBufLen() { return m_nlenData; }

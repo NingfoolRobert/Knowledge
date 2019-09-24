@@ -11,6 +11,9 @@
 #include <functional>
 #include <stdexcept>
 
+#include "Singleton.h"
+
+
 class ThreadPool
 {
 public:
@@ -21,6 +24,7 @@ public:
 	~ThreadPool();
 public:
 	bool Init(int cnThread);
+	bool enqueue(std::function<void()>& task);
 private:
 	// need to keep track of threads so we can join them
 	std::vector< std::thread > workers;
@@ -44,7 +48,7 @@ private:
 };
 
 // the constructor just launches some amount of workers
-inline Thread::Thread()
+inline ThreadPool::ThreadPool()
 {
 
 }
@@ -60,7 +64,7 @@ inline bool ThreadPool::Init(int cnThread)
 			std::function<void()> task;
 
 			{
-				std::unique_lock<std::mutex> lock(this->queue_mutex);
+		 		std::unique_lock<std::mutex> lock(this->queue_mutex);
 				this->condition.wait(lock,
 					[this]{ return this->stop || !this->tasks.empty(); });
 				if (this->stop && this->tasks.empty())
@@ -120,6 +124,22 @@ inline ThreadPool::~ThreadPool()
 //{
 //	return pool->enqueue(std::forward<F>(f), std::forward<Args>(args)...);
 //}
+
+bool ThreadPool::enqueue(std::function<void()>& task)
+{
+	std::unique_lock<std::mutex> lock(queue_mutex);
+	tasks.emplace([task](){ (task)(); })
+	return true;
+}
+
+
+#define THREADPOOL  Singleton<ThreadPool>::GetInstacne()
+
+#define ASYNC_HANDLE(task)	Singleton<ThreadPool>::GetInstance.enqueue(task);
+
+#define ASYNC_HANDLE(f,...) Singleton<ThreadPoll>::GetInstance.enqueue(f,#Args);
+
+
 
 
 #endif

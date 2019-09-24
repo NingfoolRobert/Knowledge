@@ -34,6 +34,7 @@ void CBuffer::Clear(bool bFree /*= false*/)
 		m_nlenCapability = 0;
 	}
 
+	m_nlenExpand = 0;
 	m_nlenData = 0;
 }
 
@@ -63,6 +64,21 @@ bool CBuffer::Expand(int nExpand)
 
 	return true;
 }
+
+bool CBuffer::ExpandTo(int nLength)
+{
+	int nLen = nLength - m_nlenData;
+	if(nLen > 0)
+	{
+		return Expand(nLen);
+	}
+	else if (nLen < 0)
+	{
+		//TODO 更改容量大小
+	}
+	return false;
+}
+
 
 bool CBuffer::Append(const void* pBuf, int nlen)
 {
