@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/nbf/github/Knowledge/Linux/Test/Script/main.cpp
+unistd.h
+-
+stdio.h
+-
+stdlib.h
+-
+fcntl.h
+-
+sys/wait.h
+-
+string.h
+-
+sys/errno.h
+-
+signal.h
+-
+time.h
+-
+sys/time.h
+-
+string
+-
+iostream
+-
+

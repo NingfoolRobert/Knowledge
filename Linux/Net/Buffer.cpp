@@ -74,7 +74,8 @@ bool CBuffer::ExpandTo(int nLength)
 	}
 	else if (nLen < 0)
 	{
-		//TODO 更改容量大小
+		//TODO 更改容量大小 
+		return false;
 	}
 	return false;
 }
