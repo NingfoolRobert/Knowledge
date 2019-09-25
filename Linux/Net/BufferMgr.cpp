@@ -6,7 +6,17 @@ CBufferMgr::CBufferMgr()
 }
 CBufferMgr::~CBufferMgr()
 {
-	
+	CBuffer* pBuf = nullptr;
+	for(int i = 0; i < BUFFER_GROUP_COUNT; ++i)
+	{
+		while(m_listBuf[i].size())
+		{
+			pBuf = m_listBuf[i].front();
+			m_listBuf[i].pop_front();
+			delete pBuf;
+			pBuf = nullptr;
+		}
+	}
 }
 CBuffer* CBufferMgr::GetBuffer(int nLength, const char* pszFileName, int nLine)
 {
