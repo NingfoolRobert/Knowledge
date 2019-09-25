@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(c_to_python)
+set(CXX_MAKE_TYPE "Debug")
+set(CXX_MAKE_FLAGS  "${CXX_MAKE_DEBUG_FLAGS} -Wall -plthread -g -ggdb")
 find_package(PythonLibs REQUIRED)
 include_directories("/usr/include/python2.7")
 #target_link_libraries("/usr/lib/python2.7/config-x86_64-linux-gnu/")

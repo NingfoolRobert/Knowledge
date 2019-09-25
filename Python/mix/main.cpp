@@ -28,12 +28,16 @@ int main()
 	
 	PySys_SetArgv(argc, argv);
 
-
-	
 	if(PyRun_SimpleString("execfile('/home/nbf/github/Knowledge/Python/mix/Xtest.py')") == NULL)	
+	//if(PyRun_SimpleString("execfile('./Xtest.py')") == NULL)	
 	{
-		std::cout <<"2" <<std::endl;
-		return -1;
+//		std::cout <<"2" <<std::endl;
+		std::cout << "Out: " << std::endl;
+		char buffer[1024]={0};
+		freopen(buffer,"r",stdin);
+		
+		std::cout << buffer <<endl;
+	//	return -1;
 	}
 	Py_Finalize();
 	

@@ -7,7 +7,7 @@ def add(a, b):
     print " a = " +str(a)
     print " b = " + str(b)
     print " ret = "+ str(a+b)
-    
+    sys.stdout.write(str(a+b))    
     return 
 
 def foo(a):
