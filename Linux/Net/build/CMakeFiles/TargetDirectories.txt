@@ -1,0 +1,3 @@
+/home/nbf/github/Knowledge/Linux/Net/build/CMakeFiles/rebuild_cache.dir
+/home/nbf/github/Knowledge/Linux/Net/build/CMakeFiles/edit_cache.dir
+/home/nbf/github/Knowledge/Linux/Net/build/CMakeFiles/Test.dir

@@ -22,7 +22,7 @@ CBufferShared CBufferSharedMgr::GetBuffer(int nLen, const char* pszFile/* = ""*/
 {
 	int cnInit = 256;
 	int Index = 0;
-	CBufferShared pBuffer = nullptr;
+	//CBufferShared pBuffer;
 	while(true)
 	{
 		if(nLen < cnInit)
@@ -32,21 +32,20 @@ CBufferShared CBufferSharedMgr::GetBuffer(int nLen, const char* pszFile/* = ""*/
 	}
 	if(Index >= BUFFER_MGR_COUNT)
 	{
-		pBuffer = std::make_shared<CBufferShared>();
+		auto pBuffer = std::make_shared<CBuffer>();
+		pBuffer->ExpandTo(nLen);
+		return pBuffer;
+	}
+
+	if(m_listBuffer[Index].size() >= 4*1024*1024 / cnInit)
+	{
+		auto pBuffer = std::make_shared<CBuffer>();
 		pBuffer->ExpandTo(nLen);
 	}
 	else 
 	{
-		if(m_listBuffer[i].sizeof >= 4*1024*1024 / cnInit)
-		{
-			auto pBuffer = make_shared<CBuffer>();
-			pBuffer->ExpandTo(nLen);
-		}
-		else 
-		{
-			pBuffer = m_listBuffer[i].front();
-			m_listBuffer[Index].pop_front();
-		}
+		auto pBuffer = m_listBuffer[Index].front();
+		m_listBuffer[Index].pop_front();
 	}
-	return pBuffer; 
-}
+} 
+

@@ -3,6 +3,8 @@
 #include <iostream> 
 #include <mutex>
 #include <memory>
+#include <chrono>
+#include <thread>
 
 #define BUFFER_MGR_COUNT 8
 
