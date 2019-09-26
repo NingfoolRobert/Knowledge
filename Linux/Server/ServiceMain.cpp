@@ -1,4 +1,6 @@
+#include "ServiceTpl.h"
 #include "Service.h"
+
 
 
 int main()

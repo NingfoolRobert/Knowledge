@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 
 template<class T>
@@ -21,4 +22,4 @@ public:
 		//TODO onTerminate;
 		return true;
 	}
-}
+};
