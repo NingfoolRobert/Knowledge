@@ -9,7 +9,11 @@ CNet::CNet()
 
 CNet::~CNet()
 {
-
+	if(m_sock)
+	{
+		zmq_destory(m_sock);
+		zmq_destory();
+	}
 }
 
 void* CNet::Create(int nType)
