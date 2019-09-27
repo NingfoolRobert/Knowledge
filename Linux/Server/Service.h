@@ -21,12 +21,11 @@ public:
 public:
 	
 	bool	Excute(const char* pszFileName = "", int nLine = 0);
-
+	bool	Terminate();
 private:
+	
 	bool		m_bStop;
-
 	time_t		m_tStart;
-
 };
 
 
