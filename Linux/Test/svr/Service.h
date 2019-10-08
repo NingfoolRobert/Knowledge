@@ -21,7 +21,7 @@ public:
 public:
 	
 	bool	Execute(const char* pszFileName = "", int nLine = 0);
-	bool	Terminate();
+	void	Terminate();
 private:
 	
 	bool		m_bStop;

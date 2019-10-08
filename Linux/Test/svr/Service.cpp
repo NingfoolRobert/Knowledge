@@ -57,7 +57,7 @@ CService::CService()
 
 CService::~CService()
 {
-	m_bStop = true;
+	Terminate();
 }
 
 bool CService::Execute(const char* pszFileName /*= ""*/, int nLine/*= 0*/)
@@ -97,10 +97,9 @@ bool CService::Execute(const char* pszFileName /*= ""*/, int nLine/*= 0*/)
 }
 
 //
-bool CService::Terminate()
+void CService::Terminate()
 {
 	InvokeTerminate();
 	m_bStop = true;
 	OnTerminate();
-	return true;
 }
