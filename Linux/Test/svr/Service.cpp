@@ -53,6 +53,7 @@ CService::CService()
 {	
 	m_bStop = false;
 	g_Service = this;
+	m_tStart = time(nullptr);
 }
 
 CService::~CService()
