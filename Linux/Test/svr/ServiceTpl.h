@@ -8,7 +8,7 @@ public:
 	CServiceTpl() = default;
 	~CServiceTpl() = default;
 public:
-	bool Execute(const char* pszServiceName)
+	int Execute(const char* pszServiceName)
 	{
 		T* pService = new T;
 		if(nullptr != pService)
@@ -17,9 +17,11 @@ public:
 		}
 		else 
 		{
-			return false;
+			return -1;
 		}
+
 		//TODO onTerminate;
-		return true;
+		delete pService;
+		return 0;
 	}
 };

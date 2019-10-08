@@ -33,10 +33,6 @@ class CService* g_Service = nullptr;
 
 void TimerHandle(int sino)
 {
-//	time_t tNow = time(nullptr);
-//	struct tm* pTime;
-//	localtime_r(&tNow, pTime);
-	
 	if(g_Service)
 	{
 		std::thread tr1(&SecondeIdle,g_Service);
@@ -99,6 +95,8 @@ bool CService::Execute(const char* pszFileName /*= ""*/, int nLine/*= 0*/)
 	Terminate();
 	return true;
 }
+
+//
 bool CService::Terminate()
 {
 	InvokeTerminate();
