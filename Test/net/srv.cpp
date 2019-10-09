@@ -242,9 +242,7 @@ int main()
 							 cout << "counterpart has shut off\n";
 							 break;
 						 }
-                        
 						 // 以下的情况是writenLen > 0
-                         
 						 count += writenLen;
                          
 						 if (writenLen == MAXLINE)
@@ -259,11 +257,10 @@ int main()
 							 bWritten = true;
 							 break; // 退出while(1)
 						 }
-   	                    
-				 }
+   	    
    	
+						 }
 
-   	                
 		if (bWritten == true)
 		{
    	    
@@ -273,7 +270,10 @@ int main()
 			ev.events=EPOLLIN | EPOLLET;
 			epoll_ctl(epfd,EPOLL_CTL_MOD,sockfd,&ev);
 		}
-			
+					 }
+				 }
+		  }
+	}
 		return 0;
 }
 
