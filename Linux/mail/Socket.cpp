@@ -86,11 +86,49 @@ bool CSocket::Connect(const char* pszAddress, int nPort)
 
 bool CSocket::Recv(char* pszBuf, int nBufLen)
 {
+	int nRecved = 0;
+	int nRead = 0;
+	while(true)
+	{
+		nRead= read(m_fd, pszBuf + nRecved, nBufLen - nReved);
+		if(nRead == 0)
+			break;
+		else if(nRead < 0)
+		{
+			if(errno == EINTR)
+				continue;
+			else 
+				return false;
+		}
+		
+		nRecved += nRead;
+		if(nRecved >= nBufLen)
+			break;
+	}
 	return true;
 }
 
 bool CSocket::Send(const char* pszBuf, int nBufLen)
 {
+	int nSended = 0;
+	do 
+	{
+		int nSend = write(m_fd, pszBuf + nSended, nBufLen - nSended);
+		if(nSend < 0 )
+		{
+			if(errno == EINTR)
+				continue;
+			else 
+			{
+				//TODO Log
+				return false;
+			}
+		}
+
+		nSended += nSend;
+	}while(nSend < nBufLen);
+
+	
 	return true;
 }
 
@@ -112,4 +150,39 @@ bool CSocket::Attach(int nfd)
 int  CSocket::Detach()
 {
 	return m_fd;
+}
+bool CSocket::GetSockName(struct sockaddr* LocalSockaddr, socklen_t* nAddrLen)
+{
+	if(nullptr == LocalSockaddr || nullptr == nAddrLen)
+		return false;
+	int nRet = getsockname(m_fd, LocalSockaddr, nAddrLen);
+
+	return 0 == nRet;
+}
+
+bool CSocket::GetPeerName(struct sockaddr* PeerSockAddr, socklen_t* nAddrLen)
+{
+	if(nullptr == LocalSockaddr || nullptr == nAddrLen)
+		return false;
+	int nRet = getpeername(m_fd, PeerSockAddr, nAddrLen);
+
+	return 0 == nRet;
+}
+
+bool CSocket::SetSockOpt(int nLevel, int nOptanme, const void* Optval, socklen_t* pOptLen)
+{
+	int nRet = setsockopt(m_fd, nLevel, nOptanme, Optval, pOptLen);
+	
+	return 0 == nRet;
+}
+
+bool CSocket::GetSockOpt(int nLevel, int OptName, void* Optval,socklen_t* pOptLen)
+{
+	int nRet = getsockopt(m_fd, nLevel, OptName, Optval, pOptLen);
+	return 0 == nRet;
+}
+
+void CSocket::SetBlockMode(int nMode/* = O_NONBLOCK*/)
+{
+	fcntl(m_fd, F_SETFL, nMode);
 }
