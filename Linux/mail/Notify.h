@@ -3,6 +3,9 @@
 #include "Socket.h"
 #include <sys/time.h>
 #include <time.h>
+#include <string>
+#include <string.h>
+#include <vector>
 
 
 
@@ -17,7 +20,7 @@ enum emITUint
 	
 
 	CICC_IT_UINY_TYPE_SUM
-}
+};
 
 
 typedef struct stContactorInfo
@@ -50,6 +53,7 @@ protected:
 
 	bool SendNotifyInfo(const char* pszInfo, int nBufLen);
 
+	bool RecvMsg(char* pszBuf, int nBufLen);
 protected:
 	char	m_pszConfigFileName[256];
 

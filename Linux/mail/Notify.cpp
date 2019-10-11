@@ -4,6 +4,7 @@
 
 CNotify::CNotify()
 {
+	m_pSocket = nullptr;
 }
 
 CNotify::~CNotify()
@@ -14,6 +15,19 @@ CNotify::~CNotify()
 
 bool CNotify::OnIntialUpdate(const char* pszConfigFileName)
 {
+	
+
+	//初始化网络
+	m_pSocket = new CSocket();
+	if(m_pSocket == nullptr)
+	{
+		return true;
+	}
+
+	if(!m_pSocket->Create())
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -53,4 +67,10 @@ bool CNotify::SendNotifyInfo(const char* pszInfo, int nBufLen)
 	if(m_pSocket->Send(pszInfo, nBufLen))
 		return true;
 	return false;
+}
+
+bool CNotify::RecvMsg(char* pszBuf, int nBufLen)
+{
+	m_pSocket->Recv(pszBuf, nBufLen);
+	return true;
 }

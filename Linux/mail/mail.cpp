@@ -1,6 +1,7 @@
 #include "mail.h"
 
-CMail::CMail()
+
+CMail::CMail():m_nPort(25)
 {
 
 }
@@ -12,6 +13,22 @@ CMail::~CMail()
 
 bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 {
+	if(pszConfigFileName == nullptr)
+	{
+		return false;
+	}
+
+	//TODO  获取配置信息
+
+	if(!ConnectMailSvr())
+	{
+		return false;
+	}
+	if(!LogOn())
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -20,11 +37,31 @@ bool CMail::SendNotify()
 
 }
 
+bool CMail::ConnectMailSvr()
+{
+	if(0 == strlen(m_szEmailSvrName))
+	{
+		return false;
+	}	
+	struct hostent *host = gethostbyname(m_szEmailSvrName);
+	if(nullptr == host)
+	{
+		return false;
+	}
+	char szTmp[32] = { 0 };;
+	if(host->h_addrtype == AF_INET)
+	{
+		inet_ntop(host->h_addrtype, host->h_addr_list[0],szTmp, sizeof(szTmp));
+	}
+	
+	return Connect(szTmp, m_nPort);
+	
+	return true;
+}
 
 
 bool CMail::LogOn()
 {
-
 	char szTmp[1024] = {0};
 	sprintf(szTmp, "HELO []\r\n");
 	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
@@ -65,6 +102,11 @@ bool CMail::LogOut()
 
 bool CMail::SendMail(std::vector<std::string>& listContactor,const char* pszMailTxt)
 {
+	if(pszMailTxt == nullptr)
+	{
+		return false;
+	}
+
 	return true;
 }
 
