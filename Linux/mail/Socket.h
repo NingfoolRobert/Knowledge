@@ -1,3 +1,5 @@
+#pragma once 
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
@@ -47,4 +49,4 @@ public:
 
 private:
 	int		m_fd;		//Socket handle 
-}
+};
