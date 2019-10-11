@@ -12,7 +12,7 @@ CSocket:: ~CSocket()
 
 }
 
-bool CSocket::Create(int domain/* = AF_INET*/, int nSocketType/*=SOCK_STREAM*/, int nProtocol/* = 0*/)
+bool CSocket::Create(int domain/* = AF_INET*/, int nSocketType/*=SOCK_STREAM*/, int nProtocol/* = IPPROTO_TCP*/)	//当nProtocol = IPPROTO_IP 时选择默认值
 {
 	m_fdSocket = socket(domain,nSocketType,nProtocol);
 	if(m_fdSocket <= 0)
