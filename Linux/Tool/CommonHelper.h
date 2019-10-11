@@ -12,3 +12,5 @@
 bool GetAllFileName(const char* pszPathName, std::vector<std::string>& listFileName, bool bRcv = false);
 
 
+bool Char2Base64(char* pszBuf64, const char* pszSrc,int nLen);
+
