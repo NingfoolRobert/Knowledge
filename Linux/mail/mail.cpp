@@ -24,6 +24,37 @@ bool CMail::OnNotify()
 
 bool CMail::LogOn()
 {
+
+	char szTmp[1024] = {0};
+	sprintf(szTmp, "HELO []\r\n");
+	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
+	{
+		return false;
+	}
+	//Recv Data;
+	char szRecv[1024]= {0};
+	//Recv Data;
+	if(strncmp(szRecv,"250", 3) != 0)
+	{
+		return false;
+	}
+	memset(szTmp,0,sizeof(szTmp));
+	sprintf(szTmp, "AUTH LOGIN\r\n");
+	if(!SendNotifyInfo(szTmp,strlen(szTmp)))
+	{
+		return false;
+	}
+	//RecvData;
+	memset(szRecv, 0, sizeof(szRecv));
+	//RecvData;
+	if(strncmp(szRecv, "334", 3) != 0)
+	{
+		return false;
+	}
+	
+	
+	
+	
 	return true;
 }
 
@@ -39,13 +70,62 @@ bool CMail::SendMail(std::vector<std::string>& listContactor,const char* pszMail
 
 
 
-bool CMail::SendEmailHead()	//放邮件头部信息
+bool CMail::SendEmailHead(std::vector<std::string> &listContactor)	//放邮件头部信息
 {
+	char szTmp[1024] = { 0 };
+
+	strcat(szTmp, "MAIL FROM:<");
+	for(int i = 0; i < listContactor.size(); ++i)
+	{
+		strcat(szTmp, listContactor[i].c_str());		//当心溢出 
+	}
+	
+	strcat(szTmp, ">\r\n");
+
+	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
+	{
+		return false;
+	}
+	//Recv Data;
+
+	memset(szTmp, 0, sizeof(szTmp));
+	
+	sprintf(szTmp,"RCPT TO:<%s>\r\n", m_szDefaultSendMail);
+	
+	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
+	{
+		return false;
+	}
+	//Recv Data;
+	
+	memset(szTmp, 0, sizeof(szTmp));
+	
+	memcpy(szTmp, "DATA\r\n", strlen("DATA\r\n"));
+
+	if(!SendNotifyInfo(szTmp,strlen(szTmp)))
+	{
+		return false;
+	}
+	//Recv Data;
+
+	memset(szTmp, 0, sizeof(szTmp));
+	
+
 	return true;
 }
 
-bool CMail::SendEmailBody()	//发送文本信息
+bool CMail::SendEmailBody(const char* pszMailTxt, int nLen)	//发送文本信息
 {
+
+	char szTmp[2048] ={0};
+	
+	sprintf(szTmp, "--INVT\r\nContent-Type: text/plain;\r\n charset=\"gb2312\"\r\n\r\n%s\r\n\r\n",pszMailTxt);
+	
+	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -56,5 +136,13 @@ bool CMail::SendAttachment()	//发送附件
 
 bool CMail::SendEmailEnd()	//发送邮件结束信息 
 {
+	char szTmp[1024]={0};
+	sprintf(szTmp, "--INVT--\r\n.\r\n");
+	
+	SendNotifyInfo(szTmp, strlen(szTmp));
+	
+	sprintf(szTmp, "QUIT\r\n");
+	SendNotifyInfo(szTmp, strlen(szTmp));
+
 	return true;
 }

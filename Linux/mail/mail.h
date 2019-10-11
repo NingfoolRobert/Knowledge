@@ -3,6 +3,7 @@
 //#include "Socket.h"
 #include "Notify.h"
 
+
 class CMail : public CNotify
 {
 public:
@@ -26,11 +27,13 @@ public:
 protected:
 	bool SendEmailHead();	//放邮件头部信息
 	
-	bool SendEmailBody();	//发送文本信息
+	bool SendEmailBody(const char* pszMailTxt, int nLen);	//发送文本信息
 	
 	bool SendAttachment();	//发送附件
 
 	bool SendEmailEnd();	//发送邮件结束信息 
+	
+	bool GeneratNotifyInfo(std::string& pstr,LogWarning* pWarnInfo);		//	生成报警文本信息
 
 protected:
 	char		m_szUserName[64];			//账户名

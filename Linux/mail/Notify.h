@@ -1,13 +1,41 @@
 #pragma once 
 
 #include "Socket.h"
+#include <sys/time.h>
+#include <time.h>
 
 
+
+/////////////////////////////////////////////////////
+
+#define BUFLEN_USERNAME   20
+#define BUFLEN_EMAIL	  36
+
+enum emITUint
+{
+	CICC_IT_UINT_TYPE_ETL,			//ETL 项目组
+	
+
+	CICC_IT_UINY_TYPE_SUM
+}
+
+
+typedef struct stContactorInfo
+{
+	char	szName[BUFLEN_USERNAME];
+	char	szEmail[BUFLEN_EMAIL];
+	int		nDepartment;		//
+	int		nNo;				//工号 
+}CONTACTORINFO,*PCONTACTORINFO;
+
+//////////////////////////////////////////////////////
 class CNotify
 {
 public:
 	CNotify();
+
 	virtual ~CNotify();
+
 public:
 	virtual bool OnIntialUpdate(const char* pszConfigFileName);
 
@@ -15,8 +43,8 @@ public:
 
 	virtual bool SendNotify();
 
-public:
-	
+	virtual bool OnTimeout(struct tm* pTime);
+
 protected:
 	bool Connect(const char* pszAddr, int nPort);
 

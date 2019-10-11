@@ -2,11 +2,24 @@
 
 #include "Notify.h"
 
+CNotify::CNotify()
+{
+}
 
+CNotify::~CNotify()
+{
+	
+}
 
 
 bool CNotify::OnIntialUpdate(const char* pszConfigFileName)
 {
+	return true;
+}
+
+bool CNotify::OnTimeout(struct tm* pTime)
+{
+	
 	return true;
 }
 
