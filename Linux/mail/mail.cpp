@@ -15,7 +15,7 @@ bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 	return true;
 }
 
-bool CMail::OnNotify()
+bool CMail::SendNotify()
 {
 
 }
@@ -131,6 +131,8 @@ bool CMail::SendEmailBody(const char* pszMailTxt, int nLen)	//发送文本信息
 
 bool CMail::SendAttachment()	//发送附件
 {
+	//TODO 
+	
 	return true;
 }
 

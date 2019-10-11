@@ -12,7 +12,7 @@ public:
 public:
 	virtual bool OnIntialUpdate(const char* pszConfigFileName);
 
-	virtual bool OnNotify();
+	virtual bool SendNotify();
 public:
 	
 	bool GetRecvMailAddr(std::vector<std::string>& listRecvMailContactor);
