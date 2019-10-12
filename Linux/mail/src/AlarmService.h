@@ -1,16 +1,14 @@
 
 #pragma once 
 #include "Service.h"
-//#include "CICCLog.h"
 #include "Log.h"
-
-
+#include "NotifyMgr.h"
 
 class CAlarmService : public CService 
 {
 public:
-	CAlarmService() = default;
-	virtual ~CAlarmService() = default;
+	CAlarmService();
+	virtual ~CAlarmService();
 
 public:
 	virtual bool OnInitialUpdate();
@@ -23,11 +21,11 @@ public:
 	
 	virtual bool OnTerminate();
 	
-
 public:
-	
+		
 private:
-	
+	CNotifyMgr*		m_pNotify;	//通知管理类
+	int				m_nPort;	//监听端口号 
 };
 
-
+extern class CAlarmService*	g_CIAlarmService;

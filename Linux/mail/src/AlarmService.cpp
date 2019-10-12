@@ -1,21 +1,34 @@
 
 #include "AlarmService.h"
 
+class CAlarmService* g_CIAlarmService = nullptr;
 
+CAlarmService::CAlarmService()
+{
+	m_pNotify = nullptr;
+	g_CIAlarmService = this;
+	m_nPort = 30030;
+}
 
+CAlarmService::~CAlarmService()
+{
+
+}
 
 bool CAlarmService::OnInitialUpdate()
 {
 	__LOGINIT__;	
 
-	LogInfo("Initial Success");
+	LogInfo("Init Service...");
+	
+	
 	
 	return true;
 }
 
 bool CAlarmService::OnTimeout(struct tm* pTime)
 {
-	
+		
 	LogInfo("OnTimeOut...");
 
 	return true;
@@ -35,7 +48,12 @@ bool CAlarmService::InvokeTerminate()
 
 bool CAlarmService::OnTerminate()
 {
-	LogInfo("OnTerminate...");
+	if(m_pNotify)
+	{
+		delete m_pNotify;
+		m_pNotify = nullptr;
+	}
+	LogInfo("Service Stop...");
 	return true;
 }
 
