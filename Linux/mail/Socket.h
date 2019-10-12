@@ -1,3 +1,5 @@
+#pragma once 
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
@@ -6,6 +8,8 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <fcntl.h>
+#include <netdb.h>
+#include <arpa/inet.h>
 
 
 
@@ -47,4 +51,4 @@ public:
 
 private:
 	int		m_fd;		//Socket handle 
-}
+};

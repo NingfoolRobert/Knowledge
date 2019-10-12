@@ -9,6 +9,28 @@
 
 #define TIMER_PRECISION			100		//100毫秒
 
+int CompTimeOut(PTIMERHEADER pTimer)
+{
+	if(nullptr == pTimer)
+		return 0;
+	struct timeval tv;
+	gettimeofday(&timeval, NULL);
+	
+	if(pTimer->unInterSec < tv.tv_sec)
+	{
+		return 1;
+	}
+	else if(pTimer->unInterSec == pTimer->unInterSec)
+	{
+		if(pTimer->unInterUSec <= tv.tv_usec / 1000)
+			return 1;
+		else 
+			return -1;
+	}
+	else 
+		return -1;
+}
+
 static void ActiveTimer(CActiveObject* pObj)
 {
 	if(pObj == nullptr)
@@ -21,8 +43,11 @@ static void ActiveTimer(CActiveObject* pObj)
 	struct tm* pTime ;
 	localtime_r(&tNow, pTime);
 	TIMERHEADER stTime = m_TimerTask.front();
+//
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+	//
 	
-
 }
 
 void  CActiveObject::TimerThread(CActiveObject* pObj)
