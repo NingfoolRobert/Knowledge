@@ -1,5 +1,7 @@
 #include "mail.h"
-
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 
 CMail::CMail():m_nPort(25)
@@ -41,16 +43,16 @@ bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 		string SenderSimpleName = root["mailSvr"]["SenderSimpleName"].asString();
 	
 		string SenderEmail = root["mailSvr"]["SenderEmail"].asString();
-		memcpy(m_szDefaultSendMail,SenderEmail.c_str(), SenderEmail.Length());
+		memcpy(m_szDefaultSendMail,SenderEmail.c_str(), SenderEmail.length());
 		
 		string strAccount = root["mailSvr"]["Account"].asString();
-		memcpy(m_szUserName, strAccount.c_str(), strAccount.Length());
+		memcpy(m_szUserName, strAccount.c_str(), strAccount.length());
 		
 		string strSecret  = root["mailSvr"]["Secret"].asString();
-		memcpy(m_szSecret, strSecret.c_str(), strSecret.Length());
+		memcpy(m_szSecret, strSecret.c_str(), strSecret.length());
 
 		string strEmailSvrName  = root["mailSvr"]["Name"].asString();
-		memcpy(m_szEmailSvrName, strEmailSvrName.c_str(), strEmailSvrName.Length());
+		memcpy(m_szEmailSvrName, strEmailSvrName.c_str(), strEmailSvrName.length());
 		m_nPort = root["mailSvr"]["Port"].asInt();
 		
 	}
@@ -73,7 +75,7 @@ bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 
 bool CMail::SendNotify()
 {
-
+	return true;
 }
 
 bool CMail::ConnectMailSvr()

@@ -43,7 +43,7 @@ public:
 
 	bool GetPeerName(struct sockaddr* PeerSockAddr, socklen_t* nAddrLen);
 
-	bool SetSockOpt(int nLevel, int nOptanme, const void* Optval, socklen_t* pOptLen);
+	bool SetSockOpt(int nLevel, int nOptanme, const void* Optval, socklen_t pOptLen);
 	
 	bool GetSockOpt(int nLevel, int OptName, void* Optval,socklen_t* pOptLen);
 	

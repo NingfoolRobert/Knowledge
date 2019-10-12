@@ -1,4 +1,6 @@
 #include "Socket.h"
+#include <memory>
+#include <string.h>
 
 CSocket::CSocket()
 {
@@ -9,7 +11,7 @@ CSocket::~CSocket()
 	Close();
 }
 
-int  CSocket::Create(int nDomain/* = AF_INET*/, int nSockType = /*SOCK_STREAM*/, int nProtocol/* = IPPROTO_IP*/)
+int  CSocket::Create(int nDomain/* = AF_INET*/, int nSockType/* = SOCK_STREAM*/, int nProtocol/* = IPPROTO_IP*/)
 {
 	m_fd = socket(nDomain, nSockType, nProtocol);
 	if(m_fd  < 0)
@@ -20,7 +22,7 @@ int  CSocket::Create(int nDomain/* = AF_INET*/, int nSockType = /*SOCK_STREAM*/,
 	return m_fd;
 }
 
-bool CSocket::Bind(int nHostPort/* = 0*/, const char* pszHostAddress = /*nullptr*/)
+bool CSocket::Bind(int nHostPort/* = 0*/, const char* pszHostAddress/* = nullptr*/)
 {
 	struct sockaddr_in SvrAddr;
 	memset(&SvrAddr, 0, sizeof(SvrAddr));
@@ -30,7 +32,7 @@ bool CSocket::Bind(int nHostPort/* = 0*/, const char* pszHostAddress = /*nullptr
 	if(pszHostAddress == nullptr)
 		SvrAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	else 
-		SvrAddr.sin_addr.s_addr = inet_addr(pszAddress);
+		SvrAddr.sin_addr.s_addr = inet_addr(pszHostAddress);
 	//
 	SvrAddr.sin_port = htons(nHostPort);
 
@@ -54,9 +56,9 @@ bool CSocket::Listen(int nListenCount/* = 10*/)
 int CSocket::Accept()
 {
 	struct sockaddr_in  ClientAddr;
-	memset(ClientAddr, 0, sizeof(ClientAddr));
+	memset(&ClientAddr, 0, sizeof(ClientAddr));
 
-	int sockLen = sizeof(ClientAddr);
+	socklen_t sockLen = sizeof(ClientAddr);
 
 	int fdClient = accept(m_fd, (struct sockaddr*)&ClientAddr,&sockLen);
 	if(fdClient == -1)
@@ -71,7 +73,7 @@ bool CSocket::Connect(const char* pszAddress, int nPort)
 		return false;
 	
 	struct sockaddr_in SvrAddr;
-	memset(&SvrAddr, 0, sizoef(SvrAddr));
+	memset(&SvrAddr, 0, sizeof(SvrAddr));
 
 	SvrAddr.sin_family = AF_INET;
 	SvrAddr.sin_addr.s_addr = inet_addr(pszAddress);
@@ -90,7 +92,7 @@ bool CSocket::Recv(char* pszBuf, int nBufLen)
 	int nRead = 0;
 	while(true)
 	{
-		nRead= read(m_fd, pszBuf + nRecved, nBufLen - nReved);
+		nRead= read(m_fd, pszBuf + nRecved, nBufLen - nRecved);
 		if(nRead == 0)
 			break;
 		else if(nRead < 0)
@@ -126,7 +128,7 @@ bool CSocket::Send(const char* pszBuf, int nBufLen)
 		}
 
 		nSended += nSend;
-	}while(nSend < nBufLen);
+	}while(nSended < nBufLen);
 
 	
 	return true;
@@ -144,7 +146,12 @@ void CSocket::Close()
 
 bool CSocket::Attach(int nfd)
 {
+	if(!nfd)
+	{
+		return false;
+	}
 	m_fd = nfd;
+	return true;
 }
 
 int  CSocket::Detach()
@@ -162,16 +169,16 @@ bool CSocket::GetSockName(struct sockaddr* LocalSockaddr, socklen_t* nAddrLen)
 
 bool CSocket::GetPeerName(struct sockaddr* PeerSockAddr, socklen_t* nAddrLen)
 {
-	if(nullptr == LocalSockaddr || nullptr == nAddrLen)
+	if(nullptr == PeerSockAddr || nullptr == nAddrLen)
 		return false;
 	int nRet = getpeername(m_fd, PeerSockAddr, nAddrLen);
 
 	return 0 == nRet;
 }
 
-bool CSocket::SetSockOpt(int nLevel, int nOptanme, const void* Optval, socklen_t* pOptLen)
+bool CSocket::SetSockOpt(int nLevel, int nOptanme, const void* Optval, socklen_t OptLen)
 {
-	int nRet = setsockopt(m_fd, nLevel, nOptanme, Optval, pOptLen);
+	int nRet = setsockopt(m_fd, nLevel, nOptanme, Optval, OptLen);
 	
 	return 0 == nRet;
 }

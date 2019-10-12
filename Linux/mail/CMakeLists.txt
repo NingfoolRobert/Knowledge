@@ -1,7 +1,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-project(TestJson)
+project(AlarmService)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -16,14 +16,19 @@ set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/bin")
 
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include/CICCTools)
+
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 link_libraries(${PROJECT_SOURCE_DIR}/lib)
 
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/src  SRC)
+AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/CICCTools libSrc)
 
-add_executable(${PROJECT_NAME}  ${SRC})
+add_executable(${PROJECT_NAME}  
+								${SRC}
+					 			${libSrc})
 target_link_libraries(${PROJECT_NAME}
 						
-						libjsoncpp.a
+					 	libjsoncpp.a
 
 						)

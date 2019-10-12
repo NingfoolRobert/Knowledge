@@ -31,7 +31,7 @@ public:
 protected:
 	bool ConnectMailSvr();
 
-	bool SendEmailHead();	//放邮件头部信息
+	bool SendEmailHead(std::vector<std::string> &listContactor);	//放邮件头部信息
 	
 	bool SendEmailBody(const char* pszMailTxt, int nLen);	//发送文本信息
 	
