@@ -1,0 +1,5 @@
+
+include			//include文件存放地方
+lib				//库文件存放地方
+src				//具体具体代码文件库
+
