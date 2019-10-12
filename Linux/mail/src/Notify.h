@@ -1,6 +1,8 @@
 #pragma once 
 
 #include "Socket.h"
+#include "json/json.h"
+
 #include <sys/time.h>
 #include <time.h>
 #include <string>

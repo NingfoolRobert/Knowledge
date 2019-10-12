@@ -1,6 +1,9 @@
 
 
 #include "Notify.h"
+#include <fstream>
+#include <ostream>
+
 
 CNotify::CNotify()
 {
@@ -15,8 +18,39 @@ CNotify::~CNotify()
 
 bool CNotify::OnIntialUpdate(const char* pszConfigFileName)
 {
-	
+	if(pszConfigFileName == nullptr)
+	{
+		return false;
+	}
 
+//	try
+//	{
+//		Json::Reader reader;
+//		Json::Value	root;
+//		
+//		ifstream in(pszConfigFileName, ios::binary);
+//		if(!in.is_open())
+//		{
+//			//TODO open fail 
+//			return false;
+//		}
+//		if(reader.parse(in, root))
+//		{
+//			if(!root.isMember("mailSvr"))
+//			{
+//				//TODO  
+//				return false;
+//			}
+//			string strmail = root["mailSvr"].asString();
+//			
+//			
+//		}
+//	}
+//	catch()
+//	{
+//
+//	}
+//
 	//初始化网络
 	m_pSocket = new CSocket();
 	if(m_pSocket == nullptr)

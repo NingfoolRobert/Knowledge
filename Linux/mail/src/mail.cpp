@@ -1,6 +1,7 @@
 #include "mail.h"
 
 
+
 CMail::CMail():m_nPort(25)
 {
 
@@ -13,12 +14,50 @@ CMail::~CMail()
 
 bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 {
-	if(pszConfigFileName == nullptr)
+	if(!CNotify::OnIntialUpdate(pszConfigFileName))
 	{
 		return false;
 	}
 
+	
 	//TODO  获取配置信息
+	try
+	{
+		ifstream in(pszConfigFileName,ios::binary);
+		if(!in.is_open())
+		{
+			return false;
+		}
+	
+		Json::Reader reader;
+		Json::Value	 root;
+		
+		reader.parse(in, root);
+		
+		if(!root.isMember("mailSvr"))
+		{
+			return false;
+		}
+		string SenderSimpleName = root["mailSvr"]["SenderSimpleName"].asString();
+	
+		string SenderEmail = root["mailSvr"]["SenderEmail"].asString();
+		memcpy(m_szDefaultSendMail,SenderEmail.c_str(), SenderEmail.Length());
+		
+		string strAccount = root["mailSvr"]["Account"].asString();
+		memcpy(m_szUserName, strAccount.c_str(), strAccount.Length());
+		
+		string strSecret  = root["mailSvr"]["Secret"].asString();
+		memcpy(m_szSecret, strSecret.c_str(), strSecret.Length());
+
+		string strEmailSvrName  = root["mailSvr"]["Name"].asString();
+		memcpy(m_szEmailSvrName, strEmailSvrName.c_str(), strEmailSvrName.Length());
+		m_nPort = root["mailSvr"]["Port"].asInt();
+		
+	}
+	catch(...)
+	{
+
+	}
 
 	if(!ConnectMailSvr())
 	{
@@ -53,10 +92,7 @@ bool CMail::ConnectMailSvr()
 	{
 		inet_ntop(host->h_addrtype, host->h_addr_list[0],szTmp, sizeof(szTmp));
 	}
-	
 	return Connect(szTmp, m_nPort);
-	
-	return true;
 }
 
 
