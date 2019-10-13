@@ -4,7 +4,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <time.h>
-
+#include "Log.h"
 
 class CService
 {

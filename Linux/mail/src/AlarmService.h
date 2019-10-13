@@ -1,7 +1,6 @@
 
 #pragma once 
 #include "Service.h"
-#include "Log.h"
 #include "NotifyMgr.h"
 
 class CAlarmService : public CService 

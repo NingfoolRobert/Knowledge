@@ -61,4 +61,6 @@ protected:
 
 private:
 	CSocket*  m_pSocket;
+	int			m_nType;			//Notify Type 
+
 };

@@ -17,7 +17,6 @@ CAlarmService::~CAlarmService()
 
 bool CAlarmService::OnInitialUpdate()
 {
-	__LOGINIT__;	
 
 	LogInfo("Init Service...");
 	

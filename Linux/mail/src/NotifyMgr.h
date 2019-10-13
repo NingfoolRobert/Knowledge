@@ -11,6 +11,8 @@ public:
 public:
 	bool Init(const char* pszConfigPath);
 	
+	bool UpdateConfig(const char* pszConfigFileName);
+
 	bool Send(const char* pszWarnInfo);
 	
 	bool Add(CNotify* pNotify);
@@ -19,7 +21,7 @@ public:
 
 private:
 
-	CICCTools::CiccAtomLock		m_clsLock;
+	CICCTools::AtomLock		m_clsLock;
 	std::vector<CNotify*>		m_listNotify;	
 };
 
