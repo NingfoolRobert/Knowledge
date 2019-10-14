@@ -111,6 +111,13 @@ bool CMail::SendNotify()
 	return true;
 }
 
+bool CMail::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo)
+{
+	if(nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo))
+		return false;
+	return true;
+}
+
 bool CMail::ConnectMailSvr()
 {
 	if(0 == strlen(m_szEmailSvrName))
@@ -260,4 +267,16 @@ bool CMail::SendEmailEnd()	//发送邮件结束信息
 	SendNotifyInfo(szTmp, strlen(szTmp));
 
 	return true;
+}
+std::string  CMail::GenMailReciver(std::vector<CONTACTORPtr>& listContactor)
+{
+	std::string str;
+
+	auto it = listContactor.rend();
+	for(; it != listContactor.rbegin(); --it)
+	{
+		str += *it->szName + "<" + *it->szEmail +">";
+	}
+
+	return str;
 }

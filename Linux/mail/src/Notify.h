@@ -8,6 +8,7 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include "Contactor.h"
 
 
 /////////////////////////////////////////////////////
@@ -49,6 +50,7 @@ public:
 
 	virtual bool OnTimeout(struct tm* pTime);
 
+	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo);
 protected:
 	bool Connect(const char* pszAddr, int nPort);
 

@@ -38,9 +38,17 @@ bool CNotify::OnIntialUpdate(const char* pszConfigFileName)
 	return true;
 }
 
-bool CNotify::OnTimeout(struct tm* pTime)
+
+bool CNotify::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo)
 {
-	
+	if(nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo))
+		return false;
+	return true;
+}
+  
+
+bool CNotify::OnTimeout(struct tm* pTime)
+{	
 	return true;
 }
 
