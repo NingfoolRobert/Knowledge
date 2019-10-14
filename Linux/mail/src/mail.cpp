@@ -115,6 +115,31 @@ bool CMail::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarn
 {
 	if(nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo))
 		return false;
+	std::string strRecvier = GenMailReciver(listContactor);
+	if(0 == strRecvier.length())
+	{
+
+		LogWarn("Recvier Count: %d", listContactor.size());
+		return false;
+	}
+
+	return true;
+}
+
+bool CMail::SendEmail(std::string strRecvier, const char* pszWarnInfo)
+{
+	if( 0 == strRecvier.length() || nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo) )
+		return false;
+
+	//Email head;
+	
+	//email body 
+	
+	//email end 
+	
+
+
+
 	return true;
 }
 
@@ -244,7 +269,7 @@ bool CMail::SendEmailBody(const char* pszMailTxt, int nLen)	//发送文本信息
 	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
 	{
 		return false;
-	}
+	}	
 
 	return true;
 }
@@ -273,9 +298,12 @@ std::string  CMail::GenMailReciver(std::vector<CONTACTORPtr>& listContactor)
 	std::string str;
 
 	auto it = listContactor.rend();
+	auto pUser = *it;
 	for(; it != listContactor.rbegin(); --it)
 	{
-		str += *it->szName + "<" + *it->szEmail +">";
+		std::string strName = pUser->szName;
+		std::string strEmail = pUser->szEmail;
+		str += strName + "<" + strEmail +">" + ";";
 	}
 
 	return str;

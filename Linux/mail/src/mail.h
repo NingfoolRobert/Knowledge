@@ -17,10 +17,10 @@ public:
 
 	virtual bool SendNotify();
 
-	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo);
-	
+	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo);	
 public:
 	
+	bool SendEmail(std::string strRecvier, const char* pszWarnInfo);
 //	bool GetRecvMailAddr(std::vector<std::string>& listRecvMailContactor);
 
 public:
