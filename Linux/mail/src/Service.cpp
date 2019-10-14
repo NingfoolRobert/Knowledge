@@ -51,14 +51,14 @@ void TimerHandle(int sino)
 
 CService::CService()
 {	
-	m_bStop = false;
+//	m_bStop = false;
 	g_Service = this;
 	m_tStart = time(nullptr);
 }
 
 CService::~CService()
 {
-	Terminate();
+//	Terminate();
 }
 
 bool CService::Execute(const char* pszFileName /*= ""*/, int nLine/*= 0*/)
@@ -88,22 +88,23 @@ bool CService::Execute(const char* pszFileName /*= ""*/, int nLine/*= 0*/)
 	{
 		return -1;
 	}
-	
+	m_bStop = false;	
 	while(!m_bStop);
 	{
-	//	pause();
 		;
 //		select(0,NULL,NULL,NULL,)
 	}
-	Terminate();
+	//Terminate();
+	InvokeTerminate();
+	OnTerminate();
 	return true;
 }
 
 //
 void CService::Terminate()
 {
-	InvokeTerminate();
+//	InvokeTerminate();
 	m_bStop = true;
-	OnTerminate();
+//	OnTerminate();
 	LogInfo("Service Stop....");
 }
