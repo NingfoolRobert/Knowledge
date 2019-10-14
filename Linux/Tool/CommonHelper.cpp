@@ -1,4 +1,7 @@
 #include "CommonHelper.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <iostream>
 
 
 
@@ -49,7 +52,7 @@ bool Char2Base64(char* pszBuf64, const char* pszSrc,int nLen)
 	int nIndex = 0;
 
 	char n = 0;		//上一源字符的残留值
-	for(int i = 0; i < nLen, ++i)
+	for(int i = 0; i < nLen; ++i)
 	{
 		if(nPoint == 2)
 		{
@@ -95,3 +98,25 @@ bool Char2Base64(char* pszBuf64, const char* pszSrc,int nLen)
 
 	return true;
 }
+
+
+
+bool GetFileTime(const char* pszFileName, time_t &lCreateTime, time_t& lModifyTime, time_t& lAccessTime)
+//bool GetFileTime(const char* pszFileName, long &lCreateTime, long& lModifyTime, long& lAccessTime)
+{
+	if(nullptr == pszFileName || 0 == strlen(pszFileName))
+		return false;
+	FILE* pFile = fopen(pszFileName,"r");
+	if(nullptr == pFile)
+		return false;
+	struct stat buf;
+	int fd = fileno(pFile);
+	fstat(fd, &buf);
+	
+	lCreateTime = buf.st_ctime;
+	lModifyTime = buf.st_mtime;
+	lAccessTime = buf.st_atime;
+
+	return true;
+}
+

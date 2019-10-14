@@ -14,3 +14,6 @@ bool GetAllFileName(const char* pszPathName, std::vector<std::string>& listFileN
 
 bool Char2Base64(char* pszBuf64, const char* pszSrc,int nLen);
 
+
+bool GetFileTime(const char* pszFileName, time_t &lCreateTime, time_t& lModifyTime, time_t& lAccessTime);
+
