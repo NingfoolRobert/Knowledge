@@ -2,11 +2,16 @@
 
 CNotifyMgr::CNotifyMgr()
 {
-
+	m_pContactor = nullptr;
 }
 
 CNotifyMgr::~CNotifyMgr()
 {
+	if(m_pContactor)
+	{
+		delete m_pContactor;
+		m_pContactor = nullptr;
+	}
 
 }
 

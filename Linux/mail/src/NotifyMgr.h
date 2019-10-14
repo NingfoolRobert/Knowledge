@@ -2,6 +2,8 @@
 
 #include "Notify.h"
 #include "CiccAtomLock.h"
+#include "Contactor.h"
+
 class CNotifyMgr 
 {
 public:
@@ -9,6 +11,7 @@ public:
 	virtual ~CNotifyMgr();
 
 public:
+
 	bool Init(const char* pszConfigPath);
 	
 	bool UpdateConfig(const char* pszConfigFileName);
@@ -21,8 +24,9 @@ public:
 
 private:
 
-	CICCTools::AtomLock		m_clsLock;
+	CICCTools::AtomLock			m_clsLock;
 	std::vector<CNotify*>		m_listNotify;	
+	CContactor*					m_pContactor;
 };
 
 

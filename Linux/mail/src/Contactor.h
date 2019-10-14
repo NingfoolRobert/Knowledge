@@ -41,7 +41,12 @@ typedef struct stContactor
 
 	int		nLevel;
 	std::vector<std::string>  listFocus;
-
+	stContactor()
+	{
+		memset(szName, 0, sizeof(szName));
+		memset(szEmail, 0, sizeof(szEmail));
+		listFocus.clear();
+	}
 	stContactor(int _nNo, const char* pszName, const char* pszEmail, int _nDepartment):nNO(_nNo),nDepartment(_nDepartment)
 	{
 		strcpy(szName,  pszName);
@@ -59,15 +64,13 @@ typedef struct stContactor
 	}
 	bool isNotify(int nLvl)
 	{
-		if(nLevel <  nLvl)
+		if(nLevel <=  nLvl)
 			return true;
 		return false;
 	}
 }CONTACTORINFO,*PCONTACTORINFO;
 
 typedef std::shared_ptr<CONTACTORINFO> CONTACTORPtr;
-
-
 
 
 class CContactor
@@ -78,7 +81,7 @@ public:
 public:
 	bool Init(const char* pszFileName);
 
-	bool GetNotifyObj(std::vector<CONTACTORPtr>& listNotifyObj, int nAlarmLevel, std::string strType);
+	bool GetNotifyList(std::vector<CONTACTORPtr>& listNotifyObj, int nAlarmLevel, std::string strType);
 
 	bool Add(PCONTACTORINFO pInfo);
 
@@ -86,13 +89,17 @@ public:
 
 	bool OnTimeout(struct tm* pTime);
 
-	PCONTACTORINFO  Find(PCONTACTORINFO pUser);
+	CONTACTORPtr  Find(PCONTACTORINFO pUser);
 	
 	void GetNotifyUser(const char* pszConfigureName);
-	
 
+protected:
+	bool  UpdateContactorInfo();
 private:
+	char												m_szContactorFileName[256];
+	time_t												m_tLastModifyTime;
+
 	CICCTools::AtomLock									m_clsLock;	
 	std::unordered_map<int, CONTACTORPtr>				m_listContactor;
-	std::map<std::string, std::vector<CONTACTORPtr> >	m_mapContactor;
+	std::map<std::string, std::vector<CONTACTORPtr>* >	m_mapContactor;
 };
