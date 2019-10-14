@@ -152,14 +152,15 @@ bool CContactor::OnTimeout(struct tm* pTime)
 {
 	if(nullptr == pTime)
 		return false;
-	time_t lModifyTime;
-	time_t lChangTime;
-	time_t lAccessTime;
-	if(GetFileTime(m_szContactorFileName, lChangTime, lModifyTime, lAccessTime))
+	time_t tModifyTime;
+	time_t tChangTime;
+	time_t tAccessTime;
+
+	if(CommonHelper::GetFileTime(m_szContactorFileName, tChangTime, tModifyTime, tAccessTime))
 	{
-		if(lModifyTime != m_tLastModifyTime)
+		if(tModifyTime != m_tLastModifyTime)
 		{
-			m_tLastModifyTime = lModifyTime;
+			m_tLastModifyTime = tModifyTime;
 			// Update ContactorInfo;
 			UpdateContactorInfo();
 		}
@@ -227,7 +228,7 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 				char szTmp[128] = { 0 };
 				strcpy(szTmp, pFocus->Attribute("Type"));
 				if(strlen(szTmp) != 0)
-					stUser.list Focus.push_back(pFocus->Attribute("Type"));
+					stUser.listFocus.push_back(pFocus->Attribute("Type"));
 			}
 			Add(&stUser);
 		}
@@ -241,7 +242,7 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 bool  CContactor::UpdateContactorInfo()
 {
 	AtomLockRegion locker(&m_clsLock);
-	bool nRet =	GetNotifyObj(m_szContactorFileName);
-	return bRet;
+	GetNotifyUser(m_szContactorFileName);
+	return true;
 }
 

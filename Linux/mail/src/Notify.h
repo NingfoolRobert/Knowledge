@@ -2,7 +2,7 @@
 
 #include "Socket.h"
 #include "json/json.h"
-
+#include "Log.h"
 #include <sys/time.h>
 #include <time.h>
 #include <string>
@@ -10,12 +10,11 @@
 #include <vector>
 
 
-
 /////////////////////////////////////////////////////
 
 #define BUFLEN_USERNAME   20
 #define BUFLEN_EMAIL	  36
-
+#define MAX_PATH		  256
 enum emITUint
 {
 	CICC_IT_UINT_TYPE_ETL,			//ETL 项目组
@@ -25,13 +24,13 @@ enum emITUint
 };
 
 
-typedef struct stContactorInfo
-{
-	char	szName[BUFLEN_USERNAME];
-	char	szEmail[BUFLEN_EMAIL];
-	int		nDepartment;		//
-	int		nNo;				//工号 
-}CONTACTORINFO,*PCONTACTORINFO;
+//typedef struct stContactorInfo
+//{
+//	char	szName[BUFLEN_USERNAME];
+//	char	szEmail[BUFLEN_EMAIL];
+//	int		nDepartment;		//
+//	int		nNo;				//工号 
+//}CONTACTORINFO,*PCONTACTORINFO;
 
 //////////////////////////////////////////////////////
 class CNotify

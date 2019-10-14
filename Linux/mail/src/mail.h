@@ -44,9 +44,10 @@ protected:
 protected:
 	char		m_szUserName[64];			//账户名
 	char		m_szSecret[64];				//账户密码
-	char		m_szDefaultSendMail[64];	//默认发送邮件账户名
+	char		m_szDefaultSendMail[64];	//发件人邮箱地址
+	char		m_szSenderSimpleName[64];	//发件人简称	
 	char		m_szEmailSvrName[64];		//邮件服务器名称
-	int			m_nPort;					// 邮件服务器端口号
+	int			m_nPort;					//邮件服务器端口号
 private:
 	
 };

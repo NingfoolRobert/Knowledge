@@ -5,7 +5,7 @@
 
 
 
-bool GetAllFileName(const char* pszPathName, std::vector<std::string>& listFileName, bool bRcv/* = false*/)
+bool CommonHelper::GetAllFileName(const char* pszPathName, std::vector<std::string>& listFileName, bool bRcv/* = false*/)
 
 //int readFileList(char *basePath)
 {
@@ -40,7 +40,7 @@ bool GetAllFileName(const char* pszPathName, std::vector<std::string>& listFileN
 	return true;							
 }
 
-bool Char2Base64(char* pszBuf64, const char* pszSrc,int nLen)
+bool CommonHelper::Char2Base64(char* pszBuf64, const char* pszSrc,int nLen)
 {
 	if(pszBuf64 == nullptr || pszSrc == nullptr)
 		return false;
@@ -101,8 +101,7 @@ bool Char2Base64(char* pszBuf64, const char* pszSrc,int nLen)
 
 
 
-bool GetFileTime(const char* pszFileName, time_t &lCreateTime, time_t& lModifyTime, time_t& lAccessTime)
-//bool GetFileTime(const char* pszFileName, long &lCreateTime, long& lModifyTime, long& lAccessTime)
+bool CommonHelper::GetFileTime(const char* pszFileName, time_t &lCreateTime, time_t& lModifyTime, time_t& lAccessTime)
 {
 	if(nullptr == pszFileName || 0 == strlen(pszFileName))
 		return false;

@@ -1,6 +1,9 @@
-#include "mail.h"
 #include <iostream>
 #include <fstream>
+
+#include "tinyxml2.h"
+#include "mail.h"
+
 using namespace std;
 
 
@@ -21,44 +24,74 @@ bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 		return false;
 	}
 
-	
-	//TODO  获取配置信息
-	try
+	using namespace tinyxml2;
+	try 
 	{
-		ifstream in(pszConfigFileName,ios::binary);
-		if(!in.is_open())
+		XMLDocument doc;
+		if(doc.LoadFile(pszConfigFileName))
 		{
+			LogError("Load Configure File(%s) fail...", pszConfigFileName);
 			return false;
 		}
 	
-		Json::Reader reader;
-		Json::Value	 root;
-		
-		reader.parse(in, root);
-		
-		if(!root.isMember("mailSvr"))
+		XMLElement* pService = doc.FirstChildElement("AlaramService");
+		if(nullptr == pService)
+		{
+			LogError("Configure file(%s) not find AlaramService Node.", pszConfigFileName);
+			return false;
+		}
+	
+		XMLElement* pNotify = pService->FirstChildElement("Notify");
+		if(nullptr == pNotify)
 		{
 			return false;
 		}
-		string SenderSimpleName = root["mailSvr"]["SenderSimpleName"].asString();
+		strcpy(m_szEmailSvrName, pNotify->Attribute("EmailSvrName"));
+		strcpy(m_szUserName, pNotify->Attribute("Account"));
+		strcpy(m_szSecret, pNotify->Attribute("Secret"));
+		strcpy(m_szDefaultSendMail, pNotify->Attribute("SenderMail"));
+		strcpy(m_szSenderSimpleName, pNotify->Attribute("SimpleName"));
+		
+		m_nPort = atoi(pNotify->Attribute("Port"));
 	
-		string SenderEmail = root["mailSvr"]["SenderEmail"].asString();
-		memcpy(m_szDefaultSendMail,SenderEmail.c_str(), SenderEmail.length());
-		
-		string strAccount = root["mailSvr"]["Account"].asString();
-		memcpy(m_szUserName, strAccount.c_str(), strAccount.length());
-		
-		string strSecret  = root["mailSvr"]["Secret"].asString();
-		memcpy(m_szSecret, strSecret.c_str(), strSecret.length());
-
-		string strEmailSvrName  = root["mailSvr"]["Name"].asString();
-		memcpy(m_szEmailSvrName, strEmailSvrName.c_str(), strEmailSvrName.length());
-		m_nPort = root["mailSvr"]["Port"].asInt();
+	
+//	//TODO  获取配置信息
+//	try
+//	{
+//		ifstream in(pszConfigFileName,ios::binary);
+//		if(!in.is_open())
+//		{
+//			return false;
+//		}
+//	
+//		Json::Reader reader;
+//		Json::Value	 root;
+//		
+//		reader.parse(in, root);
+//		
+//		if(!root.isMember("mailSvr"))
+//		{
+//			return false;
+//		}
+//		string SenderSimpleName = root["mailSvr"]["SenderSimpleName"].asString();
+//	
+//		string SenderEmail = root["mailSvr"]["SenderEmail"].asString();
+//		memcpy(m_szDefaultSendMail,SenderEmail.c_str(), SenderEmail.length());
+//		
+//		string strAccount = root["mailSvr"]["Account"].asString();
+//		memcpy(m_szUserName, strAccount.c_str(), strAccount.length());
+//		
+//		string strSecret  = root["mailSvr"]["Secret"].asString();
+//		memcpy(m_szSecret, strSecret.c_str(), strSecret.length());
+//
+//		string strEmailSvrName  = root["mailSvr"]["Name"].asString();
+//		memcpy(m_szEmailSvrName, strEmailSvrName.c_str(), strEmailSvrName.length());
+//		m_nPort = root["mailSvr"]["Port"].asInt();
 		
 	}
-	catch(...)
+	catch(std::exception e)
 	{
-
+		LogWarn("Parse Configure file(%s) fail...", pszConfigFileName);
 	}
 
 	if(!ConnectMailSvr())
