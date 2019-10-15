@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <time.h>
 #include "Log.h"
+#include "GlobalVar.h"
 
 class CService
 {

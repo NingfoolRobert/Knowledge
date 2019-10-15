@@ -1,3 +1,5 @@
+#pragma once 
+
 #include "GlobalVar.h"
 
 char m_szServiceName[BUFLEN_SERVICE_NAME];

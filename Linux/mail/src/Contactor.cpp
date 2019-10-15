@@ -3,7 +3,26 @@
 #include "tinyxml2.h"
 #include "CommonHelper.h"
 
+int compContactor(const void* arg1, const void* arg2)
+{
+	PCONTACTORINFO pUser1 = (PCONTACTORINFO)arg1;
+	
+	PCONTACTORINFO pUser2 = (PCONTACTORINFO)arg2;
 
+	if(pUser1->nLevel == pUser2->nLevel)
+	{
+		if(pUser1->nNO < pUser2->nNO)
+			return -1;
+		else if(pUser1->nNO == pUser2->nNO)
+			return 0;
+		else 
+			return 1;
+	}
+	else if(pUser1->nLevel < pUser2->nLevel)
+		return -1;
+	else 
+		return 1;
+}
 
 CContactor::CContactor()
 {
@@ -106,6 +125,7 @@ bool CContactor::Add(PCONTACTORINFO pInfo)
 			}
 		}	
 	}
+	sort(m_listContactor.begin(), m_listContactor.end(), compContactor);
 	return true;
 }
 
@@ -137,8 +157,8 @@ bool CContactor::Del(PCONTACTORINFO pInfo)
 				if(pNotify->nNO == pInfo->nNO)
 				{
 					VecContator->erase(itvec++);
-					break;
-				} 
+ 					break;
+ 				} 
 			}
 		}
 		m_listContactor.erase(it);
@@ -228,10 +248,11 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 				char szTmp[128] = { 0 };
 				strcpy(szTmp, pFocus->Attribute("Type"));
 				if(strlen(szTmp) != 0)
-					stUser.listFocus.push_back(pFocus->Attribute("Type"));
+ 					stUser.listFocus.push_back(pFocus->Attribute("Type"));
 			}
 			Add(&stUser);
 		}
+	//	sort(m_listContactor.begin(), m_listContactor.end(), );
 	}
 	catch(std::exception e)
 	{

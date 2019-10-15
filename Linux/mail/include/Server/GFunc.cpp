@@ -19,3 +19,14 @@ bool GlobalEnd()
 	memset(m_szConfigureFileName, 0, sizeof(m_szConfigureFileName));
 	return true;
 }
+
+
+bool GetWorkPath(char* pszWorkPath)
+{
+	char szTmp[MAX_PATH] = { 0 };
+	
+	getcwd(szTmp, MAX_PATH);
+	
+	strcpy(pszWorkPath, szTmp);
+	return true;
+}

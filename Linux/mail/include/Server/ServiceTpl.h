@@ -1,5 +1,7 @@
 #pragma once
 #include <stdio.h>
+#include "GFunc.h"
+
 
 template<class T>
 class CServiceTpl
@@ -11,15 +13,16 @@ public:
 	int Execute(const char* pszServiceName)
 	{
 		T* pService = new T;
-		if(nullptr != pService)
-		{
-			pService->Execute();
-		}
-		else 
+		if(nullptr == pService)
 		{
 			return -1;
 		}
+		if(GlobalBegin(pszServiceName))
+		{
+			pService->Execute();
+		}
 
+		GlobalEnd();
 		//TODO onTerminate;
 		delete pService;
 		return 0;

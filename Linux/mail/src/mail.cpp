@@ -216,7 +216,6 @@ bool CMail::SendMail(std::vector<std::string>& listContactor,const char* pszMail
 
 
 bool CMail::SendEmailHead(std::string strRecvier)
-//bool CMail::SendEmailHead(std::vector<std::string> &listContactor)	//放邮件头部信息
 {
 	char szTmp[1024] = { 0 };
 //
