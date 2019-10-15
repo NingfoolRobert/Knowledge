@@ -1,5 +1,6 @@
 #include "GFunc.h"
 #include <string.h>
+#include <unistd.h>
 
 
 bool GlobalBegin(const char* pszSimpleName)

@@ -3,24 +3,30 @@
 #include "tinyxml2.h"
 #include "CommonHelper.h"
 
+using namespace CICCTools;
 int compContactor(const void* arg1, const void* arg2)
 {
-	PCONTACTORINFO pUser1 = (PCONTACTORINFO)arg1;
+//	unsigned int  pUnValue1 = *(unsigned int* )arg1;
+//	unsigned int  pUnValue2 = *(unsigned int* )arg2;
+//	CONTACTORPtr pUser1 = (CONTACTORPtr)pUnValue1;
 	
-	PCONTACTORINFO pUser2 = (PCONTACTORINFO)arg2;
-
-	if(pUser1->nLevel == pUser2->nLevel)
-	{
-		if(pUser1->nNO < pUser2->nNO)
-			return -1;
-		else if(pUser1->nNO == pUser2->nNO)
-			return 0;
-		else 
-			return 1;
-	}
-	else if(pUser1->nLevel < pUser2->nLevel)
-		return -1;
-	else 
+//	CONTACTORPtr pUser2 = (CONTACTORPtr)pUnValue2;
+//	CONTACTORPtr pUser1 = (CONTACTORPtr)arg1;
+//	
+//	CONTACTORPtr pUser2 = (CONTACTORPtr)arg2;
+//
+//	if(pUser1->nLevel == pUser2->nLevel)
+//	{
+//		if(pUser1->nNO < pUser2->nNO)
+//			return -1;
+//		else if(pUser1->nNO == pUser2->nNO)
+//			return 0;
+//		else 
+//			return 1;
+//	}
+//	else if(pUser1->nLevel < pUser2->nLevel)
+//		return -1;
+//	else 
 		return 1;
 }
 
@@ -125,7 +131,7 @@ bool CContactor::Add(PCONTACTORINFO pInfo)
 			}
 		}	
 	}
-	sort(m_listContactor.begin(), m_listContactor.end(), compContactor);
+//	sort(m_listContactor.begin(), m_listContactor.end(), compContactor);
 	return true;
 }
 
@@ -143,7 +149,7 @@ bool CContactor::Del(PCONTACTORINFO pInfo)
 	else 
 	{
 		CONTACTORPtr pUser = it->second;
-		for(int i = 0; i < pUser->listFocus.size(); ++i)
+		for(size_t i = 0; i < pUser->listFocus.size(); ++i)
 		{
 			std::string strType = pUser->listFocus[i];
 			auto itType = m_mapContactor.find(strType);
