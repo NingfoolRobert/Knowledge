@@ -4,6 +4,14 @@
 #include <fstream>
 #include <ostream>
 
+int compNotify(const void* arg1, const void* arg2)
+{
+	CNotify* pNotify1 = (CNotify*) arg1;
+	CNotify* pNotify2 = (CNotify*)arg2;
+	
+	return (pNotify1->GetNotifyType() - pNotify2->GetNotifyType());
+}
+
 
 CNotify::CNotify()
 {
@@ -16,7 +24,7 @@ CNotify::~CNotify()
 }
 
 
-bool CNotify::OnIntialUpdate(const char* pszConfigFileName)
+bool CNotify::OnInitialUpdate(const char* pszConfigFileName)
 {
 	if(pszConfigFileName == nullptr)
 	{
@@ -51,17 +59,6 @@ bool CNotify::OnTimeout(struct tm* pTime)
 {	
 	return true;
 }
-
-bool CNotify::GetRecvMailAddr(std::vector<std::string>& listRecvMailContactor)
-{
-	return true;
-}
-
-bool CNotify::SendNotify()
-{
-	return true;
-}
-
 
 
 bool CNotify::Connect(const char* pszAddr, int nPort)

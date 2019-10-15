@@ -1,8 +1,11 @@
 #pragma once 
 
-#include "Notify.h"
+#include "mail.h"
 #include "CiccAtomLock.h"
 #include "Contactor.h"
+
+typedef std::shared_ptr<CNotify>  CNotifyPtr;
+
 
 class CNotifyMgr 
 {
@@ -22,11 +25,14 @@ public:
 
 	bool Del(CNotify* pNotify);
 
-private:
+	CNotify* CreateNotify(int nType);
 
-	CICCTools::AtomLock			m_clsLock;
-	std::vector<CNotify*>		m_listNotify;	
-	CContactor*					m_pContactor;
+	bool OnTimeout(struct tm* pTime);
+private:
+	
+	CICCTools::AtomLock							m_clsLock;
+	std::vector<CNotify*>						m_listNotify;	
+	std::shared_ptr<CContactor>					m_pContactor;
 };
 
 

@@ -19,7 +19,7 @@ CMail::~CMail()
 
 bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 {
-	if(!CNotify::OnIntialUpdate(pszConfigFileName))
+	if(!CNotify::OnInitialUpdate(pszConfigFileName))
 	{
 		return false;
 	}
@@ -215,19 +215,22 @@ bool CMail::SendMail(std::vector<std::string>& listContactor,const char* pszMail
 
 
 
-bool CMail::SendEmailHead(std::vector<std::string> &listContactor)	//放邮件头部信息
+bool CMail::SendEmailHead(std::string strRecvier)
+//bool CMail::SendEmailHead(std::vector<std::string> &listContactor)	//放邮件头部信息
 {
 	char szTmp[1024] = { 0 };
+//
+//	strcat(szTmp, "MAIL FROM:<");
+//	for(int i = 0; i < listContactor.size(); ++i)
+//	{
+//		strcat(szTmp, listContactor[i].c_str());		//当心溢出 
+//	}
+//	
+//	strcat(szTmp, ">\r\n");
 
-	strcat(szTmp, "MAIL FROM:<");
-	for(int i = 0; i < listContactor.size(); ++i)
-	{
-		strcat(szTmp, listContactor[i].c_str());		//当心溢出 
-	}
-	
-	strcat(szTmp, ">\r\n");
+	std::string str = "MAIL FROM:<" + strRecvier + ">\r\n";
 
-	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
+	if(!SendNotifyInfo(str.c_str(), str.length()))
 	{
 		return false;
 	}

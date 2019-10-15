@@ -190,7 +190,7 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 	try 
 	{
 		XMLDocument doc;
-		if(!doc.LoadFile(pszConfigureName))
+		if(doc.LoadFile(pszConfigureName))
 		{
 			LogWarn("%s(%d) Configure file Load fail. FileName: %s", __FILE__, __LINE__, pszConfigureName);
 		}
@@ -203,7 +203,7 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 		
 		CONTACTORINFO stUser;
 		XMLElement* pUser = pContactor->FirstChildElement("User");
-		for(; pUser != nullptr; pUser = pUser->NextSiblingElement("User"))
+		for(; pUser != nullptr; pUser = pUser->NextSiblingElement())
 		{
 			memset(&stUser, 0, sizeof(stUser));
 			
@@ -218,7 +218,7 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 			stUser.nLevel = atoi(pUser->Attribute("Level"));
 			//
 			XMLElement* pFocus = pUser->FirstChildElement("Focus");
-			for(; pFocus != nullptr; pFocus = pFocus->NextSiblingElement("Focus"))
+			for(; pFocus != nullptr; pFocus = pFocus->NextSiblingElement())
 			{
 				if(pFocus == nullptr)
 				{

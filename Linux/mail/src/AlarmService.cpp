@@ -19,7 +19,19 @@ bool CAlarmService::OnInitialUpdate()
 {
 
 	LogInfo("Init Service...");
+
+	m_pNotify = new CNotifyMgr;
+	if(nullptr == m_pNotify)
+	{
+		LogError("%s(%d) malloc CNotifyMgr fail.", __FILE__, __LINE__);
+		return false;
+	}
+	if(!m_pNotify->Init("./AlarmService.xml"))
+	{
+		return false;
+	}
 	
+
 	
 	
 	return true;

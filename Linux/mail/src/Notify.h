@@ -16,24 +16,17 @@
 #define BUFLEN_USERNAME   20
 #define BUFLEN_EMAIL	  36
 #define MAX_PATH		  256
-enum emITUint
-{
-	CICC_IT_UINT_TYPE_ETL,			//ETL 项目组
-	
 
-	CICC_IT_UINY_TYPE_SUM
+
+enum
+{
+	NOTIFY_TYPE_NULL,		
+
+	NOTIFY_TYPE_EMAIL,			//邮箱 
+
+	NOTIFY_TYPE_COUNT,
 };
 
-
-//typedef struct stContactorInfo
-//{
-//	char	szName[BUFLEN_USERNAME];
-//	char	szEmail[BUFLEN_EMAIL];
-//	int		nDepartment;		//
-//	int		nNo;				//工号 
-//}CONTACTORINFO,*PCONTACTORINFO;
-
-//////////////////////////////////////////////////////
 class CNotify
 {
 public:
@@ -42,15 +35,17 @@ public:
 	virtual ~CNotify();
 
 public:
-	virtual bool OnIntialUpdate(const char* pszConfigFileName);
-
-	virtual bool GetRecvMailAddr(std::vector<std::string>& listRecvMailContactor);
-
-	virtual bool SendNotify();
+	virtual bool OnInitialUpdate(const char* pszConfigFileName);
 
 	virtual bool OnTimeout(struct tm* pTime);
 
 	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo);
+public:
+	
+	void SetNotifyType(int nType) { m_nType = nType; }
+
+	int GetNotifyType() { return m_nType; }
+
 protected:
 	bool Connect(const char* pszAddr, int nPort);
 
@@ -61,7 +56,6 @@ protected:
 	char	m_pszConfigFileName[256];
 
 private:
-	CSocket*  m_pSocket;
-	int			m_nType;			//Notify Type 
-
+	CSocket*			m_pSocket;
+	int					m_nType;
 };
