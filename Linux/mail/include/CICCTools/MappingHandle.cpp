@@ -78,6 +78,9 @@ Mapping::~Mapping()
 			m_map = NULL;
 			break;
 		}
+
+		default:
+			break;
 	}
 	//m_bufferAtom.UnLock();
 }
@@ -298,6 +301,7 @@ void * Mapping::GetNextValue(int index)
 		}
 		return NULL;
 	}
+	return NULL;
 }
 
 int Mapping::GetMapSize()

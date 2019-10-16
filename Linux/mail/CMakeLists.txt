@@ -18,16 +18,25 @@ add_definitions( -Wno-sign-compare )
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include/CICCTools)
 include_directories(${PROJECT_SOURCE_DIR}/include/Server)
+include_directories(${PROJECT_SOURCE_DIR}/include/Server/Handler)
+include_directories(${PROJECT_SOURCE_DIR}/include/Server/Subscribe)
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 link_libraries(${PROJECT_SOURCE_DIR}/lib)
 
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/src  SRC)
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/CICCTools libSrc)
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/Server gSrc)
+
+AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/Server/Handler UserSrc)
+
+AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/Server/Subscribe SubSrc)
 add_executable(${PROJECT_NAME}  
-								${SRC}
+								${SRC} 
 					 			${libSrc}
 								${gSrc}
+								${UserSrc}
+								${SubSrc}
+								
 								)  
 target_link_libraries(${PROJECT_NAME}
 						

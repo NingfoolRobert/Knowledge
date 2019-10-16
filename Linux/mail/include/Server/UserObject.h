@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "blockingconcurrentqueue.h"
+
+#include "czmq.h"
 
 
 
@@ -9,9 +12,12 @@ public:
 	CUserObject();
 	virtual ~CUserObject();
 public:
-	virtual bool OnMsg(const char* pszMsg);
+//	bool	Push(zmg_t* zMsg);
+//	virtual bool OnMsg(zmsg_t* zMsg);
 
 
 private:
-	
+
+//	moodycamel::BlockingConcurrentQueue<zmg_t*>	m_listMsg;
+
 };

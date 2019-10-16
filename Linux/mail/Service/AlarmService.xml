@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AlarmService>
+	<Setting>
+		<LogLevel>1</LogLevel>
+		<ThreadCount>10</ThreadCount>
+	</Setting>
+	<SubObject>
+		<Obj ip = "192.168.60.245" Port = "30030" note = "路由层服务" />
+	</SubObject>
+	<Notify>
+		<mail EmailSvrName = "smtp.qq.com" Account = "IT_ETL@cicc.com.cn" Secret = "123456" SimpleName = "IT_ETL"/>
+	</Notify>
+	<Contactor FileName = "./contactor.xml" />
+</AlarmService>

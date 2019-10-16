@@ -64,6 +64,10 @@ bool CNotify::OnTimeout(struct tm* pTime)
 bool CNotify::Connect(const char* pszAddr, int nPort)
 {
 	int nfd = m_pSocket->Create();
+	if(nfd <= 0)
+	{
+		return false;
+	}
 	bool nRet = m_pSocket->Connect(pszAddr,nPort);	
 	if(!nRet)
 	{

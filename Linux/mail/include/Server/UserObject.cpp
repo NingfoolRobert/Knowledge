@@ -1,5 +1,6 @@
 
 #include "UserObject.h"
+#include "czmq.h"
 
 CUserObject::CUserObject()
 {
@@ -11,10 +12,10 @@ CUserObject::~CUserObject()
 
 }
 
-bool CUserObject::OnMsg(const char* pszMsg)
-{
-	if(nullptr == pszMsg)
-		return false;
-	return true;
-}
+//bool CUserObject::OnMsg(zmg_t* zMsg)
+//{
+//	if(nullptr == zMsg)
+//		return false;
+//	return true;
+//}
 

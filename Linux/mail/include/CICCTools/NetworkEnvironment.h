@@ -1,9 +1,9 @@
 #pragma once
 
 
-
+#ifdef WIN32 
 #pragma warning(disable:4251)
-
+#endif 
 #include <string>
 #include <atomic>
 using namespace std;

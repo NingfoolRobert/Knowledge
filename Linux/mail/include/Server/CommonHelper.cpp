@@ -52,7 +52,7 @@ bool CommonHelper::Char2Base64(char* pszBuf64, const char* pszSrc,int nLen)
 	
 	int nIndex = 0;
 
-	char n = 0;		//上一源字符的残留值
+	unsigned char n = 0;		//上一源字符的残留值
 	for(int i = 0; i < nLen; ++i)
 	{
 		if(nPoint == 2)

@@ -1,5 +1,4 @@
 #include "ServiceTpl.h"
-//#include "TestService.h"
 #include "AlarmService.h"
 
 int main()

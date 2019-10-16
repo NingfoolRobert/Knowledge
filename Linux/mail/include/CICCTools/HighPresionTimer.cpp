@@ -48,7 +48,7 @@ void HighPresionTimer::Reset()
 
 double HighPresionTimer::GetInterval()
 {
-	typedef duration<double, std::ratio<1, 1000>> myms;
+	//typedef duration<double, std::ratio<1, 1000>> myms;
 	return duration_cast<nanoseconds>(high_resolution_clock::now() - m_begin).count()/1000000.0;
 
 

@@ -23,7 +23,6 @@ public:
 		}
 
 		GlobalEnd();
-		//TODO onTerminate;
 		delete pService;
 		return 0;
 	}

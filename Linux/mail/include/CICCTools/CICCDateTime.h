@@ -63,7 +63,7 @@ namespace CICCTools
 			sprintf(time, "%02d%02d%02d%03d", (int)ptm->tm_hour, (int)ptm->tm_min, (int)ptm->tm_sec, (int)time_ms);
 #else
 			struct timeval now_ms;
-			auto time_ms = gettimeofday(&now_ms, 0);
+			/*auto time_ms =*/ gettimeofday(&now_ms, 0);
 			sprintf(time, "%02d%02d%02d%03d", (int)ptm->tm_hour, (int)ptm->tm_min, (int)ptm->tm_sec, (int)now_ms.tv_usec / 1000);
 #endif // WIN32
 			
@@ -99,7 +99,7 @@ namespace CICCTools
 			sprintf(time, "[%4d-%02d-%02d %02d:%02d:%02d.%03d]", (int)ptm->tm_year + 1900, (int)ptm->tm_mon + 1, (int)ptm->tm_mday, (int)ptm->tm_hour, (int)ptm->tm_min, (int)ptm->tm_sec, (int)time_ms);
 #else
 			struct timeval now_ms;
-			auto time_ms = gettimeofday(&now_ms, 0);
+			/*auto time_ms = */gettimeofday(&now_ms, 0);
 			sprintf(time, "[%4d-%02d-%02d %02d:%02d:%02d.%03d]", (int)ptm->tm_year + 1900, (int)ptm->tm_mon + 1, (int)ptm->tm_mday, (int)ptm->tm_hour, (int)ptm->tm_min, (int)ptm->tm_sec, (int)now_ms.tv_usec / 1000);
 #endif // WIN32
 			
@@ -118,7 +118,7 @@ namespace CICCTools
 			sprintf(time, "%4d%02d%02d%02d%02d%02d%03d", (int)ptm->tm_year + 1900, (int)ptm->tm_mon + 1, (int)ptm->tm_mday, (int)ptm->tm_hour, (int)ptm->tm_min, (int)ptm->tm_sec, (int)time_ms);
 #else
 			struct timeval now_ms;
-			auto time_ms = gettimeofday(&now_ms, 0);
+			/*auto time_ms = */gettimeofday(&now_ms, 0);
 			sprintf(time, "%4d%02d%02d%02d%02d%02d%03d", (int)ptm->tm_year + 1900, (int)ptm->tm_mon + 1, (int)ptm->tm_mday, (int)ptm->tm_hour, (int)ptm->tm_min, (int)ptm->tm_sec, (int)now_ms.tv_usec / 1000);
 #endif // WIN32
 			
@@ -146,7 +146,7 @@ namespace CICCTools
 			sprintf(time, "[%4d-%02d-%02d %02d:%02d:%02d.%03d]", (int)ptm->tm_year + 1900, (int)ptm->tm_mon + 1, (int)ptm->tm_mday, (int)ptm->tm_hour, (int)ptm->tm_min, (int)ptm->tm_sec, (int)time_ms);
 #else
 			struct timeval now_ms;
-			auto time_ms = gettimeofday(&now_ms, 0);
+			/*auto time_ms = */gettimeofday(&now_ms, 0);
 			sprintf(time, "%4d-%02d-%02d %02d:%02d:%02d.%03d", (int)ptm->tm_year + 1900, (int)ptm->tm_mon + 1, (int)ptm->tm_mday, (int)ptm->tm_hour, (int)ptm->tm_min, (int)ptm->tm_sec, (int)now_ms.tv_usec / 1000);
 #endif // WIN32
 

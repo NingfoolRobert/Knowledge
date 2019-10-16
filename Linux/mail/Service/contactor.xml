@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Contactor>
+	<User No = "00123" Name = "张三" Email = "San.Zhang@cicc.com.cn" Level = "1">
+		<Focus Type = "Fix" />
+		<Focus Type = "HS" />
+	</User>
+	<User No = "00124" Name = "李四" Email = "Si.Li@cicc.com.cn" Level = "2">
+		<Focus Type = "Fix" />
+		<Focus Type = "HS" />
+	</User>
+</Contactor>
