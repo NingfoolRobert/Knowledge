@@ -33,4 +33,4 @@ private:
 	CNotifyMgr*		m_pNotify;	//通知管理类
 };
 
-extern class CAlarmService*	g_CIAlarmService;
+extern class CAlarmService*	g_ciccAlarmService;

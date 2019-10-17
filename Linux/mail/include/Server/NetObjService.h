@@ -3,7 +3,7 @@
 #include "Service.h"
 #include "SubService.h"
 #include "GenericFactory.h"
-
+#include "SvrDefine.h"
 
 class CNetObjService :public CService, public CSubService
 {

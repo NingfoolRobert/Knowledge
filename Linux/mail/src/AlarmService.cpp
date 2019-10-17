@@ -1,12 +1,12 @@
 
 #include "AlarmService.h"
 
-class CAlarmService* g_CIAlarmService = nullptr;
+class CAlarmService* g_ciccAlarmService = nullptr;
 
 CAlarmService::CAlarmService()
 {
 	m_pNotify = nullptr;
-	g_CIAlarmService = this;
+	g_ciccAlarmService = this;
 }
 
 CAlarmService::~CAlarmService()
@@ -16,6 +16,7 @@ CAlarmService::~CAlarmService()
 
 bool CAlarmService::OnInitialUpdate()
 {
+	//处理对象注册
 	REGISTER_CLASS(BaseHandler,CAppUser);
 	///
 	if(!CNetObjService::OnInitialUpdate())
@@ -75,7 +76,6 @@ BaseHandler* CAlarmService::CreateHandler(int nType)
 	switch(nType)
 	{
 		case 10:
-
 			return CREATE_CLASS(BaseHandler, CAppUser);
 		default:
 			break;
