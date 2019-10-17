@@ -45,6 +45,7 @@ bool CSubObj::Init(CSubService* pSubSrv, tinyxml2::XMLElement* pSub)
 	zsock_set_sndhwm(m_sockSub, 0);
 	zsock_set_rcvhwm(m_sockSub, 0);
 
+	LogInfo("Init NetService Success......");
 
 	return true;
 }
@@ -117,6 +118,8 @@ bool CSubObj::Start()
 			{
 				LogError("[E] connect %s fail.",it->second.strURI.c_str());
 			}
+			LogInfo("Connect %s Success...", it->second.strURI.c_str());
+			//
 			setURI.insert(it->second.strURI);
 			for(auto itFilter = it->second.listFilter.begin(); itFilter != it->second.listFilter.end(); ++itFilter)
 			{
@@ -194,5 +197,6 @@ void CSubObj::Close()
 	if(m_sockSub == nullptr)
 		return ;
 
-//	zmq_destroy(&m_sockSub);
+	zsock_close(m_sockSub);
+	//	zmq_destroy(&m_sockSub);
 }

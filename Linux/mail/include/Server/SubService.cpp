@@ -24,6 +24,10 @@ bool CSubService::OnTimeOut(struct tm* pTime)
 {
 	//NetSettings change TODO
 
+	if(nullptr == pTime)
+		return false;
+
+	LogInfo("Connect Object Count:%d .", m_mapSubObj.size());
 	return true;
 }
 
