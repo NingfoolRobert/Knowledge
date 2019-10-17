@@ -10,3 +10,5 @@ bool GlobalBegin(const char* pszSimpleName);
 bool GlobalEnd();
 
 bool GetWorkPath(char* pszWorkPath);
+
+bool AddFilePath(char* pszFileName);

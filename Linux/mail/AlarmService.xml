@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<AlarmService>
+<Service>
 	<Setting>
 		<LogLevel>1</LogLevel>
 		<ThreadCount>10</ThreadCount>
@@ -27,4 +27,4 @@
 		<mail EmailSvrName = "smtp.qq.com" Account = "IT_ETL@cicc.com.cn" Secret = "123456" SimpleName = "IT_ETL"/>
 	</Notify>
 	<Contactor FileName = "./contactor.xml" />
-</AlarmService>
+</Service>

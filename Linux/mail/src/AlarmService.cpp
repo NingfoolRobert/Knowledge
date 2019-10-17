@@ -7,7 +7,6 @@ CAlarmService::CAlarmService()
 {
 	m_pNotify = nullptr;
 	g_CIAlarmService = this;
-	m_nPort = 30030;
 }
 
 CAlarmService::~CAlarmService()
@@ -17,7 +16,10 @@ CAlarmService::~CAlarmService()
 
 bool CAlarmService::OnInitialUpdate()
 {
-
+	REGISTER_CLASS(BaseHandler,CAppUser);
+	///
+	if(!CNetObjService::OnInitialUpdate())
+		return true;
 	LogInfo("Init Service...");
 
 	m_pNotify = new CNotifyMgr;
@@ -66,5 +68,18 @@ bool CAlarmService::OnTerminate()
 	}
 	LogInfo("Service Stop...");
 	return true;
+}
+
+BaseHandler* CAlarmService::CreateHandler(int nType)
+{
+	switch(nType)
+	{
+		case 10:
+
+			return CREATE_CLASS(BaseHandler, CAppUser);
+		default:
+			break;
+	}
+	return nullptr;
 }
 

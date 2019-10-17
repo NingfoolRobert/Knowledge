@@ -34,7 +34,7 @@ bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 			return false;
 		}
 	
-		XMLElement* pService = doc.FirstChildElement("AlaramService");
+		XMLElement* pService = doc.FirstChildElement("Service");
 		if(nullptr == pService)
 		{
 			LogError("Configure file(%s) not find AlaramService Node.", pszConfigFileName);

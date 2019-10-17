@@ -5,11 +5,13 @@
 #include <thread>
 
 
-void BaseHandler::Push(zmsg_t *msg) {
+void BaseHandler::Push(zmsg_t *msg) 
+{
     m_msgs.enqueue(msg);
 }
 
-void BaseHandler::Start() {
+void BaseHandler::Start() 
+{
 
     if (!b_isStart)
     {
@@ -38,13 +40,12 @@ void BaseHandler::CheckQueueThread(BaseHandler *para) {
     }
 }
 
-BaseHandler::BaseHandler(string g, string h, string t) {
-    str_group = g;
-    str_handler = h;
-    str_type = t;
+BaseHandler::BaseHandler() 
+{
 }
 
-BaseHandler::~BaseHandler() {
+BaseHandler::~BaseHandler() 
+{
 
 }
 

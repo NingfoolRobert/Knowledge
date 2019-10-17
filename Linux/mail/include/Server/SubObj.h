@@ -1,15 +1,24 @@
+#pragma once 
 
 #include "BaseHandler.h"
+#include "tinyxml2.h"
 
+
+#include <czmq.h>
 #include <vector>
+#include <map>
+#include <set>
+
 
 typedef struct stSubOriginInfo
 {
-	int		nID;
-	std::string		strURI;
-	std::filter		strFilter;
+	int								nID;
+	std::string						strURI;
+	std::set<std::string>			listFilter;
 
 }SUBORIGININFO, *PSUBORIGININFO;
+
+class CSubService;
 
 class CSubObj
 {
@@ -19,7 +28,7 @@ public:
 public:
 	
 public:
-	bool Init();
+	bool Init(CSubService* pSubService, tinyxml2::XMLElement* pSub);
 	
 	bool AddSubInfo(std::string strURI, std::string strFilter, int nID = 0);
 
@@ -29,25 +38,38 @@ public:
 
 	bool Start();
 
-	bool push(zmg_t* msg) ;
+	bool push(zmsg_t* msg) ;
 
 	bool isStop() { return m_bStop; }
 
 	zsock_t* Dettach(){ return m_sockSub; }
+
+protected:
+	BaseHandler* CreateHandler(int nType);
+
+	bool	LoadXMLConfig(tinyxml2::XMLElement* pSub);
+
 public:
 	static void SubThread(CSubObj* pSubObj);
 
 	zmsg_t* RecvMsg();
 
-	//bool Disconnect(std::string strURI);
+
+	void Close();
+public:
+
+	int				m_nType;		//
+	std::string		m_strNote;		//备注
 
 private:
 	BaseHandler*	m_pUser;
 
+	CSubService*		m_pSubSrv;
+	
 	bool			m_bStop;
 
 	zsock_t*		m_sockSub;
 
-	std::map<std::string, SUBORIGININFO> m_listSubInfo;
+	std::map<int, SUBORIGININFO> m_listSubInfo;
 };
 

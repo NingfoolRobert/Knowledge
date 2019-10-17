@@ -49,7 +49,7 @@ bool CNotifyMgr::Init(const char* pszConfigPath)
 
 		char szContactorFileName[MAX_PATH] = { 0 };
 	
-		XMLElement* pService = doc.FirstChildElement("AlarmService");
+		XMLElement* pService = doc.FirstChildElement("Service");
 		if(nullptr == pService)
 		{
 			LogWarn("The Configure file(%s) no AlarmService Node.", pszConfigPath);
@@ -100,6 +100,7 @@ bool CNotifyMgr::UpdateConfig(const char* pszConfigFileName)
 {
 	return true;
 }
+
 bool CNotifyMgr::Send(const char* pszWarnInfo)
 {
 	return true;

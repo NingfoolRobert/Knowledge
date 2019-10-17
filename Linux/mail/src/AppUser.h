@@ -9,7 +9,8 @@ class CAppUser:
 {
 public:
 
-	CAppUser(std::string g, std::string h, std::string t);
+	CAppUser();
+//	CAppUser(std::string g, std::string h, std::string t);
 	virtual ~CAppUser();
 public:
 

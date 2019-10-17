@@ -11,25 +11,25 @@
 
 using namespace std;
 
+class CSubObj;
+
 class BaseHandler{
 public:
 
-    BaseHandler(string, string, string);
+    BaseHandler();
     virtual ~BaseHandler();
 
     virtual void Start();
     virtual void Push(zmsg_t*);
     virtual void ProcessItem(zmsg_t *) = 0;
 
+public:
+	bool Bind(CSubObj* pSub);
 protected:
     static void CheckQueueThread(BaseHandler* para);
     moodycamel::BlockingConcurrentQueue<zmsg_t*> m_msgs;
     bool b_isStart;
-    string str_group;
-    string str_handler;
-    string str_type;
-
-
+	CSubObj* m_pSubObj;
 };
 
 #endif //MDS_BASEHANDLER_H

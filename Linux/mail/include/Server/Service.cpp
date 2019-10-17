@@ -63,7 +63,7 @@ CService::~CService()
 
 bool CService::Execute(const char* pszFileName /*= ""*/, int nLine/*= 0*/)
 {
-	__LOGINIT__;
+//	__LOGINIT__;
 	if(!OnInitialUpdate())
 	{
 		//TODO  log init  fail...
