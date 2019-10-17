@@ -33,10 +33,7 @@ bool CAlarmService::OnInitialUpdate()
 	{
 		return false;
 	}
-	
-
-	
-	
+		
 	return true;
 }
 
@@ -75,7 +72,7 @@ BaseHandler* CAlarmService::CreateHandler(int nType)
 {
 	switch(nType)
 	{
-		case 10:
+		case CICC_SERVICE_TYPE_MONITOR:
 			return CREATE_CLASS(BaseHandler, CAppUser);
 		default:
 			break;
@@ -83,3 +80,22 @@ BaseHandler* CAlarmService::CreateHandler(int nType)
 	return nullptr;
 }
 
+bool CAlarmService::SendWarningInfo(const char* pszWarningInfo)
+{
+	if(nullptr == pszWarningInfo || 0 == strlen(pszWarningInfo))
+	{
+		LogWarn("Warnning Infomation is null.");
+		return false;
+	}
+	if(nullptr == m_pNotify)
+	{
+		LogError("%s(%d) [E] Notify Manager is nullptr. Info:%s", __FILE__, __LINE__, pszWarningInfo);
+		return false;
+	}
+	if(!m_pNotify->Send(pszWarningInfo))
+	{
+		LogWarn("Send Warnning info fail.Warnning: %s", pszWarningInfo);
+		return false;
+	}
+	return true;
+}

@@ -4,7 +4,7 @@
 
 
 #include "NotifyMgr.h"
-#include "../../include/Server/NetObjService.h"
+#include "NetObjService.h"
 #include "AppUser.h"
 
 
@@ -28,7 +28,9 @@ public:
 	virtual BaseHandler* CreateHandler(int nType);
 	
 public:
-		
+
+	bool SendWarningInfo(const char* pszWarningInfo);
+
 private:
 	CNotifyMgr*		m_pNotify;	//通知管理类
 };
