@@ -1,5 +1,5 @@
 #include "NotifyMgr.h"
-
+#include "CommonHelper.h"
 #include "tinyxml2.h"
 
 #include <string.h>
@@ -13,12 +13,6 @@ CNotifyMgr::CNotifyMgr()
 
 CNotifyMgr::~CNotifyMgr()
 {
-//	if(m_pContactor)
-//	{
-//		delete m_pContactor;
-//		m_pContactor = nullptr;
-//	}
-
 	auto it = m_listNotify.begin(); 
 	while(it != m_listNotify.end())
 	{
@@ -86,6 +80,10 @@ bool CNotifyMgr::Init(const char* pszConfigPath)
 				pNotify->OnInitialUpdate(pszConfigPath);
 				m_listNotify.push_back(pNotify);
 			}
+			else 
+			{
+				LogError("[E] Create Notify Object fail. Type: %d", NOTIFY_TYPE_EMAIL);
+			}
 		}
 	}
 	catch(std::exception e)
@@ -101,13 +99,29 @@ bool CNotifyMgr::UpdateConfig(const char* pszConfigFileName)
 	return true;
 }
 
-bool CNotifyMgr::Send(const char* pszWarnInfo)
+bool CNotifyMgr::Send(const int nLevel, const std::string strAppType, const char* pszWarnInfo)
 {
+	std::vector<CONTACTORPtr> listUser;
+	m_pContactor->GetNotifyList(listUser, nLevel, strAppType);
+	
+//	for(auto it = m_listNotify.begin(),it != m_listNotify.end(); ++it)
+//	{
+//		*it->Notify(listUser, pszWarnInfo);
+//	}
+
+	for_each(m_listNotify.begin(), m_listNotify.end(), [listUser, pszWarnInfo](CNotify* pNotify){
+			pNotify->Notify(listUser,pszWarnInfo);
+			});
 	return true;
 }
 
 bool CNotifyMgr::Add(CNotify* pNotify)
 {
+	
+	
+
+
+
 	return true;
 }
 
@@ -136,6 +150,70 @@ CNotify* CNotifyMgr::CreateNotify(int nType)
 
 bool CNotifyMgr::OnTimeout(struct tm* pTime)
 {
-	m_pContactor->OnTimeout(pTime);
+	//更新告警联系人 
+	CheckContator();
 	return true;
+}
+
+bool CNotifyMgr::CheckContator()
+{
+	using namespace tinyxml2;
+	try
+	{
+		XMLDocument doc;
+		if(doc.LoadFile(m_szConfigureFileName))
+		{
+			LogError("%s Load Configure file fail.", __FUNCTION__);
+			return false;
+		}
+		
+		XMLElement* pRoot  = doc.FirstChildElement("Service");
+		if(nullptr == pRoot)
+		{
+			return false;
+		}
+		XMLElement* pNotify = pRoot->FirstChildElement("Notify");
+		if(nullptr == pNotify)
+		{
+			return false;
+		}
+		strcpy(szContatorFileName, pNotify->Attribute("FileName"));
+		if(0 == strlen(szContatorFileName))
+		{
+			return false;
+		}
+
+	}
+	catch (std::exception e)
+	{
+		LogWarn("Parse XML File(%s) fail.", m_szConfigureFileName);
+		return false;
+	}
+
+	char szContatorFileName[MAX_PATH] = { 0 };
+	
+	time_t tLast;
+	time_t tChange;
+	time_t tAccess;
+	GetFileTime(szContatorFileName, tChange, tLast, tAccess);
+	if(tLast == m_tLastContactorFile)
+	{
+		return true;
+	}
+	
+	auto pContator = std::make_shared<CContactor>();
+	if(nullptr == pContator)
+	{
+		LogError("%s(%d) memory calloc error.", __FILE__, __LINE__);
+		return false;
+	}
+
+	if(!pContator->Init(szContatorFileName))
+	{
+		return false;
+	}
+
+	m_pContactor = pContator;
+	LogInfo("Update Contator Success...");
+	return true;	
 }

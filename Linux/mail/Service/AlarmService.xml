@@ -7,9 +7,7 @@
 	</Setting>
 	<NetSettings>
 		<Sub Type = "10" Note = "Fix业务">
-			<Group>
-				<ID>100</ID>
-				<URI>tcp://192.168.70.181:30030</URI>
+			<Group ID = "100" URI = "tcp://127.0.0.1:30030">
 				<Filter>E^</Filter>
 			</Group>
 		</Sub>

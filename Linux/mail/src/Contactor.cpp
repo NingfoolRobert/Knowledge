@@ -174,26 +174,26 @@ bool CContactor::Del(PCONTACTORINFO pInfo)
 	return true;
 }
 
-bool CContactor::OnTimeout(struct tm* pTime)
-{
-	if(nullptr == pTime)
-		return false;
-	time_t tModifyTime;
-	time_t tChangTime;
-	time_t tAccessTime;
-
-	if(CommonHelper::GetFileTime(m_szContactorFileName, tChangTime, tModifyTime, tAccessTime))
-	{
-		if(tModifyTime != m_tLastModifyTime)
-		{
-			m_tLastModifyTime = tModifyTime;
-			// Update ContactorInfo;
-			UpdateContactorInfo();
-		}
-	}
-	
-	return true;
-}
+//bool CContactor::OnTimeout(struct tm* pTime)
+//{
+//	if(nullptr == pTime)
+//		return false;
+//	time_t tModifyTime;
+//	time_t tChangTime;
+//	time_t tAccessTime;
+//
+//	if(CommonHelper::GetFileTime(m_szContactorFileName, tChangTime, tModifyTime, tAccessTime))
+//	{
+//		if(tModifyTime != m_tLastModifyTime)
+//		{
+//			m_tLastModifyTime = tModifyTime;
+//			// Update ContactorInfo;
+//			UpdateContactorInfo();
+//		}
+//	}
+//	
+//	return true;
+//}
 
 CONTACTORPtr  CContactor::Find(PCONTACTORINFO pUser)
 {
@@ -264,6 +264,8 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 	{
 		LogError("Configure Read error. FileName:%s", pszConfigureName);
 	}
+
+	LogInfo("Contator Count: %d", GetContatorCount());
 }
 
 bool  CContactor::UpdateContactorInfo()
@@ -273,3 +275,7 @@ bool  CContactor::UpdateContactorInfo()
 	return true;
 }
 
+inline int	CContactor::GetContatorCount()
+{
+	return m_listContactor.size();
+}

@@ -16,7 +16,7 @@ static void TimeOut(CService* pService)
 		time_t tNow = time(nullptr);
 		struct tm pTime;// = nullptr;
 		localtime_r(&tNow, &pTime);
-		pService->OnTimeout(&pTime);
+		pService->OnTimeOut(&pTime);
 	}
 }
 static void SecondeIdle(CService* pService)
@@ -64,11 +64,12 @@ CService::~CService()
 bool CService::Execute(const char* pszFileName /*= ""*/, int nLine/*= 0*/)
 {
 //	__LOGINIT__;
+	LogInfo("Init Service ...");
 	if(!OnInitialUpdate())
 	{
 		//TODO  log init  fail...
 		//
-		LogWarn("Init Service fail....");
+		LogWarn("%s(%d) Init Service fail....", __FILE__, __LINE__);
 		exit(-1);
 		return false;
 	}

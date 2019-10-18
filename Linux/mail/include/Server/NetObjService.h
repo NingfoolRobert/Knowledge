@@ -13,7 +13,7 @@ public:
 public:
 	virtual bool OnInitialUpdate();
 	
-	virtual bool OnTimeout(struct tm* pTime);
+	virtual bool OnTimeOut(struct tm* pTime);
 	
 	virtual bool OnSecondIdle();
 

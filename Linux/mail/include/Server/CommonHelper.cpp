@@ -153,3 +153,16 @@ bool CommonHelper::GetStringXMLConfig(const char* pszSection, const char* pszKey
 	}
 	return true;
 }
+
+
+time_t CommonHelper::GetFileModifyTime(const char* pszFileName)
+{
+	time_t tChangeTime;
+	time_t tModifyTime;
+	time_t tAccessTime;
+	if(GetFileTime(pszFileName, tChangeTime, tModifyTime, tAccessTime))
+	{
+		return tModifyTime;
+	}
+	return 0;
+}

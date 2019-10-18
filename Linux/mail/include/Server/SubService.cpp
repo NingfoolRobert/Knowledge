@@ -95,7 +95,9 @@ bool CSubService::LoadNetSettingsXMLConfig()
 			}
 			pSubObj->Init(this, pSub);
 
-			m_mapSubObj[pSubObj->m_nType] = pSubObj;			
+			m_mapSubObj[pSubObj->m_nType] = pSubObj;		
+			
+			pSubObj->Start();
 
 		}
 	}

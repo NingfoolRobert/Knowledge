@@ -22,7 +22,7 @@ bool CNetObjService::OnInitialUpdate()
 	return true;
 }
 
-bool CNetObjService::OnTimeout(struct tm* pTime)
+bool CNetObjService::OnTimeOut(struct tm* pTime)
 {
 	if(!CSubService::OnTimeOut(pTime))
 	{

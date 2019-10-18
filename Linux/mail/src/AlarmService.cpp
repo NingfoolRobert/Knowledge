@@ -80,7 +80,7 @@ BaseHandler* CAlarmService::CreateHandler(int nType)
 	return nullptr;
 }
 
-bool CAlarmService::SendWarningInfo(const char* pszWarningInfo)
+bool CAlarmService::SendWarningInfo(const int nLevel, const std::string strAppType, const char* pszWarningInfo)
 {
 	if(nullptr == pszWarningInfo || 0 == strlen(pszWarningInfo))
 	{
@@ -92,7 +92,7 @@ bool CAlarmService::SendWarningInfo(const char* pszWarningInfo)
 		LogError("%s(%d) [E] Notify Manager is nullptr. Info:%s", __FILE__, __LINE__, pszWarningInfo);
 		return false;
 	}
-	if(!m_pNotify->Send(pszWarningInfo))
+	if(!m_pNotify->Send(nLevel, strAppType, pszWarningInfo))
 	{
 		LogWarn("Send Warnning info fail.Warnning: %s", pszWarningInfo);
 		return false;

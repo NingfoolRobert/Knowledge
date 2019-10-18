@@ -9,7 +9,7 @@ using namespace std;
 
 CMail::CMail():m_nPort(25)
 {
-
+	m_nType = NOTIFY_TYPE_EMAIL;
 }
 
 CMail::~CMail()

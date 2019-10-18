@@ -14,7 +14,7 @@ public:
 	virtual ~CService();
 public:
 	virtual bool  OnInitialUpdate() = 0;
-	virtual bool  OnTimeout(struct tm* pTime) = 0;
+	virtual bool  OnTimeOut(struct tm* pTime) = 0;
 	virtual bool  OnSecondIdle() = 0;
 	virtual bool  InvokeTerminate() = 0;
 	virtual bool  OnTerminate() = 0;

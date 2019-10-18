@@ -29,7 +29,7 @@ public:
 	
 public:
 
-	bool SendWarningInfo(const char* pszWarningInfo);
+	bool SendWarningInfo(const int nLevel, const std::string  strAppType, const char* pszWarningInfo);
 
 private:
 	CNotifyMgr*		m_pNotify;	//通知管理类

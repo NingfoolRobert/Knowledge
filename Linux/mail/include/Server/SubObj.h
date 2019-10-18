@@ -16,6 +16,12 @@ typedef struct stSubOriginInfo
 	std::string						strURI;
 	std::set<std::string>			listFilter;
 
+	void clear()
+	{
+		nID = 0;
+		strURI = "";
+		listFilter.clear();
+	}
 }SUBORIGININFO, *PSUBORIGININFO;
 
 class CSubService;

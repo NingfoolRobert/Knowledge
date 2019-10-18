@@ -124,11 +124,15 @@ bool CSubObj::Start()
 			for(auto itFilter = it->second.listFilter.begin(); itFilter != it->second.listFilter.end(); ++itFilter)
 			{
 				std::string str = *itFilter;
-				zsock_set_subscribe(m_sockSub,  str.c_str());
+	 			zsock_set_subscribe(m_sockSub,  str.c_str());
 			}
 		}
 	}
 
+	if(m_pUser)
+	{
+		m_pUser->Start();
+	}
 	std::thread tr1(CSubObj::SubThread, this);
 	tr1.detach();
 	return true;
@@ -161,42 +165,33 @@ bool CSubObj::LoadXMLConfig(tinyxml2::XMLElement* pSub)
 		LogError("[E] CreateHandler fail. HandlerType: %d, Note: %s", m_nType, m_strNote.c_str());
 		return false;
 	}
-	
-	SUBORIGININFO stInfo = { 0 };
+
+	//订阅对象信息
+	SUBORIGININFO stInfo;// = { 0 };
 	for(auto pGroup = pSub->FirstChildElement("Group"); pGroup != nullptr; pGroup = pGroup->NextSiblingElement())
 	{
 		if(nullptr == pGroup)
 			break;
-		
-		memset(&stInfo, 0, sizeof(stInfo));
-		
-		for(auto pAttr = pGroup->FirstAttribute(); pAttr != nullptr; pAttr = pAttr->Next())
+		stInfo.clear();
+		stInfo.nID = atoi(pGroup->Attribute("ID"));
+		stInfo.strURI = pGroup->Attribute("URI"); //str;
+		//
+		for(auto pFilter = pGroup->FirstChildElement("Filter"); pFilter != nullptr; pFilter = pFilter->NextSiblingElement())
 		{
-			if(pAttr == nullptr)
+			if(nullptr == pFilter)
 				break;
-			if(strcasecmp("ID", pAttr->Name()) == 0)
-			{
-				stInfo.nID = atoi(pAttr->Value());
-			}
-			else if(strcasecmp("URI", pAttr->Name()) == 0)
-			{
-
-				stInfo.strURI = pAttr->Value();
-			}
-			else if(strcasecmp("Filter", pAttr->Name()) == 0)
-			{
-				stInfo.listFilter.insert(pAttr->Value());
-			}
-		}	
+			stInfo.listFilter.insert(pFilter->GetText());
+		}
 		m_listSubInfo[stInfo.nID] = stInfo;
 	}
 	return true;
 }
+
 void CSubObj::Close()
 {
 	if(m_sockSub == nullptr)
 		return ;
 
-	zsock_close(m_sockSub);
-	//	zmq_destroy(&m_sockSub);
+	//zsock_close(&m_sockSub);
+	zsock_destroy(&m_sockSub);
 }

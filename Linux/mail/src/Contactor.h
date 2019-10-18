@@ -81,18 +81,19 @@ public:
 public:
 	bool Init(const char* pszFileName);
 
-	bool GetNotifyList(std::vector<CONTACTORPtr>& listNotifyObj, int nAlarmLevel, std::string strType);
+	bool GetNotifyList(std::vector<CONTACTORPtr>& listUser, int nAlarmLevel, std::string strType);
 
 	bool Add(PCONTACTORINFO pInfo);
 
 	bool Del(PCONTACTORINFO pInfo);
 
-	bool OnTimeout(struct tm* pTime);
+//	bool OnTimeout(struct tm* pTime);
 
 	CONTACTORPtr  Find(PCONTACTORINFO pUser);
 	
 	void GetNotifyUser(const char* pszConfigureName);
 
+	int	GetContatorCount();
 protected:
 	bool  UpdateContactorInfo();
 private:
