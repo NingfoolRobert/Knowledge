@@ -22,8 +22,10 @@ void CAppUser::ProcessItem(zmsg_t* zMsg)
 bool CAppUser::ParseWarnningInfo(/*PB::Message* pMessage, */)
 {
 	char buf[1024] ={0};
-	
+
+	int nLevel = 0;
+	std::string strAppType = "";
 //TODD  Parse PB 
-	g_ciccAlarmService->SendWarningInfo(buf);
+	g_ciccAlarmService->SendWarningInfo(nLevel, strAppType, buf);
 	return true;
 }

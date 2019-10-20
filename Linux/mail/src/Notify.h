@@ -53,9 +53,9 @@ protected:
 
 	bool RecvMsg(char* pszBuf, int nBufLen);
 protected:
+	
 	char	m_pszConfigFileName[256];
-
+	int		m_nType;
 private:
 	CSocket*			m_pSocket;
-	int					m_nType;
 };

@@ -1,6 +1,18 @@
 
 #include "AlarmService.h"
 
+static void WarnningThread(CAlarmService* pService)
+{
+	if(pService == nullptr)
+	{	
+		LogWarn("%s(%s)pService == NULL", __FILE__, __FUNCTION__);
+		return ;	
+	}	
+	
+	pService->SendNotify();
+}
+
+
 class CAlarmService* g_ciccAlarmService = nullptr;
 
 CAlarmService::CAlarmService()
@@ -39,7 +51,10 @@ bool CAlarmService::OnInitialUpdate()
 
 bool CAlarmService::OnTimeout(struct tm* pTime)
 {
+	if(!CNetObjService::OnTimeOut(pTime))
+		return false;
 		
+	m_pNotify->OnTimeout(pTime);	
 	LogInfo("OnTimeOut...");
 
 	return true;
@@ -47,7 +62,9 @@ bool CAlarmService::OnTimeout(struct tm* pTime)
 
 bool CAlarmService::OnSecondIdle()
 {
-	
+	if(!CNetObjService::OnSecondIdle())
+		return false;
+
 	return true;
 }
 

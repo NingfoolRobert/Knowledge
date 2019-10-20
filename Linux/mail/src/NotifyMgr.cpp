@@ -1,7 +1,7 @@
 #include "NotifyMgr.h"
 #include "CommonHelper.h"
 #include "tinyxml2.h"
-
+#include "GlobalVar.h"
 #include <string.h>
 
 
@@ -96,6 +96,8 @@ bool CNotifyMgr::Init(const char* pszConfigPath)
 	
 bool CNotifyMgr::UpdateConfig(const char* pszConfigFileName)
 {
+	if(nullptr == pszConfigFileName)
+		return false;
 	return true;
 }
 
@@ -109,16 +111,18 @@ bool CNotifyMgr::Send(const int nLevel, const std::string strAppType, const char
 //		*it->Notify(listUser, pszWarnInfo);
 //	}
 
-	for_each(m_listNotify.begin(), m_listNotify.end(), [listUser, pszWarnInfo](CNotify* pNotify){
-			pNotify->Notify(listUser,pszWarnInfo);
+	for_each(m_listNotify.begin(), m_listNotify.end(), [&](CNotify* pNotify){
+			pNotify->Notify(listUser, pszWarnInfo);
 			});
 	return true;
 }
 
 bool CNotifyMgr::Add(CNotify* pNotify)
 {
-	
-	
+	if(nullptr == pNotify)
+	{
+		return false;
+	}
 
 
 
@@ -127,6 +131,10 @@ bool CNotifyMgr::Add(CNotify* pNotify)
 
 bool CNotifyMgr::Del(CNotify* pNotify)
 {
+	if(nullptr == pNotify)
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -150,7 +158,11 @@ CNotify* CNotifyMgr::CreateNotify(int nType)
 
 bool CNotifyMgr::OnTimeout(struct tm* pTime)
 {
-	//更新告警联系人 
+	if(nullptr == pTime)
+	{
+		return false;
+	}
+	//更新告警联系人
 	CheckContator();
 	return true;
 }
@@ -177,6 +189,7 @@ bool CNotifyMgr::CheckContator()
 		{
 			return false;
 		}
+		char szContatorFileName[MAX_PATH] = { 0 };
 		strcpy(szContatorFileName, pNotify->Attribute("FileName"));
 		if(0 == strlen(szContatorFileName))
 		{
@@ -192,10 +205,7 @@ bool CNotifyMgr::CheckContator()
 
 	char szContatorFileName[MAX_PATH] = { 0 };
 	
-	time_t tLast;
-	time_t tChange;
-	time_t tAccess;
-	GetFileTime(szContatorFileName, tChange, tLast, tAccess);
+	time_t tLast = CommonHelper::GetFileModifyTime(szContatorFileName);
 	if(tLast == m_tLastContactorFile)
 	{
 		return true;
