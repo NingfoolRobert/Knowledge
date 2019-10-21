@@ -13,7 +13,7 @@
 		</Sub>
 	</NetSettings>
 	<Notify>
-		<mail EmailSvrName = "smtp.qq.com" Account = "IT_ETL@cicc.com.cn" Secret = "123456" SimpleName = "IT_ETL"/>
+		<mail EmailHost = "192.168.20.43" Account = "it_support_app_sende" Passwd = "setupandindex" SimpleName = "it_support_app_sende" SenderMail = "it_support_app_sende@cicc.com.cn" Ehlo = "EHLO CICCGWGroup"/>
 	</Notify>
 	<Contactor FileName = "./contactor.xml" />
 </Service>
