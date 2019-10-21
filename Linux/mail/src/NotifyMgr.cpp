@@ -106,14 +106,17 @@ bool CNotifyMgr::Send(const int nLevel, const std::string strAppType, const char
 	std::vector<CONTACTORPtr> listUser;
 	m_pContactor->GetNotifyList(listUser, nLevel, strAppType);
 	
-//	for(auto it = m_listNotify.begin(),it != m_listNotify.end(); ++it)
-//	{
-//		*it->Notify(listUser, pszWarnInfo);
-//	}
+	for(auto it = m_listNotify.begin(); it != m_listNotify.end(); ++it)
+	{
+		CNotify* pNotify = *it;
+		char szTmp[256] = { 0 };
+		sprintf(szTmp, "%s:%s","!!!Alarm!!!", strAppType.c_str());
+		pNotify->Notify(listUser, szTmp, pszWarnInfo);
+	}
 
-	for_each(m_listNotify.begin(), m_listNotify.end(), [&](CNotify* pNotify){
-			pNotify->Notify(listUser, pszWarnInfo);
-			});
+//	for_each(m_listNotify.begin(), m_listNotify.end(), [&](CNotify* pNotify){
+//			pNotify->Notify(listUser, pszWarnInfo);
+//			});
 	return true;
 }
 

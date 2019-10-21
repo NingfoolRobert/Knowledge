@@ -79,35 +79,38 @@ bool CSocket::Connect(const char* pszAddress, int nPort)
 	SvrAddr.sin_addr.s_addr = inet_addr(pszAddress);
 	SvrAddr.sin_port = htons(nPort);
 
-	if(connect(m_fd, (struct sockaddr*)&SvrAddr,sizeof(SvrAddr))  <= 0)
+	int nRet = 0;
+	if((nRet = connect(m_fd, (struct sockaddr*)&SvrAddr,sizeof(SvrAddr)) ) < 0)
 	{
 		return false;
 	}
 	return true;
 }
 
-bool CSocket::Recv(char* pszBuf, int nBufLen)
+int CSocket::Recv(char* pszBuf, int nBufLen)
 {
-	int nRecved = 0;
-	int nRead = 0;
-	while(true)
-	{
-		nRead= read(m_fd, pszBuf + nRecved, nBufLen - nRecved);
-		if(nRead == 0)
-			break;
-		else if(nRead < 0)
-		{
-			if(errno == EINTR)
-				continue;
-			else 
-				return false;
-		}
-		
-		nRecved += nRead;
-		if(nRecved >= nBufLen)
-			break;
-	}
-	return true;
+	return read(m_fd, pszBuf, nBufLen);
+
+	//``	int nRecved = 0;
+//``	int nRead = 0;
+//``	while(true)
+//``	{
+//``		nRead= read(m_fd, pszBuf + nRecved, nBufLen - nRecved);
+//``		if(nRead == 0)
+//``			break;
+//``		else if(nRead < 0)
+//``		{
+//``			if(errno == EINTR)
+//``				continue;
+//``			else 
+//``				return false;
+//``		}
+//``		
+//``		nRecved += nRead;
+//``		if(nRecved >= nBufLen)
+//``			break;
+//``	}
+//``	return true;
 }
 
 bool CSocket::Send(const char* pszBuf, int nBufLen)

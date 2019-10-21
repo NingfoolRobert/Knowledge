@@ -29,7 +29,7 @@ public:
 
 	bool Connect(const char* pszAddress, int nPort);
 
-	bool Recv(char* pszBuf, int nBufLen);
+	int Recv(char* pszBuf, int nBufLen);
 
 	bool Send(const char* pszBuf, int nBufLen);
 	

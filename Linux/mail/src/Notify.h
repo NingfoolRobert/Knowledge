@@ -39,7 +39,7 @@ public:
 
 	virtual bool OnTimeout(struct tm* pTime);
 
-	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo);
+	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszWarnInfo);
 public:
 	
 	void SetNotifyType(int nType) { m_nType = nType; }
@@ -51,7 +51,9 @@ protected:
 
 	bool SendNotifyInfo(const char* pszInfo, int nBufLen);
 
-	bool RecvMsg(char* pszBuf, int nBufLen);
+	int RecvMsg(char* pszBuf, int nBufLen);
+	
+	void Close();
 protected:
 	
 	char	m_pszConfigFileName[256];

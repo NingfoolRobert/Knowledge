@@ -1,17 +1,22 @@
-#include <iostream>
-#include <fstream>
-
 #include "tinyxml2.h"
 #include "mail.h"
-
 #include "Log.h"
 #include "CommonHelper.h"
+#include <string.h>
+#include <memory.h>
 
-using namespace std;
 
-
-CMail::CMail():m_nPort(25)
+CMail::CMail():m_nPort(25),m_bLoadCfg(false)
 {
+	strcpy(m_szEhlo, "CICCGWGroup");
+	strcpy(m_szUserName, "it_support_app_sende");
+	strcpy(m_szPassword, "setupandindex");
+	memset(m_szEmailHostIP, 0, sizeof(m_szEmailHostIP));
+	memset(m_szEmailSvrName, 0, sizeof(m_szEmailSvrName));
+	strcpy(m_szSenderSimpleName, m_szUserName);
+	//memset(m_szDefaultSendMail, 0, sizeof(m_szDefaultSendMail));
+	sprintf(m_szDefaultSendMail,"%s@cicc.com.cn", m_szUserName);
+
 	m_nType = NOTIFY_TYPE_EMAIL;
 }
 
@@ -20,7 +25,7 @@ CMail::~CMail()
 
 }
 
-bool CMail::OnIntialUpdate(const char* pszConfigFileName)
+bool CMail::OnInitialUpdate(const char* pszConfigFileName)
 {
 	if(!CNotify::OnInitialUpdate(pszConfigFileName))
 	{
@@ -49,113 +54,131 @@ bool CMail::OnIntialUpdate(const char* pszConfigFileName)
 		{
 			return false;
 		}
-		strcpy(m_szEmailSvrName, pNotify->Attribute("EmailSvrName"));
-		strcpy(m_szUserName, pNotify->Attribute("Account"));
-		strcpy(m_szPassword, pNotify->Attribute("Passwd"));
-		strcpy(m_szDefaultSendMail, pNotify->Attribute("SenderMail"));
-		if(0 == strlen(m_szDefaultSendMail))
+		XMLElement* pEmail = pNotify->FirstChildElement("mail");
+		if(nullptr == pEmail)
 		{
-			LogWarn("Not Configure the Sender email.");
 			return false;
 		}
-		strcpy(m_szSenderSimpleName, pNotify->Attribute("SimpleName"));
+		char szTmp[128] = { 0 };
 		
-		m_nPort = atoi(pNotify->Attribute("Port"));
+		memset(szTmp, 0, sizeof(szTmp));
 	
-	
-//	//TODO  获取配置信息
-//	try
-//	{
-//		ifstream in(pszConfigFileName,ios::binary);
-//		if(!in.is_open())
-//		{
-//			return false;
-//		}
-//	
-//		Json::Reader reader;
-//		Json::Value	 root;
-//		
-//		reader.parse(in, root);
-//		
-//		if(!root.isMember("mailSvr"))
-//		{
-//			return false;
-//		}
-//		string SenderSimpleName = root["mailSvr"]["SenderSimpleName"].asString();
-//	
-//		string SenderEmail = root["mailSvr"]["SenderEmail"].asString();
-//		memcpy(m_szDefaultSendMail,SenderEmail.c_str(), SenderEmail.length());
-//		
-//		string strAccount = root["mailSvr"]["Account"].asString();
-//		memcpy(m_szUserName, strAccount.c_str(), strAccount.length());
-//		
-//		string strSecret  = root["mailSvr"]["Secret"].asString();
-//		memcpy(m_szSecret, strSecret.c_str(), strSecret.length());
-//
-//		string strEmailSvrName  = root["mailSvr"]["Name"].asString();
-//		memcpy(m_szEmailSvrName, strEmailSvrName.c_str(), strEmailSvrName.length());
-//		m_nPort = root["mailSvr"]["Port"].asInt();
+		auto pAttr  = pEmail->Attribute("Account");
+		if(nullptr == pAttr ||  0 == strlen(pAttr));
+		{
+			LogWarn("Default Account Name: %s", m_szUserName);
+			if(0 == strlen(m_szUserName))
+				return false;
+		}
+		else 
+		{
+			strcpy(m_szUserName, szTmp);
+		}
 		
+		memset(szTmp, 0, sizeof(szTmp));
+		auto pPasswd = pEmail->Attribute("Passwd");
+		if(nullptr == pPasswd || 0 == strlen(pPasswd))
+		{
+			LogWan("Default Passwd: %s", m_szPassword);
+			is(0 == m_szPassword)
+				return false;
+		}
+		else 
+		{
+			strcpy(m_szPassword, pPasswd);
+		}
+		auto pHost = pEmail->Attribute("EmailHost");
+		if( nullptr == pHost || 0 == strlen(pHost) )
+		{
+			LogWan("Default Host : %s", m_szEmailHostIP);
+			if(0 == strlen(m_szEmailHostIP))
+				return false;
+		}
+		else 
+		{
+			strcpy(m_szEmailHostIP, pHost);
+		}
+		
+		auto pSenderEmail = pEmail->Attribute("SenderEmail");
+		if( nullptr == pSenderEmail || 0 == strlen(pSenderEmail) )
+		{
+			LogWan("Default SenderEmail : %s", m_szDefaultSendMail);
+			if(0 == strlen(m_szDefaultSendMail))
+				return false;
+		}
+		else 
+		{
+			strcpy(m_szDefaultSendMail, pSenderEmail);
+		}
+		
+
+		memset(szTmp, 0, sizeof(m_szEhlo));
+		auto  pEhlo = pEmail->Attribute("Ehlo");
+		if(pEhlo == nullptr || 0 == strlen(pEhlo))
+		{
+			LogWan("Default Ehlo : %s", m_szEhlo);
+			if(0 == strlen(m_szEhlo))
+				return false;
+		}
+		else 
+		{
+			strcpy(m_szEhlo, pEhlo);
+		}
+		auto pSimpleName = pEmail->Attribute("SimpleName");
+		if(nullptr == pSimpleName || 0 == strlen(pSimpleName))
+		{
+			LogWarn("Default SenderSimpleName : %s", m_szSenderSimpleName);
+		}
+		else 
+		{
+			strcpy(m_szSenderSimpleName, pSimpleName);
+		}
+		//
+		m_nPort = pEmail->IntAttribute("Port",25);
+
+		m_bLoadCfg = true;
 	}
 	catch(std::exception e)
 	{
 		LogWarn("Parse Configure file(%s) fail...", pszConfigFileName);
 	}
 
+	return true;
+}
+
+bool CMail::Notify(std::vector<CONTACTORPtr>& listContactor,const char* pszTitle, const char* pszWarnInfo)
+{
+	if(nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo))
+		return false;
+	if(!m_bLoadCfg)
+	{
+		LogError("Not Finished the Email Svr Configure.");
+		return false;
+	}
 	if(!ConnectMailSvr())
 	{
+		LogWarn("Connect Email Svr fail. WarnningInfo:%s", pszWarnInfo);
 		return false;
 	}
 	if(!LogOn())
 	{
 		return false;
 	}
-
+	SendEmail(listContactor, pszTitle, pszWarnInfo);
+	//
+	Close();
 	return true;
 }
 
-bool CMail::SendNotify()
+bool CMail::CheckConfigure()
 {
+	
 	return true;
 }
-
-bool CMail::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo)
-{
-	if(nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo))
-		return false;
-	std::string strRecvier = GenMailReciver(listContactor);
-	if(0 == strRecvier.length())
-	{
-
-		LogWarn("Recvier Count: %d", listContactor.size());
-		return false;
-	}
-
-	return true;
-}
-
-bool CMail::SendEmail(std::string strRecvier, const char* pszWarnInfo)
-{
-	if( 0 == strRecvier.length() || nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo) )
-		return false;
-
-
-	//Email head;
-	int nRet = SendEmailHead();	
-	//email body 
-	nRet = SendEmailBody(strRecvier, pszWarnInfo);
-	//email end 
-
-	return true;
-}
-
+//
 bool CMail::ConnectMailSvr()
 {
-	if(0 == strlen(m_szEmailSvrName))
-	{
-		return false;
-	}	
-	struct hostent *host = gethostbyname(m_szEmailSvrName);
+	struct hostent *host = gethostbyname(m_szEmailHostIP);
 	if(nullptr == host)
 	{
 		return false;
@@ -171,13 +194,7 @@ bool CMail::ConnectMailSvr()
 		return false;
 	}
 	char szBuffer[256] = { 0 };
-	//int nRet = RecvMsg(szTmp, 256);
-	while(RecvMsg(szBuffer, 256) == 0)
-	{
-		Connect(szTmp, m_nPort);
-		LogWarn("Connect mail svr. IP:Port = %s:%d", m_szEmailHostIP, m_nPort);
-		usleep(1000 * 1000);
-	}
+	RecvMsg(szBuffer, 256);
 	LogInfo("mail Svr Return: %s", szBuffer);
 
 	return true;
@@ -188,67 +205,53 @@ bool CMail::LogOn()
 {
 	//申请身份认证
 	char szTmp[1024] = {0};
-	sprintf(szTmp,"%s","EHLO CICC\GWGroup\r\n");
-	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
+	//sprintf(szTmp,"%s","EHLO CICC\GWGroup\r\n");
+	strcat(m_szEhlo, "\r\n");
+	if(SendMsg(m_szEhlo, strlen(m_szEhlo), true, szTmp, sizeof(szTmp)) < 0)
 	{
+		LogError("Send Ehlo fail.");
 		return false;
 	}
-	//Recv Data;
-	char szRecv[1024]= {0};
-	//Recv Data;
-	int nRet = RecvMsg(szRecv, sizeof(szRecv));
-//	if(strncmp(szRecv,"250", 3) != 0)
-//	{
-//		return false;
-//	}
+
+	if(strstr(szTmp, "503") != nullptr)
+	{
+		LogError("Email Error: %s", szTmp);
+		return false;
+	}
+
 	//请求登录
 	memset(szTmp,0,sizeof(szTmp));
 	sprintf(szTmp, "AUTH LOGIN\r\n");
-	if(!SendNotifyInfo(szTmp,strlen(szTmp)))
+	if(SendMsg(szTmp, strlen(szTmp), true, szTmp, sizeof(szTmp)) < 0)
 	{
+		LogError("Request Auth LogIn fail.");
 		return false;
 	}
-	//RecvData;
-	memset(szRecv, 0, sizeof(szRecv));
-	//RecvData
-	nRet = RecvMsg(szRecv, sizeof(szRecv));
-//	if(strncmp(szRecv, "334", 3) != 0)
-//	{
-//		return false;
-//	}
 	
-	LogInfo("Start LogOn... EmailSvr: %s ", m_szSenderSimpleName);
+	LogInfo("Start LogIn... EmailSvr: %s ", m_szSenderSimpleName);
 
 	//
 
-	char szLogInUserName[128]={0};
-	char szLogPassword[128] ={0};
+//	strcpy(m_szUserName, "it_support_app_sende");
+//	strcpy(m_szPassword,"setupandindex");
+//	char szLogInUserName[128]={"it_support_app_sende"};
+//	char szLogPassword[128] ={"setupandindex"};
 
+	char szUserName[128]={0};
+	char szPassword[128] ={0};
 	
-	CommonHelper::Char2Base64(szLogInUserName, m_szUserName, strlen(m_szUserName));
-	CommonHelper::Char2Base64(szLogPassword, m_szPassword, strlen(m_szPassword));
+	CommonHelper::Char2Base64(szUserName, m_szUserName, strlen(m_szUserName));
+	CommonHelper::Char2Base64(szPassword, m_szPassword, strlen(m_szPassword));
 
-	strcat(szLogInUserName, "\r\n");
-	if(SendMsg(szLogInUserName, strlen(szLogInUserName)) < 0)
+	strcat(szUserName, "\r\n");
+	if(SendMsg(szUserName, strlen(szUserName)) < 0)
 	{
 		LogError("Send UserName fail: Net Error. ");
 		return false;
 	}
-//	if(!SendNotifyInfo(szLogInUserName, strlen(szLogInUserName)))
-//	{
-//		LogWarn("LogOn fail.");
-//		return false;
-//	}
-
-
-	strcat(szLogPassword, "\r\n");
-//	if(!SendNotifyInfo(szLogPassword,  strlen(szLogPassword)))
-//	{
-//		LogWarn("LogOn Send password fail.");
-//		return false;
-//	}
-
-	if(SendMsg(szLogPassword,strlen(szLogPassword), true, szRecv, sizeof(szRecv)) < 0)
+	strcat(szPassword, "\r\n");
+	char szRecv[256] = { 0 };
+	if(SendMsg(szPassword,strlen(szPassword), true, szRecv, sizeof(szRecv)) < 0)
 	{
 		LogWarn("Send User Passwd fail.");
 		return false;
@@ -273,93 +276,85 @@ bool CMail::LogOut()
 	return true;
 }
 
-bool CMail::SendMail(std::vector<std::string>& listContactor,const char* pszMailTxt)
+bool CMail::SendEmail(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszMailTxt)
 {
 	if(pszMailTxt == nullptr)
 	{
 		return false;
 	}
 
+	bool bRet = SendEmailHead(listContactor, pszTitle);
+	if(!bRet)
+	{
+		LogError("%s(%d) Send Email fail. WarnningInfo: %s", __FILE__, __LINE__, pszMailTxt);
+		return false;
+	}
+
+	bRet = SendEmailBody(listContactor,pszMailTxt);
+	if(!bRet)
+	{
+		LogError("%s(%d) Send Email Body fail. WarnningInfo: %s", __FILE__, __LINE__, pszMailTxt);
+		return false;
+	}
+	bRet = SendEmailEnd();
+	if(!bRet)
+	{
+		LogError("%s(%d) Send Email End fail. WarnningInfo: %s", __FILE__, __LINE__, pszMailTxt);
+		return false;
+	}
 	return true;
 }
 
 
-
-bool CMail::SendEmailHead(std::string strRecvier)
+bool CMail::SendEmailHead(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle)
 {
 	char szTmp[1024] = { 0 };
-
-//	std::string str = "MAIL FROM:<" + m_szDefaultSendMail + ">\r\n";
+	char szRecv[1024] = { 0 };
 	sprintf(szTmp, "%s%s%s", "MAIL FROM:<", m_szDefaultSendMail, ">\r\n");
-//	if(!SendNotifyInfo(str.c_str(), str.length()))
-//	{
-//		return false;
-//	}
-	//Recv Data;
+	
 	char szRecvMsg[1024] = { 0 };
 	if(SendMsg(szTmp, strlen(szTmp), true, szRecvMsg, sizeof(szRecvMsg)) < 0)
 	{
 		LogWarn("%s(%d) Send Message fail.", __FILE__, __LINE__);
 		return false;
 	}
-	memset(szTmp, 0, sizeof(szTmp));
-	
-	sprintf(szTmp,"RCPT TO:<%s>\r\n", m_szDefaultSendMail);
-	
-	if(!SendNotifyInfo(szTmp, strlen(szTmp)))
+
+	//Add Recvier 
+	for(auto i = 0; i < listContactor.size(); ++i)
 	{
+		memset(szTmp, 0, sizeof(szTmp));
+		sprintf(szTmp,"RCPT TO:<%s>\r\n", listContactor[i]->szEmail);
+		memset(szRecv, 0, sizeof(szRecv));
+		if(SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv)) < 0)
+		{
+			LogWarn("Add RCPT User fail: UserName:%s No:%d", listContactor[i]->szName, listContactor[i]->nNO);
+			continue;
+		}
+	}
+	
+	//
+	memset(szRecv, 0, sizeof(szRecv));
+	CBuffer stBuf;
+	FormatHeadMail(&stBuf, pszTitle, listContactor);
+	if(SendMsg(stBuf.GetBufPtr(), stBuf.GetBufLen(), true, szRecv, sizeof(szRecv)) < 0 )
+	{
+		LogError("Send Email Header fail.");
 		return false;
 	}
-	//Recv Data;
 	
-	memset(szTmp, 0, sizeof(szTmp));
-	
-	memcpy(szTmp, "DATA\r\n", strlen("DATA\r\n"));
-
-	if(!SendNotifyInfo(szTmp,strlen(szTmp)))
-	{
-		return false;
-	}
-	//Recv Data;
-
-	memset(szTmp, 0, sizeof(szTmp));
-	
-
 	return true;
 }
 
-bool CMail::SendEmailBody(const char* pszMailTxt, int nLen)	//发送文本信息
+bool CMail::SendEmailBody(std::vector<CONTACTORPtr>&listContactor, const char* pszMailTxt)	//发送文本信息
 {
-
-	char szTmp[2048] ={0};
-	
-	//Email Body 
-	strcpy(szTmp, "DATA\r\n");
-	char szRecv[1024] = { 0 }; 
-	if(SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szTmp)) < 0)
-	{
-		LogWarn("Send Data head fail.");
-		return false;
-	}
-	
-	memset(szRecv, 0, sizeof(szRecv));
-	std::vector<char> MailBodyInfo;
-	MailBodyInfo.resize(nLen + 32);
-	sprintf(&MailBodyInfo[0],  "%s%s", pszMailTxt, "\r\n.\r\n");
-	if(SendMsg(&MailBodyInfo[0], strlen(&MailBodyInfo[0]), true, szRecv,sizeof(szRecv)) < 0)
+	CBuffer stBuf;
+	FormatBodyMail(&stBuf, pszMailTxt);
+	if(SendMsg(stBuf.GetBufPtr(), stBuf.GetBufLen() ) < 0)
 	{
 		LogError("Send Mail body information error.");
 		return false;
 	}
 	//
-	memset(szRecv, 0, sizeof(szRecv));
-	strcpy(szTmp, "QUIT\r\n");
-	if(SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv)) < 0)
-	{
-		LogWarn("Send Mail End fail.");
-		return false;
-	}
-	
 	return true;
 }
 
@@ -372,34 +367,22 @@ bool CMail::SendAttachment()	//发送附件
 
 bool CMail::SendEmailEnd()	//发送邮件结束信息 
 {
-	char szTmp[1024]={0};
-	sprintf(szTmp, "--INVT--\r\n.\r\n");
-	
-	SendNotifyInfo(szTmp, strlen(szTmp));
-	
-	sprintf(szTmp, "QUIT\r\n");
-	SendNotifyInfo(szTmp, strlen(szTmp));
-
+	char szTmp[256]={0};
+	strcpy(szTmp, "\r\n\r\n该邮件由ETL系统自动发出，如有疑问，请联系ETL相关人员\r\n.\r\n");
+	char szRecv[256] = { 0 };
+	if(SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv)) < 0)
+	{
+		LogError("Send Email End Error.");
+		return false;
+	}
+	strcpy(szTmp, "QUIT\r\n");
+	if(SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv)) < 0)
+	{
+		LogWarn("Send Mail End fail.");
+		return false;
+	}
 	return true;
 }
-
-std::string  CMail::GenMailReciver(std::vector<CONTACTORPtr>& listContactor)
-{
-	std::string str;
-
-	auto it = listContactor.end();
-	auto pUser = *it;
-	for(; it != listContactor.begin(); --it)
-	{
-		std::string strName = pUser->szName;
-		std::string strEmail = pUser->szEmail;
-		str += strName + "<" + strEmail +">" + ";";
-	}
-
-	return str;
-}
-
-
 
 int CMail::SendMsg(const void* pszBuf, unsigned int nLen, bool bWaitRecv/* = false*/, char* pszRecvBuf/* = nullptr*/, unsigned int nLength/* = 0*/)
 {
@@ -409,7 +392,7 @@ int CMail::SendMsg(const void* pszBuf, unsigned int nLen, bool bWaitRecv/* = fal
 	}
 	
 	unsigned int nRet = SendNotifyInfo((char*)pszBuf, nLen);
-	if(nRet != nLen)
+	if(!nRet)
 	{
 		return -1;
 	}
@@ -428,4 +411,100 @@ int CMail::SendMsg(const void* pszBuf, unsigned int nLen, bool bWaitRecv/* = fal
 	nRet = RecvMsg(pszRecvBuf ,nLength);
 	
 	return nRet;
+}
+
+void CMail::FormatHeadMail(CBuffer* pBuffer, const char* pszTitle, std::vector<CONTACTORPtr>& listContactor)
+{
+
+	char szTmp[256] = { 0 };
+	strcat(szTmp, "DATA\r\n");
+	if(!pBuffer->Append(szTmp, strlen(szTmp)))
+	{
+		LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
+		return ;
+	}
+
+	memset(szTmp, 0, sizeof(szTmp));
+	sprintf(szTmp, "From: %s<%s>%s", m_szSenderSimpleName, m_szDefaultSendMail, "\r\n");
+	if(!pBuffer->Append(szTmp, strlen(szTmp)))
+	{
+		LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
+		return ;
+	}
+
+	if(!pBuffer->Append("To: ", 4))
+	{
+		LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
+		return ;
+	}
+	for(auto i = 0; i < listContactor.size(); ++i)
+	{
+		memset(szTmp, 0, sizeof(szTmp));
+
+		sprintf(szTmp, "%s<%s>;", listContactor[i]->szName, listContactor[i]->szEmail);
+		if(!pBuffer->Append(szTmp, strlen(szTmp)))
+		{
+			LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
+			return ;
+		}
+	}
+	if(!pBuffer->Append("\r\n ", 2))
+	{
+		LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
+		return ;
+	}
+	//
+	memset(szTmp, 0, sizeof(szTmp));
+	
+	sprintf(szTmp, "Subject: %s%s", pszTitle, "\r\n");
+	
+	if(!pBuffer->Append(szTmp,strlen(szTmp)))
+	{
+		LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
+		return ;
+	}
+
+	memset(szTmp, 0, sizeof(szTmp));
+	strcpy(szTmp, "MIME-Version 1.0\r\n\r\n");
+	if(!pBuffer->Append(szTmp, strlen(szTmp)))
+	{
+		LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
+		return ;
+	}
+
+//	memset(szTmp, 0, sizeof(szTmp));
+//	sprintf(szTmp, "%s%s", "Content-Type: multipart/mixed,boundary=qwertyuiop","\r\n");
+//	if(!pBuffer->Append(szTmp, strlen(szTmp)))
+//	{
+//		LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
+//		return ;
+//	}
+	
+}
+
+void CMail::FormatBodyMail(CBuffer* pBuffer, const char* pszWarnInfo)
+{
+	pBuffer->Clear();
+	char szTmp[256] = { 0 };
+	//strcat(szTmp, "--qwertyuiop\r\n");
+	//strcat(szTmp, "Content-Type: text/plain");
+	//strcat(szTmp, "charset=\"gb2312\"\r\n\r\n");
+	strcpy(szTmp, "\r\n ETL报警监控业务 \r\n\r\n");
+	if(!pBuffer->Append(szTmp, strlen(szTmp)))
+	{
+		LogError("%s(%d) Append Data error." , __FILE__, __LINE__);
+		return ;
+	}
+	
+	if(!pBuffer->Append(pszWarnInfo, strlen(pszWarnInfo)))
+	{
+		LogError("%s(%d) Append Data error." , __FILE__, __LINE__);
+		return ;
+	}
+
+	if(!pBuffer->Append("\r\n", strlen("\r\n")))
+	{
+		LogError("%s(%d) Append Data error." , __FILE__, __LINE__);
+		return ;
+	}
 }

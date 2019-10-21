@@ -47,7 +47,7 @@ bool CNotify::OnInitialUpdate(const char* pszConfigFileName)
 }
 
 
-bool CNotify::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszWarnInfo)
+bool CNotify::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszWarnInfo)
 {
 	if(nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo))
 		return false;
@@ -85,8 +85,12 @@ bool CNotify::SendNotifyInfo(const char* pszInfo, int nBufLen)
 	return false;
 }
 
-bool CNotify::RecvMsg(char* pszBuf, int nBufLen)
+int  CNotify::RecvMsg(char* pszBuf, int nBufLen)
 {
-	m_pSocket->Recv(pszBuf, nBufLen);
-	return true;
+	return m_pSocket->Recv(pszBuf, nBufLen);
+}
+
+void CNotify::Close()
+{
+	m_pSocket->Close();
 }

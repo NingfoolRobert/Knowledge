@@ -60,7 +60,8 @@ typedef struct stContactor
 		nLevel			= pInfo->nLevel;
 		memcpy(szName, pInfo->szName, strlen(pInfo->szName) + 1);
 		memcpy(szEmail, pInfo->szEmail, strlen(pInfo->szEmail) + 1);
-	
+		listFocus.clear();
+		listFocus.swap(pInfo->listFocus);
 	}
 	bool isNotify(int nLvl)
 	{

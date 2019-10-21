@@ -74,7 +74,7 @@ bool CContactor::GetNotifyList(std::vector<CONTACTORPtr>& listNotify, int nAlarm
 		auto pNotify = *pIt;
 		if(pNotify->isNotify(nAlarmLevel))
 		{
-			listNotify.push_back(*pIt);
+			listNotify.push_back(pNotify);
 		}
 		else 
 			break;
@@ -107,7 +107,7 @@ bool CContactor::Add(PCONTACTORINFO pInfo)
 	else 
 	{
 		m_listContactor[pInfo->nNO] = pUser;
-		for(int i = 0; pUser->listFocus.size(); ++i)
+		for(int i = 0; i < pUser->listFocus.size(); ++i)
 		{
 			std::string strType = pUser->listFocus[i];
 			if(strType.length() == 0)
@@ -219,6 +219,7 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 		if(doc.LoadFile(pszConfigureName))
 		{
 			LogWarn("%s(%d) Configure file Load fail. FileName: %s", __FILE__, __LINE__, pszConfigureName);
+			return ;
 		}
 		
 		XMLElement* pContactor = doc.FirstChildElement("Contactor");
@@ -254,7 +255,7 @@ void CContactor::GetNotifyUser(const char* pszConfigureName)
 				char szTmp[128] = { 0 };
 				strcpy(szTmp, pFocus->Attribute("Type"));
 				if(strlen(szTmp) != 0)
- 					stUser.listFocus.push_back(pFocus->Attribute("Type"));
+ 				 	stUser.listFocus.push_back(pFocus->Attribute("Type"));
 			}
 			Add(&stUser);
 		}

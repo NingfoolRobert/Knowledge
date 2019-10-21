@@ -1,16 +1,18 @@
 
 #include "AlarmService.h"
+#include <signal.h>
+#include <sys/types.h>
 
-static void WarnningThread(CAlarmService* pService)
-{
-	if(pService == nullptr)
-	{	
-		LogWarn("%s(%s)pService == NULL", __FILE__, __FUNCTION__);
-		return ;	
-	}	
-	
-	pService->SendNotify();
-}
+//static void WarnningThread(CAlarmService* pService)
+//{
+//	if(pService == nullptr)
+//	{	
+//		LogWarn("%s(%s)pService == NULL", __FILE__, __FUNCTION__);
+//		return ;	
+//	}	
+//	
+//	pService->SendNotify();
+//}
 
 
 class CAlarmService* g_ciccAlarmService = nullptr;
@@ -27,7 +29,9 @@ CAlarmService::~CAlarmService()
 }
 
 bool CAlarmService::OnInitialUpdate()
-{
+{	
+	signal(SIGPIPE,SIG_IGN);
+
 	//处理对象注册
 	REGISTER_CLASS(BaseHandler,CAppUser);
 	///
@@ -45,7 +49,8 @@ bool CAlarmService::OnInitialUpdate()
 	{
 		return false;
 	}
-		
+
+	SendWarningInfo(1, "FIX", "Fix业务");
 	return true;
 }
 
