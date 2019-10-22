@@ -19,10 +19,9 @@ public:
 
 	virtual void ProcessItem(zmsg_t * zMsg);
 
-protected:
+public:
 	bool ParseWarningInfo(const char* pMsg, int nLen);
 
-//	bool ParseWarnningInfo(::google::protobuf::Message* pMessage);
-	
+protected:
 	bool GeneWarningInfo(CBuffer* pBuffer, Protocol::Protobuf::LogWarning* pLogWarnInfo);
 };

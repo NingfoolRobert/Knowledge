@@ -37,20 +37,6 @@ bool CAppUser::ParseWarningInfo(const char* pMsg, int nLen)
 
 	LogWarning pLogWarn;
 	pLogWarn.ParseFromArray(pMsg, nLen);
-//}
-//
-//bool CAppUser::ParseWarnningInfo(::google::protobuf::Message* pMessage)
-//{
-//	if(nullptr == pMessage)
-//	{
-//		LogWarn("%s ::Message class  is NULL", __FUNCTION__);
-//		return false;
-//	}
-//
-//
-//	
-//	LogWarning*  pLogWarn = (LogWarning*) pMessage;
-////	char buf[1024] ={0};
 //
 	int nLevel = 1;
 	if(pLogWarn.has_level())

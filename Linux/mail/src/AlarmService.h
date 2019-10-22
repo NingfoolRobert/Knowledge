@@ -37,10 +37,12 @@ public:
 	virtual BaseHandler* CreateHandler(int nType);
 	
 public:
-//	bool SendWarningInfo(const int nLevel, const std::string  strAppType, const char* pszWarningInfo);
+	
 	bool SendWarningInfo(const int nLevel, const std::string  strAppType, CBuffer* pBuffer);
 
 	int GetWarningLevel(std::string pszWarnLevel);
+	
+	void Test();
 public:
 	bool SendNotify();
 

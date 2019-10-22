@@ -143,6 +143,7 @@ void CAlarmService::InitWarnningLevel()
 	m_mapWarningLevel["FATAL"]			= 5;
 
 	LogInfo("WarnningLevel Count: %d", m_mapWarningLevel.size());
+
 #ifdef _DEBUG
 	CBuffer stBuf;
 	char szTmp[20] = { 0 };
