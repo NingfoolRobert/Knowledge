@@ -20,6 +20,9 @@ include_directories(${PROJECT_SOURCE_DIR}/include/CICCTools)
 include_directories(${PROJECT_SOURCE_DIR}/include/Server)
 include_directories(${PROJECT_SOURCE_DIR}/include/Server/Handler)
 include_directories(${PROJECT_SOURCE_DIR}/include/Server/Subscribe)
+include_directories(${PROJECT_SOURCE_DIR}/proto/Msg)
+include_directories(${PROJECT_SOURCE_DIR}/proto)
+
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 link_libraries(${PROJECT_SOURCE_DIR}/lib)
 
@@ -30,18 +33,23 @@ AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/Server gSrc)
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/Server/Handler UserSrc)
 
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/Server/Subscribe SubSrc)
+#AUX_SOURCE_DIRECTORY(%{CMAKE_SOURCE_DIR}/proto/Msg/*.cc  PBSrc)
+file(GLOB PBSrc "${CMAKE_SOURCE_DIR}/proto/Msg/*.cc")
+
+
 add_executable(${PROJECT_NAME}  
-								${SRC} 
+ 								${SRC} 
 					 			${libSrc}
 								${gSrc}
 								${UserSrc}
 								${SubSrc}
-								
-								)  
+								${PBSrc}
+ 								)     
 target_link_libraries(${PROJECT_NAME}
 						
 					 	libjsoncpp.a
 						libczmq.a
 						libzmq.a
 						libuuid.a
+						libprotobuf.a
 						)

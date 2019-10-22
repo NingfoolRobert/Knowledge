@@ -101,22 +101,24 @@ bool CNotifyMgr::UpdateConfig(const char* pszConfigFileName)
 	return true;
 }
 
-bool CNotifyMgr::Send(const int nLevel, const std::string strAppType, const char* pszWarnInfo)
+bool CNotifyMgr::Send(const int nLevel, const std::string strAppType, CBuffer* pBuffer)
+//bool CNotifyMgr::Send(const int nLevel, const std::string strAppType, const char* pszWarnInfo)
 {
 	std::vector<CONTACTORPtr> listUser;
 	m_pContactor->GetNotifyList(listUser, nLevel, strAppType);
 	
-	for(auto it = m_listNotify.begin(); it != m_listNotify.end(); ++it)
-	{
-		CNotify* pNotify = *it;
-		char szTmp[256] = { 0 };
-		sprintf(szTmp, "%s:%s","!!!Alarm!!!", strAppType.c_str());
-		pNotify->Notify(listUser, szTmp, pszWarnInfo);
-	}
+	char szTmp[256] = { 0 };
+	sprintf(szTmp, "Alarm: %s ", strAppType.c_str());
+	
+//	for(auto it = m_listNotify.begin(); it != m_listNotify.end(); ++it)
+//	{
+//		CNotify* pNotify = *it;
+//		pNotify->Notify(listUser, szTmp, pszWarnInfo);
+//	}
 
-//	for_each(m_listNotify.begin(), m_listNotify.end(), [&](CNotify* pNotify){
-//			pNotify->Notify(listUser, pszWarnInfo);
-//			});
+	for_each(m_listNotify.begin(), m_listNotify.end(), [&](CNotify* pNotify){
+			pNotify->Notify(listUser, szTmp, pBuffer);
+			});
 	return true;
 }
 
@@ -126,7 +128,6 @@ bool CNotifyMgr::Add(CNotify* pNotify)
 	{
 		return false;
 	}
-
 
 
 	return true;
@@ -139,6 +140,17 @@ bool CNotifyMgr::Del(CNotify* pNotify)
 		return false;
 	}
 
+	for(auto it = m_listNotify.begin(); it != m_listNotify.end(); ++it)
+	{
+		CNotify* pInfo = *it;
+		if(pInfo->GetNotifyType()  == pNotify->GetNotifyType())
+		{
+			delete *it;
+			*it = nullptr;
+			m_listNotify.erase(it);
+			break;
+		}
+	}
 	return true;
 }
 

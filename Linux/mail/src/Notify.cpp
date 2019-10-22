@@ -47,9 +47,9 @@ bool CNotify::OnInitialUpdate(const char* pszConfigFileName)
 }
 
 
-bool CNotify::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszWarnInfo)
+bool CNotify::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, CBuffer* pBuffer)
 {
-	if(nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo))
+	if(nullptr == pBuffer)
 		return false;
 	return true;
 }

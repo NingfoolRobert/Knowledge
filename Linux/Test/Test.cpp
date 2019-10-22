@@ -11,6 +11,9 @@ using namespace std;
 int main(int argc, char** argv)
 {
 
+	char szTmp[100] = {0};
+	sprintf(szTmp,"%-*s: %s", 20, "ninhao", "hello");
+	cout << szTmp <<endl;
   int nums  = 1000;
   cout << nums<<endl;
   cout << "hello world!"<< endl;

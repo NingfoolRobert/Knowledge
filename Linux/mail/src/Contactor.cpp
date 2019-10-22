@@ -2,32 +2,28 @@
 #include "Log.h"
 #include "tinyxml2.h"
 #include "CommonHelper.h"
+#include <algorithm>
+
 
 using namespace CICCTools;
-int compContactor(const void* arg1, const void* arg2)
+int compContactor(const CONTACTORPtr& arg1, const CONTACTORPtr& arg2)
 {
 //	unsigned int  pUnValue1 = *(unsigned int* )arg1;
 //	unsigned int  pUnValue2 = *(unsigned int* )arg2;
 //	CONTACTORPtr pUser1 = (CONTACTORPtr)pUnValue1;
-	
+//  
 //	CONTACTORPtr pUser2 = (CONTACTORPtr)pUnValue2;
-//	CONTACTORPtr pUser1 = (CONTACTORPtr)arg1;
+//	CONTACTORPtr pUser1 = *(CONTACTORPtr*)arg1;
 //	
-//	CONTACTORPtr pUser2 = (CONTACTORPtr)arg2;
+//	CONTACTORPtr pUser2 = *(CONTACTORPtr*)arg2;
 //
-//	if(pUser1->nLevel == pUser2->nLevel)
-//	{
-//		if(pUser1->nNO < pUser2->nNO)
-//			return -1;
-//		else if(pUser1->nNO == pUser2->nNO)
-//			return 0;
-//		else 
-//			return 1;
-//	}
-//	else if(pUser1->nLevel < pUser2->nLevel)
-//		return -1;
-//	else 
-		return 1;
+	if(arg1->nLevel == arg2->nLevel)
+	{
+		return arg1->nNO < arg2->nNO;
+	}
+	else 
+		return arg1->nLevel < arg2->nLevel;
+
 }
 
 CContactor::CContactor()
@@ -59,8 +55,6 @@ bool CContactor::GetNotifyList(std::vector<CONTACTORPtr>& listNotify, int nAlarm
 	if(0 == strType.length())
 		return true;
 	
-	AtomLockRegion locker(&m_clsLock);
-	
 	auto it = m_mapContactor.find(strType);
 	if(it == m_mapContactor.end())
 	{
@@ -77,9 +71,12 @@ bool CContactor::GetNotifyList(std::vector<CONTACTORPtr>& listNotify, int nAlarm
 			listNotify.push_back(pNotify);
 		}
 		else 
+		{
 			break;
+		}
 	}
-	
+
+	sort(listNotify.begin(), listNotify.end(), compContactor);
 	return true;
 }
 
@@ -94,7 +91,8 @@ bool CContactor::Add(PCONTACTORINFO pInfo)
 		LogInfo("Memory fail!  No:%d,Name:%s,Email:%s",pInfo->nNO, pInfo->szName, pInfo->szEmail);
 		return false;
 	}
-	
+
+	AtomLockRegion locker(&m_clsLock);	
 	auto it = m_listContactor.find(pInfo->nNO);
 	if(it != m_listContactor.end())
 	{
@@ -119,14 +117,14 @@ bool CContactor::Add(PCONTACTORINFO pInfo)
 				if(pVec == nullptr)
 				{
 					LogWarn("%s(%d) new vector fail.", __FILE__, __LINE__);
-					return false;
+	 				return false;
 				}
 				pVec->push_back(pUser);
-				m_mapContactor[strType] = pVec;
+	 			m_mapContactor[strType] = pVec;
 			}
 			else 
 			{
-				auto pVec = itmap->second ;
+	 			auto pVec = itmap->second ;
 				pVec->push_back(pUser);
 			}
 		}	

@@ -17,11 +17,11 @@ public:
 public:
 	virtual bool OnInitialUpdate(const char* pszConfigFileName);
 
-	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszWarnInfo);	
+	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, CBuffer* pBuffer);	
 
 	virtual bool CheckConfigure();
 protected:	
-	bool SendEmail(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszMailTxt);
+	bool SendEmail(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, CBuffer* pBuffer);
 
 	bool LogOn();
 
@@ -32,7 +32,7 @@ protected:
 
 	bool SendEmailHead(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle);
 
-	bool SendEmailBody(std::vector<CONTACTORPtr>& listContactor, const char* pszMailTxt);	//发送文本信息
+	bool SendEmailBody(std::vector<CONTACTORPtr>& listContactor, CBuffer* pBuffer);	//发送文本信息
 	
 	bool SendAttachment();	//发送附件
 

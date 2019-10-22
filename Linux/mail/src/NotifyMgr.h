@@ -23,7 +23,8 @@ public:
 	
 	bool UpdateConfig(const char* pszConfigFileName);
 
-	bool Send(const int nLevel, const std::string strAppType, const char* pszWarnInfo);
+//	bool Send(const int nLevel, const std::string strAppType, const char* pszWarnInfo);
+	bool Send(const int nLevel, const std::string strAppType, CBuffer* pBuffer);
 	
 	bool Add(CNotify* pNotify);
 

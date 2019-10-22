@@ -37,7 +37,6 @@ bool CAlarmService::OnInitialUpdate()
 	///
 	if(!CNetObjService::OnInitialUpdate())
 		return true;
-	LogInfo("Init Service...");
 
 	m_pNotify = new CNotifyMgr;
 	if(nullptr == m_pNotify)
@@ -50,7 +49,9 @@ bool CAlarmService::OnInitialUpdate()
 		return false;
 	}
 
-	SendWarningInfo(1, "FIX", "Fix业务");
+	InitWarnningLevel();
+
+//	SendWarningInfo(1, "FIX", "Fix业务");
 	return true;
 }
 
@@ -102,22 +103,58 @@ BaseHandler* CAlarmService::CreateHandler(int nType)
 	return nullptr;
 }
 
-bool CAlarmService::SendWarningInfo(const int nLevel, const std::string strAppType, const char* pszWarningInfo)
+bool CAlarmService::SendWarningInfo(const int nLevel, const std::string  strAppType, CBuffer* pBuffer)
 {
-	if(nullptr == pszWarningInfo || 0 == strlen(pszWarningInfo))
+	if(nullptr == pBuffer)
 	{
 		LogWarn("Warnning Infomation is null.");
 		return false;
 	}
 	if(nullptr == m_pNotify)
 	{
-		LogError("%s(%d) [E] Notify Manager is nullptr. Info:%s", __FILE__, __LINE__, pszWarningInfo);
+		LogError("%s(%d) [E] Notify Manager is nullptr. Info:%s", __FILE__, __LINE__, pBuffer->GetBufPtr());
 		return false;
 	}
-	if(!m_pNotify->Send(nLevel, strAppType, pszWarningInfo))
+	if(!m_pNotify->Send(nLevel, strAppType, pBuffer))
 	{
-		LogWarn("Send Warnning info fail.Warnning: %s", pszWarningInfo);
+		LogWarn("Send Warnning info fail.Warnning: %s", pBuffer->GetBufPtr());
 		return false;
 	}
 	return true;
+}
+
+int CAlarmService::GetWarningLevel(std::string pszWarnLevel)
+{
+	auto it = m_mapWarningLevel.find(pszWarnLevel);
+	if(it != m_mapWarningLevel.end())
+		return it->second;
+
+	return 1;
+}
+
+void CAlarmService::InitWarnningLevel()
+{
+	m_mapWarningLevel.clear();
+	
+	m_mapWarningLevel["TEST"]			= 1;	
+	m_mapWarningLevel["NOTICE"]			= 2;
+	m_mapWarningLevel["WARNING"]		= 3;
+	m_mapWarningLevel["ERROR"]			= 4;
+	m_mapWarningLevel["FATAL"]			= 5;
+
+	LogInfo("WarnningLevel Count: %d", m_mapWarningLevel.size());
+#ifdef _DEBUG
+	CBuffer stBuf;
+	char szTmp[20] = { 0 };
+	for(auto it = m_mapWarningLevel.begin(); it != m_mapWarningLevel.end(); ++it)
+	{
+		sprintf(szTmp,"%s:%d ", it->first.c_str(), it->second);
+
+		if(!stBuf.Append(szTmp, strlen(szTmp)))
+		{
+			LogError("%s(%d) Append string error.", __FILE__, __LINE__);
+			return false;
+		}
+	}
+#endif 
 }

@@ -9,7 +9,7 @@
 #include <string.h>
 #include <vector>
 #include "Contactor.h"
-
+#include "Buffer.h"
 
 /////////////////////////////////////////////////////
 
@@ -39,7 +39,7 @@ public:
 
 	virtual bool OnTimeout(struct tm* pTime);
 
-	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszWarnInfo);
+	virtual bool Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, CBuffer* pBuffer);
 public:
 	
 	void SetNotifyType(int nType) { m_nType = nType; }

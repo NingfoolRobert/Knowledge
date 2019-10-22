@@ -64,7 +64,7 @@ bool CMail::OnInitialUpdate(const char* pszConfigFileName)
 		memset(szTmp, 0, sizeof(szTmp));
 	
 		auto pAttr  = pEmail->Attribute("Account");
-		if(nullptr == pAttr ||  0 == strlen(pAttr));
+		if(nullptr == pAttr ||  0 == strlen(pAttr))
 		{
 			LogWarn("Default Account Name: %s", m_szUserName);
 			if(0 == strlen(m_szUserName))
@@ -72,15 +72,15 @@ bool CMail::OnInitialUpdate(const char* pszConfigFileName)
 		}
 		else 
 		{
-			strcpy(m_szUserName, szTmp);
+			strcpy(m_szUserName, pAttr);
 		}
 		
 		memset(szTmp, 0, sizeof(szTmp));
 		auto pPasswd = pEmail->Attribute("Passwd");
 		if(nullptr == pPasswd || 0 == strlen(pPasswd))
 		{
-			LogWan("Default Passwd: %s", m_szPassword);
-			is(0 == m_szPassword)
+			LogWarn("Default Passwd: %s", m_szPassword);
+			if(0 == strlen(m_szPassword))
 				return false;
 		}
 		else 
@@ -90,7 +90,7 @@ bool CMail::OnInitialUpdate(const char* pszConfigFileName)
 		auto pHost = pEmail->Attribute("EmailHost");
 		if( nullptr == pHost || 0 == strlen(pHost) )
 		{
-			LogWan("Default Host : %s", m_szEmailHostIP);
+			LogWarn("Default Host : %s", m_szEmailHostIP);
 			if(0 == strlen(m_szEmailHostIP))
 				return false;
 		}
@@ -102,7 +102,7 @@ bool CMail::OnInitialUpdate(const char* pszConfigFileName)
 		auto pSenderEmail = pEmail->Attribute("SenderEmail");
 		if( nullptr == pSenderEmail || 0 == strlen(pSenderEmail) )
 		{
-			LogWan("Default SenderEmail : %s", m_szDefaultSendMail);
+			LogWarn("Default SenderEmail : %s", m_szDefaultSendMail);
 			if(0 == strlen(m_szDefaultSendMail))
 				return false;
 		}
@@ -116,7 +116,7 @@ bool CMail::OnInitialUpdate(const char* pszConfigFileName)
 		auto  pEhlo = pEmail->Attribute("Ehlo");
 		if(pEhlo == nullptr || 0 == strlen(pEhlo))
 		{
-			LogWan("Default Ehlo : %s", m_szEhlo);
+			LogWarn("Default Ehlo : %s", m_szEhlo);
 			if(0 == strlen(m_szEhlo))
 				return false;
 		}
@@ -146,9 +146,10 @@ bool CMail::OnInitialUpdate(const char* pszConfigFileName)
 	return true;
 }
 
-bool CMail::Notify(std::vector<CONTACTORPtr>& listContactor,const char* pszTitle, const char* pszWarnInfo)
+//bool CMail::Notify(std::vector<CONTACTORPtr>& listContactor,const char* pszTitle, const char* pszWarnInfo)
+bool CMail::Notify(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, CBuffer* pBuffer)	
 {
-	if(nullptr == pszWarnInfo || 0 == strlen(pszWarnInfo))
+	if(nullptr == pBuffer)
 		return false;
 	if(!m_bLoadCfg)
 	{
@@ -157,14 +158,14 @@ bool CMail::Notify(std::vector<CONTACTORPtr>& listContactor,const char* pszTitle
 	}
 	if(!ConnectMailSvr())
 	{
-		LogWarn("Connect Email Svr fail. WarnningInfo:%s", pszWarnInfo);
+		LogWarn("Connect Email Svr fail. WarnningInfo:%s", pBuffer->GetBufPtr());
 		return false;
 	}
 	if(!LogOn())
 	{
 		return false;
 	}
-	SendEmail(listContactor, pszTitle, pszWarnInfo);
+	SendEmail(listContactor, pszTitle, pBuffer);
 	//
 	Close();
 	return true;
@@ -276,9 +277,10 @@ bool CMail::LogOut()
 	return true;
 }
 
-bool CMail::SendEmail(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszMailTxt)
+bool CMail::SendEmail(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, CBuffer* pBuffer)
+//bool CMail::SendEmail(std::vector<CONTACTORPtr>& listContactor, const char* pszTitle, const char* pszMailTxt)
 {
-	if(pszMailTxt == nullptr)
+	if(nullptr == pBuffer)
 	{
 		return false;
 	}
@@ -286,20 +288,20 @@ bool CMail::SendEmail(std::vector<CONTACTORPtr>& listContactor, const char* pszT
 	bool bRet = SendEmailHead(listContactor, pszTitle);
 	if(!bRet)
 	{
-		LogError("%s(%d) Send Email fail. WarnningInfo: %s", __FILE__, __LINE__, pszMailTxt);
+		LogError("%s(%d) Send Email fail. WarnningInfo: %s", __FILE__, __LINE__, pBuffer->GetBufPtr());
 		return false;
 	}
 
-	bRet = SendEmailBody(listContactor,pszMailTxt);
+	bRet = SendEmailBody(listContactor,pBuffer);
 	if(!bRet)
 	{
-		LogError("%s(%d) Send Email Body fail. WarnningInfo: %s", __FILE__, __LINE__, pszMailTxt);
+		LogError("%s(%d) Send Email Body fail. WarnningInfo: %s", __FILE__, __LINE__, pBuffer->GetBufPtr());
 		return false;
 	}
 	bRet = SendEmailEnd();
 	if(!bRet)
 	{
-		LogError("%s(%d) Send Email End fail. WarnningInfo: %s", __FILE__, __LINE__, pszMailTxt);
+		LogError("%s(%d) Send Email End fail. WarnningInfo: %s", __FILE__, __LINE__, pBuffer->GetBufPtr());
 		return false;
 	}
 	return true;
@@ -345,10 +347,11 @@ bool CMail::SendEmailHead(std::vector<CONTACTORPtr>& listContactor, const char* 
 	return true;
 }
 
-bool CMail::SendEmailBody(std::vector<CONTACTORPtr>&listContactor, const char* pszMailTxt)	//发送文本信息
+//bool CMail::SendEmailBody(std::vector<CONTACTORPtr>&listContactor, const char* pszMailTxt)	//发送文本信息
+bool CMail::SendEmailBody(std::vector<CONTACTORPtr>& listContactor, CBuffer* pBuffer)	//发送文本信息
 {
 	CBuffer stBuf;
-	FormatBodyMail(&stBuf, pszMailTxt);
+	FormatBodyMail(&stBuf, pBuffer->GetBufPtr());
 	if(SendMsg(stBuf.GetBufPtr(), stBuf.GetBufLen() ) < 0)
 	{
 		LogError("Send Mail body information error.");

@@ -14,22 +14,6 @@
 #define BUFLEN_TYPE_EMAIL		36
 
 
-
-// 报警级别 
-#define ALARM_LEVEL_TYPE_WARNNING			0x00000001
-#define ALARM_LEVEL_TYPE_ERROR				0x00000002
-#define ALARM_LEVEL_TYPE_FATAL				0x00000004 
-
-//业务类型 
-#define ALARM_BUSINESS_TYPE_FIX				0x00000001				//fix 
-#define ALARM_BUSINESS_TYPE_BB				0x00000002				//银行间
-#define ALARM_BUSINESS_TYPE_HS				0x00000004				//
-#define ALARM_BUSINESS_TYPE_JZ				0x00000008				//
-//#define ALARM_BUSINESS_TYPE_FIX				0x00000010				//
-//#define ALARM_BUSINESS_TYPE_FIX				0x00000020				// 
-//#define ALARM_BUSINESS_TYPE_FIX				0x00000040				// 
-
-
 // Notify对象 
 typedef struct stContactor
 {
@@ -63,6 +47,7 @@ typedef struct stContactor
 		listFocus.clear();
 		listFocus.swap(pInfo->listFocus);
 	}
+	
 	bool isNotify(int nLvl)
 	{
 		if(nLevel <=  nLvl)

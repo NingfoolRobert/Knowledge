@@ -16,6 +16,7 @@ typedef struct stWarnInfo
 	std::string strWarnningInfo;
 }WARNINFO,*PWARNINFO;
 
+
 class CAlarmService : public CNetObjService 
 {
 public:
@@ -36,14 +37,22 @@ public:
 	virtual BaseHandler* CreateHandler(int nType);
 	
 public:
-	bool SendWarningInfo(const int nLevel, const std::string  strAppType, const char* pszWarningInfo);
+//	bool SendWarningInfo(const int nLevel, const std::string  strAppType, const char* pszWarningInfo);
+	bool SendWarningInfo(const int nLevel, const std::string  strAppType, CBuffer* pBuffer);
 
+	int GetWarningLevel(std::string pszWarnLevel);
 public:
 	bool SendNotify();
+
+protected:
+	
+	void  InitWarnningLevel();
 private:
 	CNotifyMgr*		m_pNotify;	//通知管理类
 	
-	std::queue<PWARNINFO>  m_listWarnInfo; 
+	std::queue<PWARNINFO>  m_listWarnInfo;
+	
+	std::map<std::string, int>	m_mapWarningLevel;
 };
 
 extern class CAlarmService*	g_ciccAlarmService;
