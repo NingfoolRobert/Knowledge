@@ -41,17 +41,17 @@ public:
 	bool SendWarningInfo(const int nLevel, const std::string  strAppType, CBuffer* pBuffer);
 
 	int GetWarningLevel(std::string pszWarnLevel);
-	
-	void Test();
-public:
-	bool SendNotify();
 
+	void SendNotify();
+
+	void Test();
+	
 protected:
 	
 	void  InitWarnningLevel();
 private:
 	CNotifyMgr*		m_pNotify;	//通知管理类
-	
+
 	std::queue<PWARNINFO>  m_listWarnInfo;
 	
 	std::map<std::string, int>	m_mapWarningLevel;

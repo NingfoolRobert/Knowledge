@@ -3,16 +3,16 @@
 #include <signal.h>
 #include <sys/types.h>
 
-//static void WarnningThread(CAlarmService* pService)
-//{
-//	if(pService == nullptr)
-//	{	
-//		LogWarn("%s(%s)pService == NULL", __FILE__, __FUNCTION__);
-//		return ;	
-//	}	
-//	
-//	pService->SendNotify();
-//}
+static void WarnningThread(CAlarmService* pService)
+{
+	if(pService == nullptr)
+	{	
+		LogWarn("%s(%s)pService == NULL", __FILE__, __FUNCTION__);
+		return ;	
+	}	
+	
+	pService->SendNotify();
+}
 
 
 class CAlarmService* g_ciccAlarmService = nullptr;
@@ -51,7 +51,7 @@ bool CAlarmService::OnInitialUpdate()
 
 	InitWarnningLevel();
 
-//	SendWarningInfo(1, "FIX", "Fix业务");
+	Test();
 	return true;
 }
 
@@ -158,4 +158,27 @@ void CAlarmService::InitWarnningLevel()
 		}
 	}
 #endif 
+}
+
+
+void CAlarmService::SendNotify()
+{	
+	while(!m_bStop)
+	{
+		if(m_listWarnInfo.empty())
+			continue;
+		PWARNINFO pWarnInfo = m_listWarnInfo.front();
+		if(nullptr != pWarnInfo)
+		{
+			if(m_pNotify == nullptr)
+			{
+				LogError("Notify Manager not init.");
+				continue;
+			}
+			CBuffer stBuf;
+			if(!stBuf.Append(pWarnInfo->strWarnningInfo.c_str(), pWarnInfo->strWarnningInfo.length() + 1))
+			m_pNotify->Send(pWarnInfo->nLevel, pWarnInfo->strAppType, &stBuf);
+		}
+		m_listWarnInfo.pop();	
+	}
 }

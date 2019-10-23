@@ -8,7 +8,8 @@
 
 CMail::CMail():m_nPort(25),m_bLoadCfg(false)
 {
-	strcpy(m_szEhlo, "CICCGWGroup");
+	memset(m_szEhlo, 0, sizeof(m_szEhlo));
+	strcpy(m_szEhlo, "EHLO CICCGWGroup");
 	strcpy(m_szUserName, "it_support_app_sende");
 	strcpy(m_szPassword, "setupandindex");
 	memset(m_szEmailHostIP, 0, sizeof(m_szEmailHostIP));
@@ -214,7 +215,7 @@ bool CMail::LogOn()
 		return false;
 	}
 
-	if(strstr(szTmp, "503") != nullptr)
+	if(strstr(szTmp, "503") != nullptr || strstr(szTmp, "500") != nullptr)
 	{
 		LogError("Email Error: %s", szTmp);
 		return false;
@@ -428,7 +429,7 @@ void CMail::FormatHeadMail(CBuffer* pBuffer, const char* pszTitle, std::vector<C
 	}
 
 	memset(szTmp, 0, sizeof(szTmp));
-	sprintf(szTmp, "From: %s<%s>%s", m_szSenderSimpleName, m_szDefaultSendMail, "\r\n");
+	sprintf(szTmp, "From: %s<%s>\r\n", m_szSenderSimpleName, m_szDefaultSendMail);
 	if(!pBuffer->Append(szTmp, strlen(szTmp)))
 	{
 		LogError("%s(%d) Append String Error.", __FILE__, __LINE__);
@@ -459,7 +460,7 @@ void CMail::FormatHeadMail(CBuffer* pBuffer, const char* pszTitle, std::vector<C
 	//
 	memset(szTmp, 0, sizeof(szTmp));
 	
-	sprintf(szTmp, "Subject: %s%s", pszTitle, "\r\n");
+	sprintf(szTmp, "Subject: %s\r\n", pszTitle);
 	
 	if(!pBuffer->Append(szTmp,strlen(szTmp)))
 	{
@@ -492,7 +493,7 @@ void CMail::FormatBodyMail(CBuffer* pBuffer, const char* pszWarnInfo)
 	//strcat(szTmp, "--qwertyuiop\r\n");
 	//strcat(szTmp, "Content-Type: text/plain");
 	//strcat(szTmp, "charset=\"gb2312\"\r\n\r\n");
-	strcpy(szTmp, "\r\n ETL报警监控业务 \r\n\r\n");
+	strcpy(szTmp, "\r\n ETL报警通知 \r\n\r\n");
 	if(!pBuffer->Append(szTmp, strlen(szTmp)))
 	{
 		LogError("%s(%d) Append Data error." , __FILE__, __LINE__);

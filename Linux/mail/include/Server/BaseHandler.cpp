@@ -3,7 +3,7 @@
 //
 #include "BaseHandler.h"
 #include <thread>
-
+#include <string.h>
 
 void BaseHandler::Push(zmsg_t *msg) 
 {
@@ -35,6 +35,7 @@ void BaseHandler::CheckQueueThread(BaseHandler *para) {
             {
                 zmsg_t* msg = msgArr[ii];
                 para->ProcessItem(msg);
+				zmsg_destroy(&msg);
             }
         }
     }
@@ -49,3 +50,36 @@ BaseHandler::~BaseHandler()
 
 }
 
+//bool BaseHandler::GetSubObjTopic(tinyxml2::XMLElement* pNode)
+//{
+//	if(nullptr == pNode)
+//	{
+//		return false;
+//	}
+//	
+//	return true;
+//}
+
+//bool BaseHandler::AddSubObjTopic(std::string strTopic)
+//{
+//	if(0 == strTopic.length())
+//	{
+//		return false;
+//	}
+//	
+//	m_listTopic.insert(strTopic);
+//	
+//	return true;
+//}
+//int BaseHandler::isHandleMsg(const char* pszTopic)
+//{
+//	if(nullptr == pszTopic || 0 == strlen(pszTopic))
+//		return 0;
+//	for(auto it = m_listTopic.begin(); it != m_listTopic.end();++it)
+//	{
+//		std::string str = *it;
+//		if(strstr(str.c_str(), pszTopic) != nullptr)
+//			return 1;
+//	}
+//	return 0;
+//}

@@ -23,7 +23,8 @@ public:
 	
 	bool	Execute(const char* pszFileName = "", int nLine = 0);
 	void	Terminate();
-private:
+
+protected:
 	
 	bool		m_bStop;
 	time_t		m_tStart;

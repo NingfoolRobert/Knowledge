@@ -166,3 +166,41 @@ time_t CommonHelper::GetFileModifyTime(const char* pszFileName)
 	}
 	return 0;
 }
+
+
+//int64 20191023162536格式转化为2019-10-23 16:25:36
+bool CommonHelper::TransferTimeInt2String(char* pszTime, int64_t&  nTime)
+{
+	if(nullptr == pszTime)
+		return false;
+	
+	char szTmp[64] = { 0 };
+	
+	sprintf(szTmp, "%ld", nTime);
+	
+	std::string str(szTmp);
+	
+	sprintf(pszTime, "%s-%s-%s %s:%s:%s", 
+			(str.substr(0,4)).c_str(), 
+			(str.substr(4,2)).c_str(),
+			(str.substr(6,2)).c_str(), 
+			(str.substr(8,2)).c_str(), 
+			(str.substr(10,2)).c_str(), 
+			(str.substr(12,2)).c_str() 
+			);
+		return true;
+
+//	//年 
+//	int64_t year = nTime/ 10000000000;
+//	char szTmp[16] = { 0 };
+//	sprintf(szTmp, "ld-", year);
+//	strcpy(pszTime, szTmp);
+//	int64_t nRedisal  = nTime % 100000000000;
+//	int64_t month = nRedisal / 10000000;
+//	// 月
+//	sprintf(szTmp, "%02ld-", month);
+//	strcat(pszTime, szTmp);
+//	nRedisal % = 10000000;
+//	//日 
+//	int  day = nRedisal / 10000
+}
