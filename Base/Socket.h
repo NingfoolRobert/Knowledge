@@ -1,3 +1,10 @@
+/// @file Socket.h
+/// @brief 
+/// @author ningbf,Beifei.Ning@cicc.com.cn
+/// @version 
+/// @date 2019-10-24
+
+
 #pragma once 
 
 #include <unistd.h>

@@ -67,6 +67,15 @@ int CSocket::Accept()
 	}
 	return fdClient;
 }
+
+// /*******************************************************
+/// @brief Connect 
+///
+/// @param: pszAddress
+/// @param: nPort
+///
+/// @returns: 
+// *******************************************************/
 bool CSocket::Connect(const char* pszAddress, int nPort)
 {
 	if(pszAddress == nullptr)
