@@ -16,6 +16,7 @@
 
 #include "Socket.h"
 #include "Log.h"
+#include "Protocol.h"
 
 #include <sys/epoll.h>
 #include <map>
@@ -32,7 +33,25 @@ public:
 
 public:
 	virtual bool OnInitialUpdate();
+
+	virtual bool OnTimeOut(struct tm* pTime);
 	
+	virtual bool OnSecondIdle();
+	
+	virtual bool OnTerminate();
+
+public:	
+	virtual CNetClient* CreateNetClient();
+	
+	virtual bool OnNetConnect(CNetClient* pNetClient);						// 网络连接事件  
+	
+	virtual bool OnNetMsg(CNetClient* pNetClient, PHEADER pMsg);			//网络消息到达接口
+
+	virtual bool OnNetBreak(CNetClient* pNetClient);						//网络断开事件
+	
+	virtual bool OnNetTickCount(CNetClient* pNetClient);					//网络分钟定时调用
+public:
+
 	int AcceptIO(struct epoll_event& ev);
 	
 	void StartListen();
@@ -40,6 +59,8 @@ public:
 	int	GetListenFD(){return m_SockListen.Detach();}
 	
 	void StartEpoll();
+
+	void TriggerEvent(const struct epoll_event& ev);
 public:
 	int			m_nPort;
 

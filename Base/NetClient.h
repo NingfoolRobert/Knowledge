@@ -51,7 +51,7 @@ public:
 
 	virtual bool OnConnect();				//链接消息网络接口
 	
-	virtual bool OnClose();
+	virtual bool OnBreak();					//网络断开
 
 public:
 	
