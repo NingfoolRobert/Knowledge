@@ -43,6 +43,33 @@ bool CSocket::Bind(int nHostPort/* = 0*/, const char* pszHostAddress/* = nullptr
 
 	return true;
 }
+	
+bool CSocket::Bind(int nHostPort/* = 0*/, unsigned int dwHostIP/* = 0*/)
+{
+	if(nHostPort == 0)
+		return false;
+	
+	struct sockaddr_in SvrAddr;
+	memset(&SvrAddr, 0, sizeof(SvrAddr));
+	
+	SvrAddr.sin_family = AF_INET;
+	//
+	if(dwHostIP == 0)
+		SvrAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	else 
+	//TODO	SvrAddr.sin_addr.s_addr = inet_addr(pszHostAddress);
+	//
+	SvrAddr.sin_port = htons(nHostPort);
+
+	if(bind(m_fd, (struct sockaddr*)&SvrAddr,sizeof(SvrAddr)) == -1)
+	{
+		return false;
+	}
+
+	return true;
+
+
+}
 
 bool CSocket::Listen(int nListenCount/* = 10*/)
 {

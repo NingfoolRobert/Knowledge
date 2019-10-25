@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#define __LOGINIT__  ;
 #define LogTrace(format, ...) printf(format, ##__VA_ARGS__)
 
 #define LogDebug(format, ...) printf(format, ##__VA_ARGS__)

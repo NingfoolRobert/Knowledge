@@ -39,6 +39,7 @@ bool CNetIOMgr::OnInitialUpdate()
 	epoll_ctl(m_fdEP, EPOLL_CTL_ADD, m_SockListen.Detach(), &ev);
 }
 
+
 int CNetIOMgr::AcceptIO(struct epoll_event &ev)
 {
 	while(true)
@@ -88,6 +89,9 @@ void StartListen()
 
 void CNetIOMgr::StartEpoll()
 {
+	
+	UpdateEvent();
+	
 	m_listFd.clear();
 
 	auto nSize = m_listClient.size();
@@ -112,6 +116,48 @@ void CNetIOMgr::StartEpoll()
 
 }
 
+void CNetIOMgr::LoadEvent(EventMap::value_type& event_pair)
+{
+	CNetClient* pClient = event_pair.first;
+	int oldEvent  = event_pair.second;
+	int newEvent = pClient->m_nState;
+
+	int fd = pClient->m_Socket.Detach();
+	
+
+	struct epoll_event ev;
+	if(newEvent & EPOLLCLOSE)
+
+	{
+		if(oldEvent)
+			epoll_ctl(m_fdEP, EPOLL_CTL_DEL, fd, &ev);
+		m_listClient[fd]  = nullptr;
+		delete pClient;
+	}
+	else 
+	{
+		int Status = 0;
+		if(newEvent & EPOLLOUT) 
+			Status |= EPOLLOUT;
+		if(newEvent & EPOLLIN)
+			Status |= EPOLLIN;
+		if(Status)
+		{
+			ev.events = Status;
+			ev.data.ptr = pClient;
+			epoll_ctl(m_fdEP, (oldEvent & (POLLIN | POLLOUT))? EPOLL_CTL_MOD: EPOLL_CTL_DEL, fd, &ev);
+		}
+		else if(oldEvent)
+			epoll_ctl(m_fdEP, EPOLL_CTL_DEL, fd,  &ev);
+	}
+	
+}
+
+
+void CNetIOMgr::UpdateEvent()
+{
+	
+}
 
 void CNetIOMgr::TriggerEvent(const struct epoll_event& ev)
 {

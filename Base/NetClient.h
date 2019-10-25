@@ -6,7 +6,7 @@
  * CICC(BJ), except with written permission of CICC(BJ).
  * 
  * @file:		NetClient.h
- * @brief:		管理网络IO收发消息
+ * @brief:		客户端网络IO收发消息
  * @author:		ningbf
  * @version:	1.0
  * @date:		2019-10-24
@@ -14,13 +14,17 @@
 
 #pragma once
 
-#include "Socket.h"
+#include "NetIO.h"
+//#include "Socket.h"
 #include "Buffer.h"
 #include "AutoLock.h"
 #include "Protocol.h"
 
 
 #include <queue>
+
+#define EPOLLCLOSE				0x80000000		//关闭套接字 
+
 
 
 
@@ -29,14 +33,15 @@ class CUserObject;
 class CNetIOMgr;
 
 
-class CNetClient: public CSocket
+
+class CNetClient: public CNetIO 
 {
 public:
 	CNetClient();
 
 	virtual ~CNetClient();
 public:
-	virtual bool OnInitialUpdate(int fd, CNetIOMgr* pMgr);		//初始化Socket, UserObject, 
+	virtual bool OnInitialUpdate(int fd);		//初始化Socket, UserObject, 
 	
 	virtual bool OnTimeOut(struct tm* pTime);
 
@@ -46,6 +51,14 @@ public:
 
 public:
 	
+	virtual void OnRecv();		
+
+	virtual void OnSend();
+public:
+	
+	void SendThread();				//发送消息线程
+
+	void RecvThread();				//接受线程 
 public:
 	virtual bool OnMsg(PHEADER pMsg);		//消息到达网络端口
 
@@ -62,16 +75,18 @@ public:
 	bool Terminate();
 
 	void BindUserObj(CUserObject* pUser);
+public:
+	
+	void RecvThread();
 
+	void SendThread();
 public:
 
-	bool RecvMsg();
+	int  RecvMsg();
 	
 	bool SendMsg();
 
-protected:
-	CSocket					m_Socket;
-
+public:
 	int						m_nPort;		//对端Port;
 	unsigned int			m_dwIP;			//对端IP;
 
@@ -79,18 +94,18 @@ protected:
 	
 
 private:
-	CUserObject*			m_pUserObj;
+	CUserObject*				m_pUserObj;
 
 private:
 	
 private:
-	CObjectLock				m_clsRecv;	
-	std::queue<CBuffer*>	m_listRecvMsg;
-	CBuffer*				m_bufRecv;
-	std::atomic<unsigned int> m_dwRecvSerial;
+	CObjectLock					m_clsRecv;	
+	std::queue<CBuffer*>		m_listRecvMsg;
+	CBuffer*					m_pbufRecv;
+	std::atomic<unsigned int>	m_dwRecvSerial;
 
-	CObjectLock				m_clsSend;
-	std::queue<CBuffer*>	m_listSendMsg;
-	CBuffer*				m_bufSend;
+	CObjectLock					m_clsSend;
+	std::queue<CBuffer*>		m_listSendMsg;
+	CBuffer*					m_pbufSend;
 	std::atomic<unsigned int>	m_dwSendSerial;
 };

@@ -30,6 +30,8 @@ public:
 	
 	bool Bind(int nHostPort = 0, const char* pszHostAddress = nullptr);
 
+	bool Bind(int nHostPort = 0, unsigned int dwHostIP = 0);
+	
 	bool Listen(int nListenCount = 10);
 
 	int  Accept();
@@ -56,6 +58,6 @@ public:
 	
 	void SetBlockMode(int nMode = O_NONBLOCK);
 
-private:
+protected:
 	int		m_fd;		//Socket handle 
 };
