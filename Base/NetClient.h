@@ -15,12 +15,11 @@
 #pragma once
 
 #include "NetIO.h"
-//#include "Socket.h"
 #include "Buffer.h"
 #include "AutoLock.h"
 #include "Protocol.h"
 
-
+#include <atomic> 
 #include <queue>
 
 #define EPOLLCLOSE				0x80000000		//关闭套接字 
@@ -31,17 +30,18 @@
 
 class CUserObject;
 class CNetIOMgr;
-
+class CNetService;
 
 
 class CNetClient: public CNetIO 
 {
+	friend class CNetService;
 public:
 	CNetClient();
 
 	virtual ~CNetClient();
 public:
-	virtual bool OnInitialUpdate(int fd);		//初始化Socket, UserObject, 
+	virtual bool OnInitialUpdate(CNetService* pNetService, int fd);		//初始化Socket, UserObject, 
 	
 	virtual bool OnTimeOut(struct tm* pTime);
 
@@ -54,11 +54,14 @@ public:
 	virtual void OnRecv();		
 
 	virtual void OnSend();
+
+	virtual void OnClose();
 public:
 	
 	void SendThread();				//发送消息线程
 
 	void RecvThread();				//接受线程 
+
 public:
 	virtual bool OnMsg(PHEADER pMsg);		//消息到达网络端口
 
@@ -75,18 +78,18 @@ public:
 	bool Terminate();
 
 	void BindUserObj(CUserObject* pUser);
-public:
-	
-	void RecvThread();
 
-	void SendThread();
+	bool IsBindUserObject();
 public:
 
 	int  RecvMsg();
 	
 	bool SendMsg();
 
+	//客户端连接的地址信息
 public:
+	struct sockaddr_in		m_addr;
+	char					m_szIP[32];
 	int						m_nPort;		//对端Port;
 	unsigned int			m_dwIP;			//对端IP;
 
@@ -95,7 +98,7 @@ protected:
 
 private:
 	CUserObject*				m_pUserObj;
-
+	CNetService*				m_pNetSercie;
 private:
 	
 private:
@@ -108,4 +111,7 @@ private:
 	std::queue<CBuffer*>		m_listSendMsg;
 	CBuffer*					m_pbufSend;
 	std::atomic<unsigned int>	m_dwSendSerial;
+	std::atomic<unsigned int>	m_dwSendLeft;		//当前剩余发送数据字节
+	std::atomic<unsigned int>	m_dwSendOver;		//当前已发送数据字节
+	std::atomic<unsigned int>	m_dwSendBlockSize;	//总共需要发送数据字节数 
 };

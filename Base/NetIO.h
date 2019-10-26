@@ -3,6 +3,8 @@
 #pragma once
 #include "Socket.h"
 
+#define EPOLLCLOSE	0x80000000
+
 class CNetIO: public CSocket
 {
 public:
@@ -13,12 +15,14 @@ public:
 	virtual void OnSend(){}
 	
 	virtual void OnRecv() {}
+
+	virtual void OnClose() {}
 public:
 	virtual int Send(const char* pBuf, int nLength);
 	
 	virtual int Recv(char* pBuf, int nLength);
 
-	virtual int Recv(char* pBuf, int nLength, bool& bRecvAll = false);
+	virtual int Recv(char* pBuf, int nLength, bool& bRecvAll);
 
 public:
 	void UpdateEventType(int nType);

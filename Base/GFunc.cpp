@@ -87,3 +87,14 @@ bool GetLocalIPList(std::vector<std::string> &listIP)
 	//TODO 
 	return true;
 }
+
+//sockaddr, 获取IP：Port 
+bool GetIPAndPort(unsigned int &dwNetIP, int& nPort, struct sockaddr* pSockAddr)
+{
+	if(nullptr == pSockAddr)
+	{
+		return false;
+	}
+	
+	return true;
+}

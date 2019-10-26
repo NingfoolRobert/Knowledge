@@ -1,15 +1,14 @@
 
-#include "AcceptIO.h"
+//#include "AcceptIO.h"
 #include "NetClient.h"
 #include "NetService.h"
 #include "Log.h"
 
 
-
 CAcceptIO::CAcceptIO()
 {
 	m_pNetService = nullptr;
-
+	m_nNewEvent = EPOLLIN | EPOLLET;
 }
 
 CAcceptIO:: ~CAcceptIO()

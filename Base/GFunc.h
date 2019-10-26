@@ -41,6 +41,7 @@ unsigned int IPNetString2DWORD(const char* pszIP);
 //获取本地IPlist
 bool GetLocalIPList(std::vector<std::string> &listIP);
 
-
+//sockaddr, 获取IP：Port 
+bool GetDWORDNetIPAndPort(unsigned int &dwNetIP, int& nPort, struct sockaddr* pSockAddr);
 
 

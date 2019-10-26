@@ -57,7 +57,7 @@ public:
 	CNetIOMgr();
 	virtual ~CNetIOMgr();
 public:
-	virtual bool OnInitialUpdate();
+	virtual bool OnInitialUpdate(CNetService* pNetService);
 
 	virtual bool OnTimeOut(struct tm* pTime);
 	
