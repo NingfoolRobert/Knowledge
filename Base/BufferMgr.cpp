@@ -1,23 +1,18 @@
 
 #include "BufferMgr.h"
+#include "Log.h"
+
 
 CBufferMgr::CBufferMgr()
 {
 }
+
 CBufferMgr::~CBufferMgr()
 {
-	CBuffer* pBuf = nullptr;
-	for(int i = 0; i < BUFFER_GROUP_COUNT; ++i)
-	{
-		while(m_listBuf[i].size())
-		{
-			pBuf = m_listBuf[i].front();
-			m_listBuf[i].pop_front();
-			delete pBuf;
-			pBuf = nullptr;
-		}
-	}
+	ClearAllBuffer();
 }
+
+
 CBuffer* CBufferMgr::GetBuffer(int nLength, const char* pszFileName, int nLine)
 {
 	CBuffer* pBuffer = nullptr;
@@ -26,7 +21,7 @@ CBuffer* CBufferMgr::GetBuffer(int nLength, const char* pszFileName, int nLine)
 		pBuffer = new CBuffer;
 		if(nullptr == pBuffer)
 		{
-			//TODO
+			LogError("%s(%d) malloc buffer fail.", pszFileName, nLine);
 			return nullptr;
 		}
 		if(!pBuffer->ExpandTo(nLength))
@@ -50,7 +45,7 @@ CBuffer* CBufferMgr::GetBuffer(int nLength, const char* pszFileName, int nLine)
 	{
 		CAutoLock locker(&m_clsLock[Index]);
 		pBuffer =  m_listBuf[Index].front();
-		m_listBuf[Index].pop_front();
+		m_listBuf[Index].pop();
 		return pBuffer;
 		
 	}
@@ -101,11 +96,26 @@ void CBufferMgr::ReleaseBuffer(CBuffer* pBuffer)
 
 	//当内存池满时，直接释放; 否则，收入内存池中
 	CAutoLock locker(&m_clsLock[Index]);
-	if(m_listBuf[Index].size() < BUFFER_MGR_CAPABILITY / cnInit)
-		m_listBuf[Index].push_back(pBuffer);
+	if((int)m_listBuf[Index].size() < BUFFER_MGR_CAPABILITY / cnInit)
+		m_listBuf[Index].push(pBuffer);
 	else 
 	{
 		pBuffer->Clear(true);
 		delete pBuffer;
+	}
+}
+
+void CBufferMgr::ClearAllBuffer()
+{
+	CBuffer* pBuf = nullptr;
+	for(int i = 0; i < BUFFER_GROUP_COUNT; ++i)
+	{
+		while(m_listBuf[i].size())
+		{
+			pBuf = m_listBuf[i].front();
+			m_listBuf[i].pop();
+			delete pBuf;
+			pBuf = nullptr;
+		}
 	}
 }

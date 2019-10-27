@@ -20,10 +20,24 @@
 
 typedef struct stHeader
 {
-	unsigned int	dwLength;
-	unsigned short	wOrigin;
-	unsigned short	wParam;
+	unsigned int	dwSerial;			//消息序列号 
+	unsigned int	dwLength;			//消息长度
+	unsigned int	dwType;				//消息类型
+	unsigned short	wOrigin;			//消息来源 
+	unsigned int	dwParam;			//消息参数 
+
 }HEADER,*PHEADER;
 
 
 #define HEADSIZE  sizeof(HEADER)
+
+//消息源值
+enum 
+{
+	CONNECTIONTYPE_NULL					= 0,
+	CONNECTIONTYPE_SUM 
+};
+
+#define REQ_MSG			0x00000000				//最高位为0; 
+#define ACK_MSG			0x10000000				//32位为1 
+

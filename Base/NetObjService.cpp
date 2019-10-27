@@ -34,6 +34,10 @@ bool CNetObjService::OnServiceBegin()
 
 bool CNetObjService::OnTimeOut(struct tm* pTime)
 {
+	if(nullptr == pTime)
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -67,16 +71,20 @@ bool CNetObjService::OnNetMsg(CNetClient* pNetClient, PHEADER pMsg)
 		return false;
 	}
 	
-	auto pUserObject = 	OnCreateUserObject(pMsg->wOrigin);
-	if(nullptr == pUserObject)
+	if(!pNetClient->IsBindUserObject())
 	{
-		LogError("%s(%d) Create UserObject is NULL. wOrigin: %d", __FILE__, __LINE__, pMsg->wOrigin);		
-		return false;
+
+		auto pUserObject = 	OnCreateUserObject(pMsg->wOrigin);
+		if(nullptr == pUserObject)
+		{
+			LogError("%s(%d) Create UserObject is NULL. wOrigin: %d", __FILE__, __LINE__, pMsg->wOrigin);		
+			return false;
+		}
+		
+		pNetClient->BindUserObj(pUserObject);
+		OnNetConnect(pNetClient);
 	}
 
-	pNetClient->BindUserObj(pUserObject);
-
-	OnNetConnect(pNetClient);
 	
 	pNetClient->OnMsg(pMsg);
 	

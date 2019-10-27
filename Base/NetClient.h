@@ -74,18 +74,23 @@ public:
 	bool SendMsg(PHEADER pMsg);
 
 	bool SendZipMsg(PHEADER pMsg);
-	
+
+	bool SendMsg(CBuffer* pBuf);
+
 	bool Terminate();
 
 	void BindUserObj(CUserObject* pUser);
 
 	bool IsBindUserObject();
-public:
 
+	void SetOrigin(int wOrigin);
+public:
 	int  RecvMsg();
 	
 	bool SendMsg();
 
+protected:
+	void ProcessMsg();
 	//客户端连接的地址信息
 public:
 	struct sockaddr_in		m_addr;
@@ -94,13 +99,14 @@ public:
 	unsigned int			m_dwIP;			//对端IP;
 
 protected:
-	
+
 
 private:
 	CUserObject*				m_pUserObj;
 	CNetService*				m_pNetSercie;
 private:
-	
+
+	int							m_wOrigin;
 private:
 	CObjectLock					m_clsRecv;	
 	std::queue<CBuffer*>		m_listRecvMsg;
@@ -110,8 +116,8 @@ private:
 	CObjectLock					m_clsSend;
 	std::queue<CBuffer*>		m_listSendMsg;
 	CBuffer*					m_pbufSend;
-	std::atomic<unsigned int>	m_dwSendSerial;
-	std::atomic<unsigned int>	m_dwSendLeft;		//当前剩余发送数据字节
-	std::atomic<unsigned int>	m_dwSendOver;		//当前已发送数据字节
-	std::atomic<unsigned int>	m_dwSendBlockSize;	//总共需要发送数据字节数 
+	unsigned int				m_dwSendSerial;
+	unsigned int				m_dwSendLeft;		//当前剩余发送数据字节
+	unsigned int				m_dwSendOver;		//当前已发送数据字节
+	unsigned int				m_dwSendBlockSize;	//总共需要发送数据字节数 
 };

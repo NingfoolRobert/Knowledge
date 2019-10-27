@@ -7,7 +7,7 @@
 #include "AutoLock.h"
 #include "UserObject.h"
 #include "NetIOMgr.h" 
-
+#include "BufferMgr.h"
 
 
 class CNetService

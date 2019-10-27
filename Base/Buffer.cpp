@@ -80,6 +80,11 @@ bool CBuffer::ExpandTo(int nLength)
 	return false;
 }
 
+void CBuffer::Exchange(CBuffer& buf)
+{
+	Clear();
+	Append(buf.GetBufPtr(), buf.GetBufLen());
+}
 
 bool CBuffer::Append(const void* pBuf, int nlen)
 {

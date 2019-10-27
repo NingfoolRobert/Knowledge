@@ -32,6 +32,7 @@
  *4096		1024
  *8192		512
  *16384		256
+ *32768		128
  * */
 
 class CBufferMgr
@@ -44,7 +45,9 @@ public:
 	
 	void	ReleaseBuffer(CBuffer* pBuffer);
 
+	void	ClearAllBuffer();
 private:
 	CObjectLock			  m_clsLock[BUFFER_GROUP_COUNT];
-	std::vector<CBuffer*> m_listBuf[BUFFER_GROUP_COUNT];
+	std::queue<CBuffer*> m_listBuf[BUFFER_GROUP_COUNT];
 };
+extern class CBufferMgr* g_pBufferMgr;

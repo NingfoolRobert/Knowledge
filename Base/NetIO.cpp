@@ -122,21 +122,7 @@ int CNetIO::Recv(char* pBuf, int nLength)
 			//对端关闭的写端关闭了 
 			return nRecved;
 		}
-		else 
-		{
-			nRecved += nRecvLen;
-			if(nRecved < nLength)
-			{
-				continue;
-			}
-			else 
-			{
-				break;
-			}
-		}
-		
 	}
-
 	return nRecved;
 }
 int CNetIO::Recv(char* pBuf, int nLength, bool& bRecvAll/* = false*/)
@@ -205,6 +191,12 @@ int CNetIO::Recv(char* pBuf, int nLength, bool& bRecvAll/* = false*/)
 
 inline void CNetIO::UpdateEventType(int nType)
 {
+	if((nType & EPOLLOUT) &&(m_nEvent & EPOLLOUT))
+		return ;
+	if((nType & EPOLLIN) &&(m_nEvent & EPOLLOUT))
+		return ;
 	m_nNewEvent = nType;
+
+	//TODO Update IOmgr 中
 }
 
