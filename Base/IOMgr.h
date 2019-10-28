@@ -24,7 +24,6 @@
 #include "Protocol.h"
 #include "Log.h"
 #include "NetIO.h"
-#include "AcceptIO.h"
 #include "AutoLock.h"
 
 
@@ -60,14 +59,14 @@ typedef std::unordered_set<CNetIO*, HashFunc, Equal> EventSet;
 typedef std::unordered_map<int, CNetIO*> IOMap;
 
 class CNetService;
-
+class CAcceptIO;
 class CIOMgr
 {
 public:
 	CIOMgr();
 	virtual ~CIOMgr();
 public:
-	virtual bool OnInitialUpdate(CNetService* pNetService,CAcceptIO* pAcceptIO);
+	virtual bool OnInitialUpdate(CNetService* pNetService,CAcceptIO* pAcceptIO, int nTimeOut = 1000);
 
 	virtual bool OnTimeOut(struct tm* pTime);
 	

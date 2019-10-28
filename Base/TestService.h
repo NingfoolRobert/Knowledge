@@ -29,6 +29,8 @@ public:
 
 	virtual bool OnSecondIdle();
 
+	virtual bool InvokeTerminate();
+
 	virtual bool OnTerminate();
 	
 	virtual bool OnRegisterObject();

@@ -1,5 +1,8 @@
 
 #include "NetService.h"
+#include "AcceptIO.h"
+#include "Log.h"
+#include "IOMgr.h"
 
 CNetService::CNetService()
 {
@@ -20,13 +23,6 @@ bool CNetService::OnInitialUpdate()
 		//TODO 从配置文件中读取服务监听端口号
 		
 	}
-	//初始化配置管理
-	m_pIOMgr = new CNetIOMgr;
-	if(m_pIOMgr == nullptr)
-	{
-		LogError("%s(%d) Create Net IO Manager fail.", __FILE__, __LINE__);
-		return false;
-	}
 	//初始化监听端口
 	m_pAcceptIO = new CAcceptIO;
 	if(m_pAcceptIO == nullptr)
@@ -34,19 +30,27 @@ bool CNetService::OnInitialUpdate()
 		LogError("%s(%d) Create Accpet IO Manager fail.", __FILE__, __LINE__);
 		return false;
 	}
-	
-
 
 	if(!m_pAcceptIO->OnInitialUpdate(this))
 	{
 		return false;
 	}
-
-	if(!m_pIOMgr->AddNetIO(m_pAcceptIO))
+	//初始化配置管理
+	m_pIOMgr = new CIOMgr;
+	if(m_pIOMgr == nullptr)
 	{
+		LogError("%s(%d) Create Net IO Manager fail.", __FILE__, __LINE__);
 		return false;
-	}	
-	
+	}
+
+	// IO Manager 初始化
+	if(m_pIOMgr->OnInitialUpdate(this, m_pAcceptIO))
+	{
+		LogError("%s(%d) NetIO Manager Init fail.", __FILE__, __LINE__);
+		return false;
+	}
+
+	LogInfo("Net Service init Success. Port: %d", m_nPort);	
 	return true;
 }
 

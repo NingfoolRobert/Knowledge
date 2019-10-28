@@ -3,16 +3,17 @@
 //#include <czmq.h>
 
 #include "NetClient.h"
-#include "AcceptIO.h"
 #include "AutoLock.h"
 #include "UserObject.h"
-#include "NetIOMgr.h" 
+//#include "NetIOMgr.h" 
 #include "BufferMgr.h"
 
+class CAcceptIO;
+class CIOMgr;
 
 class CNetService
 {
-	friend class CNetClient;
+//	friend class CNetClient;
 public:
 	CNetService();
 
@@ -29,8 +30,6 @@ public:
 public:
 	virtual CNetClient* CreateNetClient();
 	
-//	virtual CUserObject* CreateUserObject(int nType) = 0;
-
 	virtual bool OnNetConnect(CNetClient* pNetClient);
 
 	virtual bool OnNetMsg(CNetClient* pNetClient, PHEADER pMsg);
@@ -45,8 +44,6 @@ public:
 
 	bool OnNetNetMsg(CNetClient* pNetClient, PHEADER pMsg);					//网络消息到达数据接口 
 	
-protected:
-
 public:
 	int			m_nPort;
 	
@@ -54,6 +51,6 @@ protected:
 
 	CAcceptIO*			m_pAcceptIO;
 
-	CNetIOMgr*			m_pIOMgr;
+	CIOMgr*			m_pIOMgr;
 };
 

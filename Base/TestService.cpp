@@ -1,6 +1,17 @@
 #include "TestService.h"
 
 
+CTestService::CTestService()
+{
+
+}
+
+CTestService::~CTestService()
+{
+
+}
+
+
 bool CTestService::OnInitialUpdate()
 {
 	return true;
@@ -12,6 +23,11 @@ bool CTestService::OnTimeOut(struct tm* pTime)
 }
 
 bool CTestService::OnSecondIdle()
+{
+	return true;
+}
+	
+bool CTestService::InvokeTerminate()
 {
 	return true;
 }

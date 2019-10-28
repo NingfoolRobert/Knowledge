@@ -29,7 +29,7 @@ public:
 
 public:
 
-	bool Socket(int nPort, unsigned int dwIP = 0, int nDomain = AF_INET, int nSockType = SOCK_STREAM, int nProtocol = IPPROTO_IP);
+	bool Socket(int nPort, unsigned int dwHostIP = 0, int nDomain = AF_INET, int nSockType = SOCK_STREAM, int nProtocol = IPPROTO_IP);
 
 	void AcceptThread();
 

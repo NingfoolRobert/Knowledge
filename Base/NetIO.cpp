@@ -15,6 +15,25 @@ CNetIO::~CNetIO()
 
 }
 
+//bool CNetIO::OnInitialUpdate()
+//{
+
+//	return true;
+//}
+bool CNetIO::OnTimeOut(struct tm* pTime)
+{
+	return true;
+}
+
+bool CNetIO::OnSecondIdle()
+{
+	return true;
+}
+
+bool CNetIO::OnTerminate()
+{
+	return true;
+}
 
 int CNetIO::Send(const char* pBuf, int nLength)
 {

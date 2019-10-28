@@ -34,7 +34,7 @@ bool CUserObject::SendMsg(PHEADER pMsg)
 {
 	if(nullptr == m_pNetClient)
 		return false;
-	return m_pNetClient->SendMsg(PHEADER);
+	return m_pNetClient->SendMsg(pMsg);
 }
 	
 bool CUserObject::SendZipMsg(PHEADER pMsg)

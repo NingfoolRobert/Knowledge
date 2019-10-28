@@ -4,9 +4,11 @@
 #include "NetService.h"
 #include "ThreadPool.h"
 #include "GFunc.h"
+#include "Log.h"
 
 #include <functional>
 #include <algorithm>
+#include <sys/epoll.h>
 
 
 

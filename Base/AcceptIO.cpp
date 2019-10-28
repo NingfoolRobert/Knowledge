@@ -1,14 +1,20 @@
 
-//#include "AcceptIO.h"
+#include "AcceptIO.h"
 #include "NetClient.h"
 #include "NetService.h"
 #include "Log.h"
+#include "ThreadPool.h"
+
+#include <sys/types.h>
+#include <sys/epoll.h> 
+#include <functional>
+#include <algorithm>
 
 
 CAcceptIO::CAcceptIO()
 {
 	m_pNetService = nullptr;
-	m_nNewEvent = EPOLLIN | EPOLLET;
+	m_nEvent = EPOLLIN | EPOLLET;
 }
 
 CAcceptIO:: ~CAcceptIO()
@@ -34,30 +40,31 @@ bool CAcceptIO::OnInitialUpdate(CNetService* pNetService)
 void CAcceptIO::OnRecv() 
 {
 	// Add Recv new Socket task to thread pool 
-	;
+	auto task = std::bind(&CAcceptIO::AcceptThread,this);
+	PostEvent(task);
 }
 
-bool CAcceptIO::Socket(int nPort, unsigned int dwIP /*= 0*/, int nDomain/* = AF_INET*/, int nSockType/* = SOCK_STREAM*/, int nProtocol/* = IPPROTO_IP*/)
+bool CAcceptIO::Socket(int nPort, unsigned int dwHostIP /*= 0*/, int nDomain/* = AF_INET*/, int nSockType/* = SOCK_STREAM*/, int nProtocol/* = IPPROTO_IP*/)
 {
-	if(CNetIO::Create(nDomain, nSockType, nProtocol) <= 0)
+	if(Create(nDomain, nSockType, nProtocol) <= 0)
 	{
 		LogFatal("%s(%d) Create Listen Socket fail.", __FILE__, __LINE__);
 		return false;
 	}
 	//
-	if(!CNetIO::Bind(nPort, dwIP))
+	if(!Bind(nPort, dwHostIP))
 	{
 		LogFatal("%s(%d) Bind Socket fail.", __FILE__, __LINE__);
 		return false;
 	}
 	//
-	if(!CNetIO::Listen())
+	if(!Listen())
 	{
 		LogFatal("%s(%d) Listen Socket fail.", __FILE__, __LINE__);
 		return false;
 	}
 	
-	CNetIO::SetBlockMode();
+	SetBlockMode();
 	return true;
 }
 

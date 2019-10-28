@@ -10,6 +10,15 @@ class CNetIO: public CSocket
 public:
 	CNetIO();
 	virtual ~CNetIO();
+
+public:
+//	virtual bool OnInitialUpdate();
+
+	virtual bool OnTimeOut(struct tm* pTime);
+
+	virtual bool OnSecondIdle();
+
+	virtual bool OnTerminate();
 public:
 
 	virtual void OnSend(){}
