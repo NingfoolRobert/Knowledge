@@ -54,17 +54,32 @@ bool CNetService::OnTimeOut(struct tm* pTime)
 {
 	if(nullptr == pTime)
 		return false;
-
+	if(m_pIOMgr)
+	{
+		m_pIOMgr->OnTimeOut(pTime);
+	}
+	//
+	
 	return true;
 }
 
 bool CNetService::OnSecondIdle()
 {
+	m_pIOMgr->OnSecondIdle();
+
 	return true;
 }
 
 bool CNetService::OnTerminate()
 {
+	m_pAcceptIO->Close();
+	delete m_pAcceptIO;
+
+
+	m_pIOMgr->OnTerminate();
+
+	delete m_pIOMgr;
+
 	return true;
 }
 
@@ -84,6 +99,8 @@ bool CNetService::OnNetConnect(CNetClient* pNetClient)
 
 bool CNetService::OnNetMsg(CNetClient* pNetClient, PHEADER pMsg)
 {
+	if(nullptr == pNetClient || nullptr == pMsg)
+		return false;
 	return true;
 }
 
@@ -97,3 +114,14 @@ bool CNetService::OnNetTickCount(CNetClient* pNetClient)
 	return true;
 }
 
+bool CNetService::AddNetClient(CNetClient* pNetClient)
+{
+	if(nullptr == m_pIOMgr)
+	{
+		return false;
+	}
+	
+	m_pIOMgr->AddNetIO(pNetClient);
+	
+	return true;
+}

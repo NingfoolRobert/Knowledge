@@ -1,8 +1,10 @@
 #include "NetIOMgr.h"
 #include "NetClient.h"
+#include "NetService.h"
+#include "AcceptIO.h"
 
 
-bool CNetIOMgr::OnInitialUpdate()
+bool CNetIOMgr::OnInitialUpdate(CNetService* pNetService, CAccepteIO* pAcceptIO)
 {
 
 	m_fdEP = epoll_create(10000);

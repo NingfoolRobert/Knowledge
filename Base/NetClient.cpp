@@ -3,8 +3,10 @@
 #include "GFunc.h"
 #include "NetService.h"
 #include "ThreadPool.h"
-#include <functional>
+#include "GFunc.h"
 
+#include <functional>
+#include <algorithm>
 
 
 
@@ -37,7 +39,7 @@ bool CNetClient::OnInitialUpdate(CNetService* pNetService,int fd)		//初始化So
 	socklen_t socklen = sizeof(PeerAddr);
 	GetPeerName((struct sockaddr*)&PeerAddr, &socklen);
 
-	GetDWORDNetIPAndPort(m_dwIP, m_nPort, (struct sockaddr*)&PeerAddr);
+	GetDWORDNetIPAndPort(m_dwIP, m_nPort, &PeerAddr);
 
 	return true;
 }
@@ -80,7 +82,7 @@ bool CNetClient::OnTerminate()
 		{
 			pBuf = m_listSendMsg.front();
 			g_pBufferMgr->ReleaseBuffer(pBuf);
-			m_listiSendMsg.pop();
+			m_listSendMsg.pop();
 		}
 		g_pBufferMgr->ReleaseBuffer(m_pbufSend);
 	}
@@ -109,7 +111,7 @@ void CNetClient::SendThread()				//发送消息线程
 	{
 		if(nullptr == m_pbufSend && m_listSendMsg.empty())
 		{
-			CNetIO::UpdateEventType(EPOLLIN | EPOLLET);
+			UpdateEventType(EPOLLIN | EPOLLET);
 			return ;
 		}
 		// 发送当前待发送的数据为空，从消费队列中取出新的buf
@@ -184,7 +186,7 @@ void CNetClient::RecvThread()				//接受线程
 	int nRecvLen = 0;
 	while(true)
 	{
-		nRecvLen = CNetIO::Recv(&szTmp[0], 1024);
+		nRecvLen = Recv(&szTmp[0], 1024);
 		if(errno == EAGAIN)
 		{
 			//内存空间中的数据接收完成 
@@ -223,7 +225,7 @@ void CNetClient::RecvThread()				//接受线程
 				//创建 对象成功
 				if(!m_pNetSercie->OnNetMsg(this, pHeader))
 				{
-					m_dwRecvSerial++;
+			//		m_dwRecvSerial++;
 					continue;
 				}			
 			}
@@ -241,7 +243,7 @@ void CNetClient::RecvThread()				//接受线程
 		{
 			//正常消息加入到消息队列中
 	
-			CBuffer* pBuf = g_pBufferMgr->GetBuffer(256, __FILE__, __LINE__);//nullptr;		//TODO 申请内存空间 
+			CBuffer* pBuf = g_pBufferMgr->GetBuffer((int)(sizeof(HEADER) + pHeader->dwLength), __FILE__, __LINE__);//nullptr;		//TODO 申请内存空间 
 			if(nullptr == pBuf)
 			{
 				return ;
@@ -255,6 +257,7 @@ void CNetClient::RecvThread()				//接受线程
 			
 			m_listRecvMsg.push(pBuf);
 			nRecvLen += sizeof(HEADER) + pHeader->dwLength;
+			m_dwSendSerial++;	
 		}
 	}
 
@@ -298,7 +301,7 @@ bool CNetClient::OnConnect()				//链接消息网络接口
 
 bool CNetClient::OnBreak()					//网络断开
 {
-	CNetIO::UpdateEventType(EPOLLCLOSE);
+	UpdateEventType(EPOLLCLOSE);
 	return true;
 }
 
@@ -332,21 +335,45 @@ bool CNetClient::SendZipMsg(PHEADER pMsg)
 		return false;
 	}
 
-	//TODO 加密函数调用 
+	if(pMsg->dwLength <= 128)
+	{
+		SendMsg(pMsg);
+		return true;
+	}
+
+	//TODO 压缩函数调用 
+
+	CBuffer bufZip;
+	bufZip.ExpandTo(sizeof(HEADER) + pMsg->dwLength);
+	
+	if(!bufZip.Append(pMsg, sizeof(HEADER)))
+	{
+		LogError("%s(%d) Append Data fail.", __FILE__, __LINE__);
+		return false;
+	}
+	int nCompressLen = 0;
+	if(!Compress(bufZip.GetBufPtr(), nCompressLen, (char*)(pMsg + 1), pMsg->dwLength))
+	{
+		LogWarn("%s(%d) Compress Message fail.", __FILE__, __LINE__);
+		SendMsg(pMsg);
+		return false;
+	}
 	
 	//
-	CBuffer* pBuf = g_pBufferMgr->GetBuffer(pMsg->dwLength + sizeof(HEADER), __FILE__, __LINE__);
+	CBuffer* pBuf = g_pBufferMgr->GetBuffer(nCompressLen + sizeof(HEADER), __FILE__, __LINE__);
 	if(nullptr == pBuf)
 	{
 		return false;
 	}
 	//
-	if(!pBuf->Append(pMsg, (int)sizeof(HEADER) + pMsg->dwLength))
+	if(!pBuf->Append(bufZip.GetBufPtr(), (int)sizeof(HEADER) + nCompressLen))
 	{
 		LogError("%s(%d) Append Data fail.", __FILE__, __LINE__);
 		return false;
 	}
-
+	PHEADER pHeader = (PHEADER) bufZip.GetBufPtr();
+	pHeader->dwLength = nCompressLen;
+	pHeader->dwType |= CMP_MSG;
 	//
 	SendMsg(pBuf);
 	return true;
@@ -391,9 +418,54 @@ void CNetClient::ProcessMsg()
 			m_listRecvMsg.pop();
 		}
 		PHEADER pMsg = (PHEADER)pBuf->GetBufPtr();
+		//压缩消息解压
+		if(pMsg->dwType & CMP_MSG)
+		{
+			CBuffer bufUnzip;
+			bufUnzip.ExpandTo(pMsg->dwLength * 10 + sizeof(HEADER));
+			if(!bufUnzip.Append(pMsg, sizeof(HEADER)))
+			{
+				LogError("%s( %d) Apend Data fail.",__FILE__, __LINE__);
+				g_pBufferMgr->ReleaseBuffer(pBuf);
+				return ;
+			}
+			int nUnCompressLen = 0;
+			if(!UnCompress(bufUnzip.GetBufPtr() + sizeof(HEADER), nUnCompressLen, (char*)(pMsg + 1), pMsg->dwLength))
+			{
+				LogError("%s(%d) UnCompressed Message fail.", __FILE__, __LINE__);
+				g_pBufferMgr->ReleaseBuffer(pBuf);
+				return ;
+			}
+			pBuf->Exchange(bufUnzip);
+			PHEADER pHeader = (PHEADER) pBuf->GetBufPtr();
+			if(nullptr == pHeader)
+			{
+				LogError("%s(%d) pHeader is NULL.", __FILE__, __LINE__);
+				g_pBufferMgr->ReleaseBuffer(pBuf);
+				return ;
+			}
+			pHeader->dwType &= ~CMP_MSG;
+			pHeader->dwLength = nUnCompressLen;
+		}
 		//业务层处理消息
 		OnMsg(pMsg);
 		g_pBufferMgr->ReleaseBuffer(pBuf);	
 	}
 }
 
+// /*******************************************************
+/**
+ * @brief: UpdateEventType 
+ *
+ * @param nType
+ */
+// *******************************************************/
+void CNetClient::UpdateEventType(int nType)
+{
+	if(m_nEvent & nType)
+		return ;
+	
+	m_nNewEvent = nType;
+	
+	m_pNetSercie->AddNetClient(this);
+}

@@ -56,7 +56,7 @@ struct cmpSet{
 };
 
 typedef std::unordered_map<CNetIO*, int, HashFunc, Equal> EventMap;
-typedef std::set<CNetIO*, cmpSet> EventSet;
+typedef std::unordered_set<CNetIO*, HashFunc, Equal> EventSet;
 typedef std::unordered_map<int, CNetIO*> IOMap;
 
 class CNetService;
@@ -76,9 +76,7 @@ public:
 	virtual bool OnTerminate();
 
 public:
-	
 	bool AddNetIO(CNetIO* pNetIO);
-	
 public:
 
 	void LoadEvent(const EventMap::value_type& event_pair);
@@ -88,6 +86,8 @@ public:
 	void TriggerEvent(const struct epoll_event& ev);
 	//thread tr1  
 	void	EpollThread(int nTimeOut = 1000);
+protected:
+	bool AddListenNetIO(CNetIO* pNetIO);	
 protected:
 	int					m_ep;					//epoll 文件句柄
 

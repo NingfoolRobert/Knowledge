@@ -138,9 +138,9 @@ bool ThreadPool::enqueue(std::function<void()>& task)
 
 #define THREADINIT(nThreadCount)			Singleton<ThreadPool>::GetInstacne().Init(nThreadCount)
 
-#define PostEvent(task)	Singleton<ThreadPool>::GetInstance.enqueue(task)
+#define PostEvent(task)	Singleton<ThreadPool>::GetInstance().enqueue(task)
 
-#define ASYNC_HANDLE(f,...) Singleton<ThreadPool>::GetInstance.enqueue(f,Args)
+#define ASYNC_HANDLE(f,...) Singleton<ThreadPool>::GetInstance().enqueue(f,Args)
 
 
 

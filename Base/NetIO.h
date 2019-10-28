@@ -31,6 +31,9 @@ public:
 	int			m_nEvent;					//当前NetIO状态信息	
 	int			m_nNewEvent;				//新的IO状态信息，EPOLLIN, EPOLLOUT, EPOLLCLOSE;
 	
+public:
+	unsigned int	m_dwIP;
+	int				m_nPort;
 protected:
 	
 };

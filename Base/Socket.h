@@ -38,6 +38,8 @@ public:
 
 	bool Connect(const char* pszAddress, int nPort);
 
+	bool Connect(unsigned int dwHostIP, int nPort);
+
 	int Recv(char* pszBuf, int nBufLen);
 
 	bool Send(const char* pszBuf, int nBufLen);

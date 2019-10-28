@@ -1,6 +1,9 @@
 #include "NetIO.h"
 #include "Log.h"
-
+#include <arpa/inet.h>
+#include <sys/types.h> 
+#include <sys/socket.h>
+#include <sys/epoll.h>
 
 CNetIO::CNetIO()
 {
@@ -117,7 +120,7 @@ int CNetIO::Recv(char* pBuf, int nLength)
 
 			}
 		}
-		else if( nRecvLen = 0)
+		else if( nRecvLen == 0)
 		{
 			//对端关闭的写端关闭了 
 			return nRecved;

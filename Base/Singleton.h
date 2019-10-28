@@ -18,10 +18,10 @@ private:
 	Singleton(){}
 	~Singleton(){}
 public:
-	template<class T>
+	//template<class T>
 	static T& GetInstance()
 	{
-		static singleton<T> s_oT;
+		static Singleton<T> s_oT;
 		return (s_oT);
 	}
 

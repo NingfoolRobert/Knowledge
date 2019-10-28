@@ -99,7 +99,7 @@ void CAcceptIO::AcceptThread()
 			CNetClient*  pNetClient = m_pNetService->CreateNetClient();
 			if(pNetClient == nullptr)
 				continue;	
-			pNetClient->OnInitialUpdate(fd);
+			pNetClient->OnInitialUpdate(m_pNetService, fd);
 			AddNetClient(pNetClient);
 		}
 	}

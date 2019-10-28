@@ -51,13 +51,15 @@ typedef std::unordered_map<CNetClient*, int, HashFunc, EqualKey>  EventMap;
 typedef std::unordered_map<int, CNetClient*> IOMap;
 
 
+class CAccepteIO;
+
 class CNetIOMgr 
 {
 public:
 	CNetIOMgr();
 	virtual ~CNetIOMgr();
 public:
-	virtual bool OnInitialUpdate(CNetService* pNetService);
+	virtual bool OnInitialUpdate(CNetService* pNetService, CAccepteIO* pAcceptIO);
 
 	virtual bool OnTimeOut(struct tm* pTime);
 	
@@ -82,9 +84,9 @@ public:
 
 	int AcceptIO(struct epoll_event& ev);
 	
-	void StartListen();
+	//void StartListen();
 public:
-	int	GetListenFD(){return m_SockListen.Detach();}
+	//int	GetListenFD(){return m_SockListen.Detach();}
 	
 	void StartEpoll();
 

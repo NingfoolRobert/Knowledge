@@ -92,11 +92,13 @@ public:
 protected:
 	void ProcessMsg();
 	//客户端连接的地址信息
+	
+	void UpdateEventType(int nType);
 public:
 	struct sockaddr_in		m_addr;
 	char					m_szIP[32];
-	int						m_nPort;		//对端Port;
-	unsigned int			m_dwIP;			//对端IP;
+//	int						m_nPort;		//对端Port;
+//	unsigned int			m_dwIP;			//对端IP;
 
 protected:
 

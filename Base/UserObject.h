@@ -39,7 +39,11 @@ public:
 	bool SendMsg(PHEADER pMsg);
 
 	bool SendZipMsg(PHEADER pMsg);
+
+public:
 	
+	void SetPeerAddr(unsigned int dwIP, int nPort);
+
 protected:
 	CNetClient*		m_pNetClient;
 	

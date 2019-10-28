@@ -30,18 +30,24 @@ bool GetWorkPath(char* pszWorkPath);
 bool AddFilePath(char* pszFileName);
 
 //"192.168.1.1" =>  unsigned int 
-unsigned int IPString2Dword(const char* pszIP);
+unsigned int IPStr2Host(const char* pszIP);
 //unsigned int  => "192.168.1.0"
-char* IPDWORD2String(char* pszIP, unsigned int dwIP);
+char* IPHost2Str(char* pszIP, unsigned int dwIP);
 // net unsigned int => "192.168.1.0"
-char* IPNetDWORD2String(char* pszIP, unsigned int dwNetIP);
+char* IPNet2Str(char* pszIP, unsigned int dwNetIP);
 //"192.168.1.0" => net unsigned int 
-unsigned int IPNetString2DWORD(const char* pszIP);
+unsigned int IPStr2Net(const char* pszIP);
 
 //获取本地IPlist
 bool GetLocalIPList(std::vector<std::string> &listIP);
 
 //sockaddr, 获取IP：Port 
-bool GetDWORDNetIPAndPort(unsigned int &dwNetIP, int& nPort, struct sockaddr* pSockAddr);
+bool GetDWORDNetIPAndPort(unsigned int &dwHostIP, int& nPort, struct sockaddr_in* pSockAddr);
+
+
+//压缩
+bool Compress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen);
+//解压缩
+bool UnCompress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen);
 
 

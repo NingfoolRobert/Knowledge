@@ -123,6 +123,21 @@ bool CSocket::Connect(const char* pszAddress, int nPort)
 	return true;
 }
 
+bool CSocket::Connect(unsigned int dwHostIP, int nPort)
+{
+	struct sockaddr_in SvrAddr;
+	memset(&SvrAddr, 0, sizeof(SvrAddr));
+
+	SvrAddr.sin_family = AF_INET;
+	SvrAddr.sin_addr.s_addr = htonl(dwHostIP);		//主机字节序转网络字节序
+	SvrAddr.sin_port = htons(nPort);
+	if(connect(m_fd, (struct sockaddr*)&SvrAddr, sizeof(SvrAddr)) < 0)
+	{
+		return false;
+	}
+	return true;
+}
+
 int CSocket::Recv(char* pszBuf, int nBufLen)
 {
 	return read(m_fd, pszBuf, nBufLen);

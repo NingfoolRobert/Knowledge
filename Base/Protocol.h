@@ -39,5 +39,5 @@ enum
 };
 
 #define REQ_MSG			0x00000000				//最高位为0; 
-#define ACK_MSG			0x10000000				//32位为1 
-
+#define ACK_MSG			0x80000000				//32位为1 
+#define CMP_MSG			0x40000000				//31位为1
