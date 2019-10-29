@@ -11,6 +11,24 @@
 #include <sys/epoll.h>
 
 
+static void RecvThread(CNetClient* pNetClient)
+{
+	if(nullptr == pNetClient)
+		return ;
+	pNetClient->RecvThread();
+}
+static void SendThread(CNetClient* pNetClient)
+{
+	if(nullptr == pNetClient)
+		return ;
+	pNetClient->SendThread();
+}
+static void ProcessThread(CNetClient* pNetClient)
+{
+	if(nullptr == pNetClient)
+		return ;
+	pNetClient->ProcessMsg();
+}
 
 CNetClient::CNetClient()
 {
@@ -95,8 +113,10 @@ bool CNetClient::OnTerminate()
 void CNetClient::OnRecv()		
 {
 	//一次最多收缓冲区大小的数据 
-	auto task  = std::bind(&CNetClient::RecvThread, this);
-	PostEvent(task);
+	//auto task  = std::bind(&CNetClient::RecvThread, this);
+	//PostEvent(RecvThread, this);
+	//Enqueue(RecvThread, this);
+	std::thread tr1(std::mem_fn(&CNetClient::RecvThread), this);
 }
 
 void CNetClient::OnSend()
@@ -104,15 +124,20 @@ void CNetClient::OnSend()
 	// task  add in threadpool
 	auto task  = std::bind(&CNetClient::SendThread, this);
 
-	PostEvent(task);
+//postEvent(SendThread, this);
+	//Enqueue(SendThread, this);
+	std::thread tr1(std::mem_fn(&CNetClient::SendThread), this);
 }
 
 void CNetClient::OnClose()
 {
 	while(!m_listRecvMsg.empty())
 	{
-		auto task = std::bind(&CNetClient::ProcessMsg, this);
-		PostEvent(task);
+	//		auto task = std::bind(&CNetClient::ProcessMsg, this);
+	//	PostEvent(ProcessThread, this);
+	//	Enqueue(ProcessThread, this);
+	
+	std::thread tr1(std::mem_fn(&CNetClient::ProcessMsg), this);
 	}
 	
 	OnBreak();
@@ -284,8 +309,10 @@ void CNetClient::RecvThread()				//接受线程
 
 	//数据由消费线程消费
 	auto task = std::bind(&CNetClient::ProcessMsg,this);
-	PostEvent(task);
+//	PostEvent(ProcessThread, this);
+	//Enqueue(ProcessThread,this);
 
+	std::thread tr1(std::mem_fn(&CNetClient::ProcessMsg), this);
 }
 
 bool CNetClient::OnMsg(PHEADER pMsg)		//消息到达网络端口

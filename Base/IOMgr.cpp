@@ -26,6 +26,13 @@ bool CIOMgr::OnInitialUpdate(CNetService* pNetService,CAcceptIO* pAcceptIO, int 
 		return false;
 	}
 	
+	m_ep = epoll_create(256);
+	if(m_ep  < 0)
+	{
+		LogError("Init epoll fail.");
+		return false;
+	}
+	
 	m_pNetService = pNetService;
 	m_pAcceptIO = pAcceptIO;
 
@@ -179,6 +186,10 @@ bool CIOMgr::AddListenNetIO(CNetIO* pNetIO)
 	ev.data.fd = pNetIO->Detach();
 	ev.events = pNetIO->m_nEvent;
 	ev.data.ptr = pNetIO;
-	epoll_ctl(m_ep, EPOLL_CTL_ADD, ev.data.fd, &ev);
+	int nRet = epoll_ctl(m_ep, EPOLL_CTL_ADD, pNetIO->Detach(), &ev);
+	if(nRet < 0)
+	{
+		return false;
+	}
 	return true;
 }

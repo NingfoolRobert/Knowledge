@@ -43,13 +43,13 @@ bool CUserObject::SendZipMsg(PHEADER pMsg)
 	return m_pNetClient->SendZipMsg(pMsg);
 }
 
-inline void CUserObject::SetPeerAddr(unsigned int dwIP, int nPort)
+void CUserObject::SetPeerAddr(unsigned int dwIP, int nPort)
 {
 	m_dwIP = dwIP;
 	m_nPort = nPort;
 }
 
-inline void CUserObject::BindNetClient(CNetClient* pNetClient)
+void CUserObject::BindNetClient(CNetClient* pNetClient)
 {
 	m_pNetClient = pNetClient;
 }

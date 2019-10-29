@@ -9,7 +9,7 @@
 #include <sys/epoll.h> 
 #include <functional>
 #include <algorithm>
-
+#include "GFunc.h"
 
 CAcceptIO::CAcceptIO()
 {
@@ -29,8 +29,10 @@ bool CAcceptIO::OnInitialUpdate(CNetService* pNetService)
 		LogFatal("%s(%d) Init Appcept IO fail.", __FILE__, __LINE__);
 		return false;
 	}
+	unsigned int dwHostIP = 0;
+	dwHostIP = IPStr2Host("127.0.0.1");
 	//初始化监听端口 
-	if(!Socket(pNetService->m_nPort))
+	if(!Socket(pNetService->m_nPort, dwHostIP))
 	{
 		return false;
 	}

@@ -53,7 +53,7 @@ bool CNetObjService::OnNetConnect(CNetClient* pNetClient)
 {
 	if(nullptr == pNetClient)
 	{
-		LogError("");
+		LogError("NetClient is NULL.");
 		return false;
 	}
 	pNetClient->OnConnect();

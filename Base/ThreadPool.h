@@ -25,7 +25,7 @@ public:
 	~ThreadPool();
 public:
 	bool Init(int cnThread);
-	bool enqueue(std::function<void()>& task);
+//	bool enqueue(std::function<void()>& task);
 private:
 	// need to keep track of threads so we can join them
 	std::vector< std::thread > workers;
@@ -37,15 +37,15 @@ private:
 	std::condition_variable condition;
 	bool stop;
 
-//public:
-//	static ThreadPool* pool;
-//	static void Initial(size_t);
-//	static void Release();
+public:
+	static ThreadPool* pool;
+	static void Initial(size_t);
+	static void Release();
 
 
-	//template<class F, class... Args>
-	//static auto Enqueue(F&& f, Args&&... args)
-	//	->std::future<typename std::result_of<F(Args...)>::type>;
+	template<class F, class... Args>
+	static auto Enqueue(F&& f, Args&&... args)
+		->std::future<typename std::result_of<F(Args...)>::type>;
 };
 
 // the constructor just launches some amount of workers
@@ -119,28 +119,28 @@ inline ThreadPool::~ThreadPool()
 }
 
 //by yyk
-//template<class F, class... Args>
-//inline auto ThreadPool::Enqueue(F&& f, Args&&... args)
-//	->std::future<typename std::result_of<F(Args...)>::type>
-//{
-//	return pool->enqueue(std::forward<F>(f), std::forward<Args>(args)...);
-//}
-
-bool ThreadPool::enqueue(std::function<void()>& task)
+template<class F, class... Args>
+inline auto ThreadPool::Enqueue(F&& f, Args&&... args)
+	->std::future<typename std::result_of<F(Args...)>::type>
 {
-	std::unique_lock<std::mutex> lock(queue_mutex);
-	tasks.emplace([task](){ (task)(); });
-	return true;
+	return pool->enqueue(std::forward<F>(f), std::forward<Args>(args)...);
 }
+
+//bool ThreadPool::enqueue(std::function<void()>& task)
+//{
+//	std::unique_lock<std::mutex> lock(queue_mutex);
+//	tasks.emplace([task](){ (task)(); });
+//	return true;
+//}
 
 
 #define THREADPOOL  Singleton<ThreadPool>::GetInstacne()
 
 #define THREADINIT(nThreadCount)			Singleton<ThreadPool>::GetInstacne().Init(nThreadCount)
 
-#define PostEvent(task)	Singleton<ThreadPool>::GetInstance().enqueue(task)
+//#define PostEvent(task)	Singleton<ThreadPool>::GetInstance().enqueue(task)
 
-#define ASYNC_HANDLE(f,...) Singleton<ThreadPool>::GetInstance().enqueue(f,Args)
+#define PostEvent(f, ...) Singleton<ThreadPool>::GetInstance().enqueue(f,#__VA_ARGS__)
 
 
 

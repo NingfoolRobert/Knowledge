@@ -3,7 +3,7 @@
 
 CTestService::CTestService()
 {
-
+	m_nPort = 30030;
 }
 
 CTestService::~CTestService()
@@ -14,16 +14,29 @@ CTestService::~CTestService()
 
 bool CTestService::OnInitialUpdate()
 {
+	if(!CNetService::OnInitialUpdate())
+	{
+		return false;
+	}
+	
 	return true;
 }
 
 bool CTestService::OnTimeOut(struct tm* pTime)
 {
+	if(!CNetService::OnTimeOut(pTime))
+	{
+		return false;
+	}
 	return true;
 }
 
 bool CTestService::OnSecondIdle()
 {
+	if(!CNetService::OnSecondIdle())
+	{
+		return false;
+	}
 	return true;
 }
 	
@@ -34,11 +47,16 @@ bool CTestService::InvokeTerminate()
 
 bool CTestService::OnTerminate()
 {
+	if(!CNetService::OnTerminate())
+	{
+		return false;
+	}
 	return true;
 }
 
 bool CTestService::OnRegisterObject()
 {
+	
 	return true;
 }
 

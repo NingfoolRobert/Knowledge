@@ -51,7 +51,7 @@ bool CNetService::OnInitialUpdate()
 	}
 
 	// IO Manager 初始化
-	if(m_pIOMgr->OnInitialUpdate(this, m_pAcceptIO))
+	if(!m_pIOMgr->OnInitialUpdate(this, m_pAcceptIO))
 	{
 		LogError("%s(%d) NetIO Manager Init fail.", __FILE__, __LINE__);
 		return false;

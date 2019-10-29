@@ -64,6 +64,7 @@ public:
 
 	void RecvThread();				//接受线程 
 
+	void ProcessMsg();
 public:
 	virtual bool OnMsg(PHEADER pMsg);		//消息到达网络端口
 
@@ -92,7 +93,6 @@ public:
 	bool SendMsg();
 
 protected:
-	void ProcessMsg();
 	//客户端连接的地址信息
 	
 	void UpdateEventType(int nType);
