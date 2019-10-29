@@ -42,7 +42,7 @@ bool CTestService::OnRegisterObject()
 	return true;
 }
 
-CUserObject* OnCreateUserObject(int nOrigine)
+CUserObject* CTestService::OnCreateUserObject(int nOrigine)
 {
 	switch(nOrigine)
 	{

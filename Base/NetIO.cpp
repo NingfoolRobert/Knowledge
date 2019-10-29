@@ -79,7 +79,7 @@ int CNetIO::Send(const char* pBuf, int nLength)
 			//TODO 获取Socket IP:Port 
 			LogInfo("client has closed. IP:Port = %s:%d", szTmp, nPort);
 			//TODO 执行Socket 清理 步骤
-			
+			Close();	
 			return 0;
 		}
 		else
@@ -142,6 +142,7 @@ int CNetIO::Recv(char* pBuf, int nLength)
 		else if( nRecvLen == 0)
 		{
 			//对端关闭的写端关闭了 
+			Close();
 			return nRecved;
 		}
 	}
@@ -183,7 +184,6 @@ int CNetIO::Recv(char* pBuf, int nLength, bool& bRecvAll/* = false*/)
 				//TODO 获取Socket IP:Port 
 				LogFatal("%s(%d) Socket occure fatal error. IP:Port = %s:%d", __FILE__, __LINE__, szTmp, nPort);
 				//TODO 关闭套接字 并清理该event
-
 			}
 		}
 		else if( nRecvLen == 0)
@@ -222,3 +222,8 @@ inline void CNetIO::UpdateEventType(int nType)
 	//TODO Update IOmgr 中
 }
 
+//void CNetIO::Close()
+//{
+//	OnClose();
+//	UpdateEventType(EPOLLCLOSE);
+//}

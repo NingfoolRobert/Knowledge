@@ -1,6 +1,6 @@
 #pragma once
 
-//#include <stdio.h>
+#include <stdio.h>
 //
 // class singleton has the same goal as all singletons: create one instance of
 // // a class on demand, then dish it out as requested.

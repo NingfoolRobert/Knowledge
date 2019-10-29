@@ -1,8 +1,7 @@
 
 #include "NetObjService.h"
 #include "Log.h"
-#include "NetClient.h"
-
+#include "UserObject.h"
 
 CNetObjService::CNetObjService()
 {
@@ -21,8 +20,6 @@ bool CNetObjService::OnInitialUpdate()
 		return false;
 	}
 	OnRegisterObject();
-
-
 
 	return true;
 }
@@ -74,19 +71,20 @@ bool CNetObjService::OnNetMsg(CNetClient* pNetClient, PHEADER pMsg)
 	if(!pNetClient->IsBindUserObject())
 	{
 
-		auto pUserObject = 	OnCreateUserObject(pMsg->wOrigin);
+		CUserObject* pUserObject = OnCreateUserObject(pMsg->wOrigin);
 		if(nullptr == pUserObject)
 		{
 			LogError("%s(%d) Create UserObject is NULL. wOrigin: %d", __FILE__, __LINE__, pMsg->wOrigin);		
 			return false;
 		}
 		
+		pUserObject->BindNetClient(pNetClient);
+		pUserObject->SetPeerAddr(pNetClient->m_dwIP, pNetClient->m_nPort);
 		pNetClient->BindUserObj(pUserObject);
+		//设置对象基本信息  IP Port
+		//
 		OnNetConnect(pNetClient);
 	}
-
-	
-	pNetClient->OnMsg(pMsg);
 	
 	return true;
 }

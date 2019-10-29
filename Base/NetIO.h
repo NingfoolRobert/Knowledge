@@ -32,6 +32,8 @@ public:
 	virtual int Recv(char* pBuf, int nLength);
 
 	virtual int Recv(char* pBuf, int nLength, bool& bRecvAll);
+	
+//	virtual bool Close();
 
 public:
 	void UpdateEventType(int nType);

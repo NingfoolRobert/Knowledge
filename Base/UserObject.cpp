@@ -1,6 +1,5 @@
 #include "UserObject.h"
 #include "NetClient.h"
-#include "Protocol.h"
 
 
 
@@ -48,4 +47,26 @@ inline void CUserObject::SetPeerAddr(unsigned int dwIP, int nPort)
 {
 	m_dwIP = dwIP;
 	m_nPort = nPort;
+}
+
+inline void CUserObject::BindNetClient(CNetClient* pNetClient)
+{
+	m_pNetClient = pNetClient;
+}
+
+inline bool CUserObject::IsBindNetClient()
+{
+	if(m_pNetClient != nullptr)
+	{
+		return true;
+	}
+	return false;
+}
+
+void CUserObject::Terminate()
+{
+	if(IsBindNetClient())
+	{
+		m_pNetClient->Terminate();
+	}
 }

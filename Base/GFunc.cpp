@@ -1,8 +1,13 @@
 #include "GFunc.h"
 #include <string.h>
+#include "BufferMgr.h"
+
+
 #include <unistd.h>
 #include "Log.h"
 #include <arpa/inet.h>
+
+class CBufferMgr* g_pBufferMgr = nullptr;
 
 bool GlobalBegin(const char* pszSimpleName)
 {
@@ -15,6 +20,13 @@ bool GlobalBegin(const char* pszSimpleName)
 //	AddFilePath(m_szConfigureFileName);
 	
 	__LOGINIT__;
+
+	g_pBufferMgr = new CBufferMgr;
+	if(g_pBufferMgr ==  nullptr)
+	{
+		LogError("%s(%d) Memory Data error.", __FILE__, __LINE__);
+		return false;
+	}
 	return true;
 }
 

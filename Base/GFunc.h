@@ -42,7 +42,7 @@ unsigned int IPStr2Net(const char* pszIP);
 bool GetLocalIPList(std::vector<std::string> &listIP);
 
 //sockaddr, 获取IP：Port 
-bool GetDWORDNetIPAndPort(unsigned int &dwHostIP, int& nPort, struct sockaddr_in* pSockAddr);
+bool GetIPAndPort(unsigned int &dwHostIP, int& nPort, struct sockaddr_in* pSockAddr);
 
 
 //压缩

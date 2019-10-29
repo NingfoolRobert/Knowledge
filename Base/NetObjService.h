@@ -12,10 +12,8 @@
 
 #include "NetService.h"
 #include "Service.h"
-#include "UserObject.h"
 #include "ObjectService.h"
 
-class CNetClient;
 
 class CNetObjService: 
 			public CNetService, 

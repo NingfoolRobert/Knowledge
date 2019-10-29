@@ -14,11 +14,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -m64 -Wall -g -ggdb -lpthread -fPI
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/bin")
 
 
-
 #file(GLOB Src "${CMAKE_SOURCE_DIR}/*.cpp")
-
+include_directories("${CMAKE_SOURCE_DIR}/")
 AUX_SOURCE_DIRECTORY(. Src)
 
-add_executable(${PROJECT_NAME} 
-								${Src}
+ADD_EXECUTABLE(${PROJECT_NAME} 		${Src}
 								)
+target_link_libraries(${PROJECT_NAME})

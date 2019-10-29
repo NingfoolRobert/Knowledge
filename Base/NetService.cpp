@@ -3,6 +3,12 @@
 #include "AcceptIO.h"
 #include "Log.h"
 #include "IOMgr.h"
+#include "BufferMgr.h"
+#include "GFunc.h"
+
+
+//class CBufferMgr* g_pBufferMgr = nullptr;
+
 
 CNetService::CNetService()
 {
@@ -18,6 +24,7 @@ CNetService::~CNetService()
 
 bool CNetService::OnInitialUpdate()
 {
+	//
 	if(m_nPort < 1024)
 	{
 		//TODO 从配置文件中读取服务监听端口号

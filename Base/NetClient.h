@@ -18,6 +18,7 @@
 #include "Buffer.h"
 #include "AutoLock.h"
 #include "Protocol.h"
+#include "UserObject.h"
 
 #include <atomic> 
 #include <queue>
@@ -28,7 +29,7 @@
 
 
 
-class CUserObject;
+//class CUserObject;
 class CNetIOMgr;
 class CNetService;
 
@@ -56,6 +57,7 @@ public:
 	virtual void OnSend();
 
 	virtual void OnClose();
+
 public:
 	
 	void SendThread();				//发送消息线程

@@ -10,7 +10,7 @@
  * @author:		ningbf
  * @version:	1.0
  * @date:		2019-10-24
- */
+*/
 
 #pragma once
 #include "Protocol.h"
@@ -20,6 +20,7 @@ class CNetClient;
 
 class CUserObject
 {
+//	friend class CNetClient;
 public:
 	CUserObject();
 	virtual ~CUserObject();
@@ -40,10 +41,15 @@ public:
 
 	bool SendZipMsg(PHEADER pMsg);
 
+	void Terminate();
+	
 public:
 	
 	void SetPeerAddr(unsigned int dwIP, int nPort);
 
+	void BindNetClient(CNetClient* pNetClient);
+
+	bool IsBindNetClient();
 protected:
 	CNetClient*		m_pNetClient;
 	

@@ -1,6 +1,6 @@
 #include "NetClient.h"
-#include "UserObject.h"
 #include "GFunc.h"
+#include "UserObject.h"
 #include "NetService.h"
 #include "ThreadPool.h"
 #include "GFunc.h"
@@ -41,7 +41,7 @@ bool CNetClient::OnInitialUpdate(CNetService* pNetService,int fd)		//初始化So
 	socklen_t socklen = sizeof(PeerAddr);
 	GetPeerName((struct sockaddr*)&PeerAddr, &socklen);
 
-	GetDWORDNetIPAndPort(m_dwIP, m_nPort, &PeerAddr);
+	GetIPAndPort(m_dwIP, m_nPort, &PeerAddr);
 
 	return true;
 }
@@ -107,6 +107,19 @@ void CNetClient::OnSend()
 	PostEvent(task);
 }
 
+void CNetClient::OnClose()
+{
+	while(!m_listRecvMsg.empty())
+	{
+		auto task = std::bind(&CNetClient::ProcessMsg, this);
+		PostEvent(task);
+	}
+	
+	OnBreak();
+	
+	OnTerminate();
+}
+
 void CNetClient::SendThread()				//发送消息线程
 {
 	while(true)
@@ -163,15 +176,13 @@ void CNetClient::SendThread()				//发送消息线程
 			{
 				//TODO 回收m_pBufSend;
 				g_pBufferMgr->ReleaseBuffer(m_pbufSend);
-				m_pbufSend = nullptr;
+		 		m_pbufSend = nullptr;
 			}
 	}
 }
 
 void CNetClient::RecvThread()				//接受线程 
 {
-//	char szTmp[1024] = { 0 };
-
 	std::vector<char> szTmp;
 	szTmp.resize(1024);
 
@@ -222,13 +233,13 @@ void CNetClient::RecvThread()				//接受线程
 				if((pHeader->dwType & ACK_MSG) || (pHeader->wOrigin == CONNECTIONTYPE_NULL || pHeader->wOrigin >= CONNECTIONTYPE_SUM))
 				{
 					nRecvLen++;
-					continue;
+		 			continue;
 				}
 				//创建 对象成功
 				if(!m_pNetSercie->OnNetMsg(this, pHeader))
-				{
+		 		{
 			//		m_dwRecvSerial++;
-					continue;
+		 			continue;
 				}			
 			}
 		}
@@ -303,6 +314,14 @@ bool CNetClient::OnConnect()				//链接消息网络接口
 
 bool CNetClient::OnBreak()					//网络断开
 {
+	if(nullptr == m_pUserObj)
+	{
+		LogWarn("UserObj is NULL.IP:Port = %s:%d", m_szIP, m_nPort);
+	}
+	else 
+	{
+		m_pUserObj->OnClose();
+	}
 	UpdateEventType(EPOLLCLOSE);
 	return true;
 }
@@ -393,6 +412,16 @@ bool CNetClient::SendMsg(CBuffer* pBuf)
 	return true;
 }
 
+void CNetClient::BindUserObj(CUserObject* pUser)
+{
+	m_pUserObj = pUser;
+
+	if(!IsBindUserObject())
+		return ;
+	//m_pUserObj->BindNetClient(this);
+	//m_pUserObj->SetPeerAddr(m_dwIP, m_nPort);
+}
+
 inline bool CNetClient::IsBindUserObject()
 {
 	if(nullptr == m_pUserObj)
@@ -470,4 +499,12 @@ void CNetClient::UpdateEventType(int nType)
 	m_nNewEvent = nType;
 	
 	m_pNetSercie->AddNetClient(this);
+}
+
+//服务端主动断开
+bool CNetClient::Terminate()
+{
+	Close();
+	OnBreak();	
+	return true;
 }

@@ -132,10 +132,10 @@ void CIOMgr::TriggerEvent(const struct epoll_event& ev)
 	CNetIO* pNetClient  = (CNetIO*) ev.data.ptr;
 	if(ev.events & (EPOLLIN | EPOLLERR | EPOLLHUP))
 		pNetClient->OnRecv();
-	if(ev.events & EPOLLOUT)
+	else if(ev.events & EPOLLOUT)
 		pNetClient->OnSend();
-	
-	pNetClient->OnClose();
+	else 
+		pNetClient->OnClose();
 }
 	//thread tr1  
 
