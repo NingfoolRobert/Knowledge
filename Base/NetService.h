@@ -7,7 +7,7 @@
 #include "UserObject.h"
 #include "BufferMgr.h"
 #include "GFunc.h"
-
+#include "ThreadPoolA.h"
 
 class CAcceptIO;
 class CIOMgr;
@@ -51,5 +51,7 @@ protected:
 	CAcceptIO*			m_pAcceptIO;
 
 	CIOMgr*				m_pIOMgr;
+	
+	CThreadPool*		m_pThreadPool;
 };
 

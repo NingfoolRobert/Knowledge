@@ -14,7 +14,7 @@ CNetService::CNetService()
 {
 	m_pIOMgr = nullptr;
 	m_pAcceptIO = nullptr;
-
+	m_pThreadPool = nullptr;
 }
 
 CNetService::~CNetService()
@@ -30,6 +30,13 @@ bool CNetService::OnInitialUpdate()
 		//TODO 从配置文件中读取服务监听端口号
 		
 	}
+	m_pThreadPool = new CThreadPool(10);
+	if(m_pThreadPool == nullptr)
+	{
+		return false;
+	}
+
+
 	//初始化监听端口
 	m_pAcceptIO = new CAcceptIO;
 	if(m_pAcceptIO == nullptr)
