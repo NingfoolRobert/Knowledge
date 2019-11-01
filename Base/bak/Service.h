@@ -4,16 +4,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <time.h>
-#include <mutex>
-#include <condition_variable>
-
-
-
 #include "Log.h"
 #include "GlobalVar.h"
-
-
-
 
 class CService
 {
@@ -36,9 +28,8 @@ protected:
 	
 	bool		m_bStop;
 	time_t		m_tStart;
-	std::mutex	m_clsLock;
-	std::condition_variable  m_condStop;
 };
+
 
 extern CService* g_Service;
 
