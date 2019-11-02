@@ -40,9 +40,12 @@ public:
 			CPolicy();
 			~CPolicy();
 		public:
+	//		bool Init(const char* pszConfigName);
+	//		bool OnTimeOut(struct tm* pTime);
+	//		
+		public:
 			int			m_nCountCurrent;
-			int			m_nMaxThreadCount;
-			
+			int			m_nMaxThreadCount;			
 	};
 public:
 	bool  Init(int nIdleCount = 5, int nMaxThreadCount = 50, int nTimeOut = 60);
