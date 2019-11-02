@@ -7,6 +7,7 @@
 #include <thread>
 #include <chrono> 
 
+#include "version.h"
 
 using namespace std;
 
@@ -61,8 +62,24 @@ CService::~CService()
 //	Terminate();
 }
 
-bool CService::Execute(const char* pszFileName /*= ""*/, int nLine/*= 0*/)
+bool CService::Execute(const char* pszCommand, const char* pszFileName /*= ""*/, int nLine/*= 0*/)
 {
+	if(pszCommand != nullptr || 0 != strlen(pszCommand) )
+	{
+		if(strncasecmp(pszCommand, "-V",2) == 0)
+		{
+			printf("Version:	%s\nDate:		%s %s\n ",_VERSION_, __DATE__, __TIME__);
+		}
+		else if(strncasecmp(pszCommand, "--version", 9) == 0)
+		{	
+			printf("Version:	%s\nDate:		%s %s\n ",_VERSION_, __DATE__, __TIME__);
+		}
+		else 
+		{
+			printf("-help\n	-V/--version: Output the service version No.");
+		}
+		return 0;
+	}
 //	__LOGINIT__;
 	LogInfo("Init Service ...");
 	if(!OnInitialUpdate())

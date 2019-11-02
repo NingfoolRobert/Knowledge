@@ -29,7 +29,7 @@ public:
 
 public:
 	
-	bool	Execute(const char* pszFileName = "", int nLine = 0);
+	bool	Execute(const char* pszCommand,const char* pszFileName = "", int nLine = 0);
 	void	Terminate();
 
 protected:

@@ -19,7 +19,7 @@ public:
 		}
 		if(GlobalBegin(pszServiceName))
 		{
-			pService->Execute();
+			pService->Execute(argv[1]);
 		}
 
 		GlobalEnd();
