@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "GFunc.h"
 
+int	 __argc = 0;
+char** __argv = nullptr;
 
 template<class T>
 class CServiceTpl
@@ -19,7 +21,7 @@ public:
 		}
 		if(GlobalBegin(pszServiceName))
 		{
-			pService->Execute(argv[1]);
+			pService->Execute(__argv[1]);
 		}
 
 		GlobalEnd();

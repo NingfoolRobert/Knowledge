@@ -8,6 +8,8 @@
 #include <chrono> 
 
 #include "version.h"
+#include "marc.h"
+
 
 using namespace std;
 
@@ -62,25 +64,21 @@ CService::~CService()
 //	Terminate();
 }
 
-bool CService::Execute(const char* pszCommand, const char* pszFileName /*= ""*/, int nLine/*= 0*/)
+bool CService::Execute(const char* pszCommand)
 {
-	if(pszCommand != nullptr || 0 != strlen(pszCommand) )
+	if(pszCommand != nullptr && 0 != strlen(pszCommand) )
 	{
-		if(strncasecmp(pszCommand, "-V",2) == 0)
+		if(strncmp(pszCommand, "-V",2) == 0 || strncmp(pszCommand, "--version", 9) ==0)
 		{
-			printf("Version:	%s\nDate:		%s %s\n ",_VERSION_, __DATE__, __TIME__);
-		}
-		else if(strncasecmp(pszCommand, "--version", 9) == 0)
-		{	
-			printf("Version:	%s\nDate:		%s %s\n ",_VERSION_, __DATE__, __TIME__);
+			printf("Version:\t%s\r\nDate:\t\t%s %s\n", _SVR_VERSION_, __DATE__, __TIME__);
 		}
 		else 
 		{
-			printf("-help\n	-V/--version: Output the service version No.");
+			printf("\r\n-help\n	-V/--version: Output the service version No.\n");
 		}
 		return 0;
 	}
-//	__LOGINIT__;
+	
 	LogInfo("Init Service ...");
 	if(!OnInitialUpdate())
 	{
@@ -143,4 +141,9 @@ void CService::Terminate()
 	m_condStop.notify_all();
 	m_bStop = true;
 	LogInfo("Service Stop....");
+}
+
+bool CService::SysRun()
+{
+	return true;		
 }

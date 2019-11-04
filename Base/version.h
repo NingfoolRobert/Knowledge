@@ -2,5 +2,6 @@
 #include <string>
 
 
-#define _VERSION_  "1.0.0.2"
+#define _SVR_VERSION_  "1.0.0.2"
+
 
