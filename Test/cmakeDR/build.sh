@@ -1,6 +1,5 @@
 #!/bin/sh 
 
-
 if [ ! -d "./build" ]; then 
 	mkdir ./build 
 fi 
@@ -13,26 +12,28 @@ if [ $# -gt 0 ]; then
 			mkdir ./Release
 		else 
 			rm -rf ./Release/* 
-			cd ./Release 
 		fi 
+		
+		cd ./Release 
 		MOD="-DCMAKE_BUILD_TYPE=Release"
 	else 
 		if [ ! -d "./Debug" ]; then 
 			mkdir ./Debug 
 		else 
 			rm -rf ./Debug/*
-			cd ./Debug 
 		fi 
+		
+		cd ./Debug 
 		MOD="-DCMAKE_BUILD_TYPE=Debug"
 	fi 
-else 
+else  
 	if [ ! -d "./Debug" ]; then 
 			mkdir ./Debug 
 	else 
 			rm -rf ./Debug/*
-			cd ./Debug 
 	fi 	
 	
+	cd ./Debug 
 	MOD="-DCMAKE_BUILD_TYPE=Debug"
 fi 
 
