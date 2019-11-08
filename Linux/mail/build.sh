@@ -1,5 +1,9 @@
 #!/bin/bash 
 
+cd ./proto 
+./generate.sh 
+cd ..
+
 if [ ! -d "./build" ];then 
 	mkdir build 
 else 

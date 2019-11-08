@@ -34,7 +34,7 @@ AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/Server/Handler UserSrc)
 
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/include/Server/Subscribe SubSrc)
 #AUX_SOURCE_DIRECTORY(%{CMAKE_SOURCE_DIR}/proto/Msg/*.cc  PBSrc)
-file(GLOB PBSrc "${CMAKE_SOURCE_DIR}/proto/Msg/*.cc")
+file(GLOB PBSrc "${CMAKE_SOURCE_DIR}/proto/Msg/*.cc" "${CMAKE_SOURCE_DIR}/proto/Msg/util/bean/*.cc"  "${CMAKE_SOURCE_DIR}/proto/Msg/util/msg/*.cc" "${CMAKE_SOURCE_DIR}/proto/Msg/util/*.cc")
 
 
 add_executable(${PROJECT_NAME}  
