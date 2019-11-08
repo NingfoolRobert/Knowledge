@@ -1,0 +1,9 @@
+<LogFileInfo>
+	<Read>
+		<Log FileName = "/home/nbf/WorkPlatform/Monitor/AlarmService/logs/2017-10-06/201710061235336.txt" Positon = "1235624" Time = "1573179932" />
+	</Read>
+	<Ignore>
+		<Info FileName = "/home/nbf/Test.txt" />
+		<Info FileName = "/home/nbf/Test.txt" />
+	</Ignore>
+</LogFileInfo>
