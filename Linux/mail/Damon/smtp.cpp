@@ -6,11 +6,11 @@
 
 CSmtp::CSmtp()
 {
-	strcpy(m_szHostIP, "192.168.20.43");
+	strcpy(m_szHostIP, "10.109.1.69");
 	strcpy(m_szEHLO, "EHLO CICCGWGroup\r\n");
 	strcpy(m_szAccount, "CICC\\it_support_app_sende");
 	strcpy(m_szPassWd, "setupandindex");
-	strcpy(m_szFromEmail, "it_support_app_sende@cicc.com.cn");
+	strcpy(m_szFromEmail, "it_support_appdl@cicc.com.cn\r\n");
 	strcpy(m_szAuth, "AUTH LOGIN\r\n");
 
 }
@@ -71,13 +71,22 @@ bool CSmtp::OpenSocket()
 
 	sockAddr.sin_family = AF_INET;
 	sockAddr.sin_addr.s_addr = inet_addr(szTmp); 
-
+	sockAddr.sin_port = htons(25);
 	if(connect(m_fd, (struct sockaddr*)&sockAddr, sizeof(sockAddr)) < 0)
 	{
 		printf("connect fail.");
 		return false;
 	}
 	
+	char szRecv[256] = {0};
+	
+	int nRet = recv(m_fd, szRecv, sizeof(szRecv), 0);
+	if(nRet <= 0)
+	{
+		printf(" Recv Msg fail.");
+		return false;
+	}
+	printf("Recv Msg: %s",  szRecv);
 	return true;
 }
 
@@ -89,14 +98,14 @@ int	CSmtp::LogOn()
 		printf("Send EHLO fail.");
 		return 0;
 	}
-	if(strncmp(szRecv, "250") != 0)
+	if(strncmp(szRecv, "250",3) != 0)
 	{
 		printf(" Recv EHLO Error:%s", szRecv);
 		return 0;
 	}
 
 	memset(szRecv, 0, sizeof(szRecv));
-	int nRet =SendMsg(m_szAuth, strlen(m_szEHLO), true, szRecv, sizeof(szRecv));
+	int nRet =SendMsg(m_szAuth, strlen(m_szAuth), true, szRecv, sizeof(szRecv));
 	if(nRet < 0)
 	{
 		printf("Send Auth fail.");
@@ -110,18 +119,19 @@ int	CSmtp::LogOn()
 	if(strstr(szRecv,"334") == nullptr)
 	{
 		printf("Auth fail Error: %s", szRecv);
+		return 0;
 	}
 
 
-	
-	//User Log on 
+  
+  //User Log on 
 	char szUserName[64] = { 0 };
 	char szPasswd[64] = { 0 };
 	EncodeBase64(szUserName, m_szAccount, strlen(m_szAccount));
 	printf("EncodeBase64 UserName: %s", szUserName);	
 	strcat(szUserName, "\r\n");
 
-	nRet = SendMsg(szUserName, strlen(szUserName));
+		nRet = SendMsg(szUserName, strlen(szUserName));
 	if(nRet < 0)
 	{
 		printf("Send Msg fail.");
@@ -131,7 +141,7 @@ int	CSmtp::LogOn()
 	printf("EncodeBase64 Passwd: %s", szPasswd);
 	strcat(szPasswd, "\r\n");
 	memset(szRecv, 0, sizeof(szRecv));
-	nRet = SendMsg(szPasswd, strlen(szUserName), true, szRecv, sizeof(szRecv));
+	nRet = SendMsg(szPasswd, strlen(szPasswd), true, szRecv, sizeof(szRecv));
 	if(nRet < 0)
 	{
 		printf("Send Msg fail.");
@@ -143,12 +153,12 @@ int	CSmtp::LogOn()
 		return false;
 	}
 	
-	if(strstr(szRecv, "250") == nullptr || nullptr == strstr(szRecv, "334"))
+	if(strstr(szRecv, "250") == nullptr && nullptr == strstr(szRecv, "334"))
 	{
 		printf("Log On Error: %s", szRecv);
 		return false;
 	}
-	return false;
+	return 1;
 
 }
 int CSmtp::SendHead()
@@ -182,7 +192,7 @@ int CSmtp::SendHead()
 		return 0;
 	}
 	
-
+	return 1;
 }
 
 bool CSmtp::SendBody()

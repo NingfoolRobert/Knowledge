@@ -40,14 +40,26 @@ bool CAppUser::ParseWarningInfo(const char* pMsg, int nLen)
 		LogWarn("%s Warning information is NULL.", __FUNCTION__);
 		return false;
 	}
+	
+	//DataFeed	
+	CICCDataFeed data;
+	if(!data.ParseFromArray(pMsg, nLen))
+	{
+		LogError("Message Parse Serialize fail.");
+		return false;
+	}
 
-	LogWarning pLogWarn;
-	if(!pLogWarn.ParseFromArray(pMsg, nLen))
+	//LogWarning pLogWarn;
+	FeedWarningMsgArray WarnInfo;
+	if(!WarnInfo.ParseFromArray(pMsg, nLen))
 	{
 		LogError("Message Parse Serialize fail.");
 		return false;
 	}
 //
+//
+//
+	auto pLogWarn = WarnInfo.logwarning();
 	int nLevel = 1;
 	if(pLogWarn.has_level())
 	{

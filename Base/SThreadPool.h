@@ -69,9 +69,6 @@ private:
 	std::condition_variable     m_condLock;
 
 private:
-	CSThreadPool(const CSThreadPool&){}
-	const CSThreadPool& operator = (const CSThreadPool&){return CSThreadPool();}
-	
-
-
+	CSThreadPool(const CSThreadPool&);
+	const CSThreadPool& operator = (const CSThreadPool&);//{return CSThreadPool();
 };

@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <unistd.h> 
+
 
 struct Base64Date6
 {
@@ -25,6 +27,7 @@ class CSmtp
 		CSmtp();
 		~CSmtp();
 	public:
+
 
 		void  SendEmail();
 		bool  OpenSocket();
