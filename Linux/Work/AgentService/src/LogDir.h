@@ -16,6 +16,7 @@
 
 #include "LogCap.h"
 #include <mutex>
+#include <set>
 #include <memory>
 #include <string.h>
 
