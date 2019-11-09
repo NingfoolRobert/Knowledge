@@ -18,6 +18,9 @@
 #include <stdlib.h>
 #include "Buffer.h"
 #include "BufferMgr.h"
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/types.h>
 
 
 #include <vector>
@@ -54,10 +57,24 @@ public:
 public:
 	virtual bool GetLastestLog(std::vector<CBuffer*>& listLogInfo);
 
+	virtual bool GetAugmenterLogItem(std::vector<std::string>& listAugLog);
+
+	virtual bool IsCaptureItem(const char* pszLogItem);
+
+protected:
+
+	bool GetLogItem(std::vector<std::string>& listLogItem,char* pszBuf, int& nResidLen);
+
+private:
+	
+	int GetMapBlockCount(int& nStartPos, int& nResidLen);
 private:
 	bool		m_bTTL;				//文件是否过期 
 	time_t		m_tLastModify;
 	long		m_lPosition;
 	time_t		m_tLastRead;		//上一次读取时间
 	char		m_szLogFileName[MAX_PATH];
+	long		m_lCurrentSize;		//文件当前大小
+public:
+	static int	m_nPageSize;
 };
