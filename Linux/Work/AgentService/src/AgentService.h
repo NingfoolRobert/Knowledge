@@ -35,6 +35,11 @@ public:
 	virtual bool OnTerminate();
 
 public:
+	
+	//bool SerialMsg(char* pszTopic, CBuffer* pBuf, std::string strDirName, std::vector<std::string>& listLogItem);
+
+	bool SendLogMsg(const std::string strDirName, vector<std::string>& listLogItem);
+public:
 	bool PostMsg(const char* pszTopic, CBuffer* pBufMsg);
 
 public:
@@ -45,6 +50,7 @@ public:
 	unsigned long  GetPubSerialNum(int nIncrement = 1);
 private:
 
-	CZMQPub<CAgentService>*				m_pPubLog;	
+	CZMQPub<CAgentService>*				m_pPubLog;
+	std::shared_ptr<CLogMgr>			m_pLogMgr;
 };
 extern class CAgentService* g_ciccAgentService;

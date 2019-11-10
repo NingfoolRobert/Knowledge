@@ -1,5 +1,7 @@
 #include "LogCap.h"
-#include <fstrema>
+#include <fstream>
+#include "Log.h"
+#include "AgentService.h"
 
 
 CLogCollect::CLogCollect()
@@ -14,6 +16,10 @@ CLogCollect::~CLogCollect()
 	
 bool CLogCollect::Init(const char* pszLogFileName)
 {
+	if(nullptr == pszLogFileName)
+	{
+		return false;
+	}
 	return true;
 }
 	
@@ -47,11 +53,27 @@ bool CLogCollect::GetLastestLog(std::vector<CBuffer*>& listLogInfo)
 	return true;
 }
 
+bool CLogCollect::UpdateFileInfo(time_t tLastModify, long lFileSize)			//更新文件信息
+{
+	if(lFileSize != m_lCurrentSize)
+	{
+		m_lCurrentSize = lFileSize;
+		m_tLastModify = tLastModify;
+		m_bTTL = false;
+	}
+	else 
+	{
+		time_t tNow = time(NULL);
+		if(tNow - tLastModify > m_nTTL)
+			m_bTTL = true;
+	}
+	return true;
+}
 bool CLogCollect::GetAugmenterLogItem(std::vector<std::string>& listAugLog)
 {
 	listAugLog.clear();
 	
-	int fLog = open(m_szLogFileName, O_RDWR, 00777);
+	int fLog = open(m_szLogFileName, O_RDWR);
 	if(fLog <= 0)
 	{
 		LogInfo("Open file fail. File: %s", m_szLogFileName);
@@ -87,7 +109,7 @@ bool CLogCollect::GetAugmenterLogItem(std::vector<std::string>& listAugLog)
 			continue;
 		}
 	
-		nLength = nResidLen + strlen(pmap);
+		nLength = nResidLen + nMapLen;
 		Tmp.resize(nLength + 1);
 		memmove(&Tmp[0] + nResidLen, pmap, nMapLen);
 		
@@ -107,14 +129,17 @@ bool CLogCollect::GetAugmenterLogItem(std::vector<std::string>& listAugLog)
 		nResidLen = nLength;
 		if(!GetLogItem(listAugLog, pHead, nResidLen))
 		{
-			LogError("%s(%d) Get LogItem fail.",__FILE__, __LINE__);
+			LogError("%s(%d) Get LogItem fail.", __FILE__, __LINE__);
 			break;	
 		}
 
 		memset(&Tmp[0], 0, nLength);
 		memmove(&Tmp[0], pHead, nResidLen);
 		nReadedSize += nLength -  nResidLen;	
-		
+	
+	
+		//Log日志发送
+		g_ciccAgentService->SendLogMsg(m_szLogDir, listAugLog);
 	}
 
 	m_lPosition  = nStartPos  + nReadedSize; 
@@ -162,7 +187,7 @@ bool CLogCollect::GetLogItem(std::vector<std::string>& listLogItem, char* pszBuf
 
 		if(IsCaptureItem(pHead))
 		{
-			listLogItem.push_back(pHead);
+			listLogItem.emplace_back(pHead);
 		}
 		pHead = pTmp++;
 		pTmp = strchr(pHead, '\n');

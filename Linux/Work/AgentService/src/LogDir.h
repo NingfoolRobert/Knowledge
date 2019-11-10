@@ -17,8 +17,11 @@
 #include "LogCap.h"
 #include <mutex>
 #include <set>
+#include <map>
 #include <memory>
 #include <string.h>
+#include "tinyxml2.h"
+
 
 
 typedef struct stLogDirInfo
@@ -70,23 +73,42 @@ public:
 
 	bool Init(const char* pszDirName, const char* pszAppType, const char* pszBusiss, int nID, int nTTL = 360);
 
+	bool InitLogDirInfo(std::vector<PLOGINFO> listLogInfo, std::vector<std::string>& listIgnoreLog);
+
 	bool GetCollectLog(std::vector<LOGPtr>& listLog, std::vector<LOGPtr>& listIgnoreLog);
 
 	void CheckLogValid();
 
 	void GetMsgTopic(char* pszTopic);
+
+	void CheckLogList();
+
+	void LoadXMLDirInfo(tinyxml2::XMLElement* pXMLDir);
 public:
 	bool AddLogObj(const char* pszLogFileName);
 
 	bool DelLogObj(const char* pszLogFileName);
 
+	void CollectLogItem();	
+
+	//更新文件最新信息
+	void UpdateLogInfo(std::map<std::string, LOGPtr>::value_type& value);
+
+protected:
+	
+	void FormatTopic(char* pszTopic);
+
+	bool SerialMessage(char* pszTopic, CBuffer* pBuf, std::vector<std::string>& listLogItem);
+public:
+	 bool								m_bValid;       //该目录有效性
 private:
 	int									m_nTTL;			//日志过期时间
-	char								m_szApp[32];	//日志所属业务类型 
-	char								m_szBusiss[32];	//日志所属类型: SYS, BUS
+	char								m_szService[32];	//日志所属业务类型 
+	char								m_szType[32];	//日志所属类型: SYS, BUS
 	int									m_nID;			//服务ID 
 private:
 	std::mutex 							m_clsLock;
 	std::map<std::string, LOGPtr>		m_listLogInfo;
 	std::set<std::string>				m_listIgnoreLog;
+	std::set<std::string>				m_listAllFileName;
 };

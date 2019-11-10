@@ -21,7 +21,10 @@
 
 #include "LogDir.h"
 
+#include "tinyxml2.h"
 
+
+typedef std::shared_ptr<CLogDir>  LOGDIRPtr;
 
 class CLogMgr
 {
@@ -43,6 +46,9 @@ public:
 	//保存上次读取文件信息
 	bool  SaveLastReadLogInfo();
 
+	LOGDIRPtr  FindLogDir(const std::string strDirName);
+
+	bool  GetDirAllFile(std::set<std::string>& listFileName);
 protected:
 	
 	bool LoadXMLConfigInfo(const char* pszConfigureFileName);
@@ -58,9 +64,7 @@ protected:
 private:
 	std::mutex					m_clsLock;
 	std::set<PLOGDIRINFO>		m_listLogDir;
-	std::map<std::string , std::set<CLogCollect*>> m_listLogInfo;		//日志以目录管理 
 
 private:
-	std::set<PLOGINFO>			m_lisLastReadLogInfo;
-	std::set<std::string>		m_listIgnoreLog;
+	std::map<std::string, LOGDIRPtr> m_mapLogDir;	
 };

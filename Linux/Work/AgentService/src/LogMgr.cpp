@@ -58,3 +58,13 @@ bool CLogMgr::DelLogInfo(const char* pszLogFileName)
 
 
 
+LOGDIRPtr  CLogMgr::FindLogDir(const std::string strDirName)
+{
+	if(0 == strDirName.length())
+		return nullptr;
+	auto it = m_mapLogDir.find(strDirName);
+	
+	if(it == m_mapLogDir.end())
+		return nullptr;
+	return it->second;
+}

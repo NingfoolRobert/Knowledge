@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <string.h>
+#include <string>
 
 
 #define MAX_PATH  256
@@ -54,6 +55,7 @@ public:
 	
 	bool IsGatherData();
 
+	bool UpdateFileInfo(time_t tLastModify, long lFileSize);			//更新文件信息
 public:
 	virtual bool GetLastestLog(std::vector<CBuffer*>& listLogInfo);
 
@@ -74,7 +76,9 @@ private:
 	long		m_lPosition;
 	time_t		m_tLastRead;		//上一次读取时间
 	char		m_szLogFileName[MAX_PATH];
+	char		m_szLogDir[MAX_PATH];	//所属目录 
 	long		m_lCurrentSize;		//文件当前大小
 public:
+	bool		m_bCheck;
 	static int	m_nPageSize;
 };

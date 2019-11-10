@@ -90,8 +90,50 @@ unsigned long  CAgentService::GetPubSerialNum(int nIncrement/* = 1*/)
 	{
 		return 0;
 	}
-
 	//
 	m_pPubLog->m_ulSerialNum += nIncrement;
 	return  m_pPubLog->m_ulSerialNum;
+}
+
+
+//bool CAgentService::SerialMsg(char* pszTopic, CBuffer* pBuf, std::string pszFileName, std::vector<std::string>& listLogItem)
+//{
+//	if(pszTopic == nullptr || pBuf == nullptr || 0 == listLogItem.size())
+//	{
+//		return false;
+//	}
+//	//
+//	//
+//
+//	auto pLogDir = m_pLogMgr->FindLogDir(pszLogDirName);
+//	if(pLogDir == nullptr)
+//	{
+//		return false;
+//	}
+//
+//	 return pLogDir->SerialMsg(pszTopic, pBuf, listLogItem);	
+//}
+
+
+bool CAgentService::SendLogMsg(const std::string strDirName, std::vector<std::string>& listLogItem)
+{
+	if(0 == strDirName || 0 == listLogItem.size())
+	{
+		return false;
+	}
+
+	auto pLogDir = m_pLogMgr->FindLogDir(strDirName);
+	if(pLogDir == nullptr)
+	{
+		return false;
+	}
+	
+	char szTopic[256] = { 0 };
+	CBuffer stBuf;
+	
+	pLogDir->SerialMsg(szTopic, &stBuf, listLogItem);
+
+	PostMsg(szTopic, &stBuf);
+
+	return true;
 }
