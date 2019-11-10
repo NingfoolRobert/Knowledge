@@ -43,6 +43,24 @@ cmake $MOD ../..
 
 make 
  
-	
+
+#case $1 in 
+#Release)
+#	func_Release 
+#	exit 0 
+#	;;
+#Debug)
+#	func_Debug 
+#	exit 0
+#	;;
+#make)
+#	func_make 
+#	exit 0 
+#	;; 
+#help)
+#	usage
+#	exit 0
+#	;;
+#esac
 
 
