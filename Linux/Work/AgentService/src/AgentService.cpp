@@ -96,28 +96,9 @@ unsigned long  CAgentService::GetPubSerialNum(int nIncrement/* = 1*/)
 }
 
 
-//bool CAgentService::SerialMsg(char* pszTopic, CBuffer* pBuf, std::string pszFileName, std::vector<std::string>& listLogItem)
-//{
-//	if(pszTopic == nullptr || pBuf == nullptr || 0 == listLogItem.size())
-//	{
-//		return false;
-//	}
-//	//
-//	//
-//
-//	auto pLogDir = m_pLogMgr->FindLogDir(pszLogDirName);
-//	if(pLogDir == nullptr)
-//	{
-//		return false;
-//	}
-//
-//	 return pLogDir->SerialMsg(pszTopic, pBuf, listLogItem);	
-//}
-
-
 bool CAgentService::SendLogMsg(const std::string strDirName, std::vector<std::string>& listLogItem)
 {
-	if(0 == strDirName || 0 == listLogItem.size())
+	if(0 == strDirName.length() || 0 == listLogItem.size())
 	{
 		return false;
 	}
@@ -135,5 +116,18 @@ bool CAgentService::SendLogMsg(const std::string strDirName, std::vector<std::st
 
 	PostMsg(szTopic, &stBuf);
 
+	return true;
+}
+
+CBuffer*  CAgentService::GetBuffer(int nLength, const char* pszFileName/* = ""*/, int nLine/* =  0*/)
+{
+	if(g_pBufferMgr == nullptr)
+		return nullptr;
+	return g_pBufferMgr->GetBuffer(nLength, pszFileName, nLine);
+}
+	
+bool CAgentService::ReclaimBuffer(CBuffer* pBuffer)
+{
+	g_pBufferMgr->ReleaseBuffer(pBuffer);
 	return true;
 }

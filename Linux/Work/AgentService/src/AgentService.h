@@ -13,14 +13,15 @@
  */
 
 #pragma once 
-#include "NetObjService.h"
-
+//#include "NetObjService.h"
+#include "Service.h"
+#include "SThreadPool.h"
 #include "LogMgr.h"
 #include "zmqPub.h"
 #include "BufferMgr.h"
 
 class CAgentService:
-	public CNetObjService
+	public CService
 {
 public:
 	CAgentService();
@@ -35,10 +36,8 @@ public:
 	virtual bool OnTerminate();
 
 public:
-	
-	//bool SerialMsg(char* pszTopic, CBuffer* pBuf, std::string strDirName, std::vector<std::string>& listLogItem);
 
-	bool SendLogMsg(const std::string strDirName, vector<std::string>& listLogItem);
+	bool SendLogMsg(const std::string strDirName, std::vector<std::string>& listLogItem);
 public:
 	bool PostMsg(const char* pszTopic, CBuffer* pBufMsg);
 
@@ -50,6 +49,7 @@ public:
 	unsigned long  GetPubSerialNum(int nIncrement = 1);
 private:
 
+	CSThreadPool*						m_pSThreadPool;
 	CZMQPub<CAgentService>*				m_pPubLog;
 	std::shared_ptr<CLogMgr>			m_pLogMgr;
 };

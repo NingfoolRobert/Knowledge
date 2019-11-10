@@ -17,6 +17,9 @@ namespace CommonHelper
 
 bool GetAllFileName(const char* pszPathName, std::vector<std::string>& listFileName, bool bRcv = false);
 
+bool IsDir(const char* pszDirName);
+
+bool IsFile(const char* pszFileName);
 
 bool Char2Base64(char* pszBuf64, const char* pszSrc,int nLen);
 
@@ -24,6 +27,8 @@ bool Char2Base64(char* pszBuf64, const char* pszSrc,int nLen);
 bool GetFileTime(const char* pszFileName, time_t &lCreateTime, time_t& lModifyTime, time_t& lAccessTime);
 
 time_t GetFileModifyTime(const char* pszFileName);
+
+bool GetFileInfo(const char* pszFileName, long& lFileSize, time_t& tModify);
 
 bool GetStringXMLConfig(const char* pszSection, const char* pszKey, const char* pszDefaultValue,char* pszValue, const char* pszXMLFileName);
 

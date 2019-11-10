@@ -1,4 +1,5 @@
 #include "LogMgr.h"
+#include "CommonHelper.h"
 
 
 
@@ -18,11 +19,18 @@ bool  CLogMgr::LoadLastReadLogInfo(const char* pszReadFileInfo)
 
 bool  CLogMgr::Init()
 {
+
+	LoadXMLConfigInfo();
+	LoadLastReadLogInfo();
+
 	return true;
 }
 
 bool  CLogMgr::TimeOut(struct tm* pTime)
 {
+	if(pTime == nullptr)
+		return false;
+	
 	return true;
 }
 
@@ -34,10 +42,29 @@ bool  CLogMgr::GatherLastestLogInfo()
 
 bool CLogMgr::LoadXMLConfigInfo(const char* pszConfigureFileName)
 {
+	if(nullptr == pszConfigureFileName)
+		return false;
+
 	return true;
 }
+
 bool CLogMgr::AddLogDir(const char* pszLogDirName)
 {
+	if(nullptr == pszLogDirName || 0 == strlen(pszLogDirName))
+		return false;
+
+	auto it = m_mapLogDir.find(pszLogDirName);
+	if(it == m_mapLogDir.end())
+	{
+		auto pLogDir = std::make_shared<CLogDir>();
+		if(pLogDir == nullptr)
+		{
+			LogError("%s(%d) alloc shared_ptr fail. DirName: %s", __FILE__, __LINE__, pszLogDirName);
+			return false;
+		}
+		// TODO LogDir 初始化 
+		
+	}
 	return true;
 }
 

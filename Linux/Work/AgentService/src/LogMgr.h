@@ -60,7 +60,7 @@ protected:
 	bool AddLogInfo(const char* pszLogFileName, const char* szAppType, const char* pszBusissType);
 
 	bool DelLogInfo(const char* pszLogFileName);
-	
+
 private:
 	std::mutex					m_clsLock;
 	std::set<PLOGDIRINFO>		m_listLogDir;

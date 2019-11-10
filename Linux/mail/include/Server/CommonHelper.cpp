@@ -5,6 +5,34 @@
 #include "CommonHelper.h"
 #include "tinyxml2.h"
 
+bool CommonHelper::IsDir(const char* pszDirName)
+{
+	if(pszDirName == nullptr || 0 == strlen(pszDirName))
+		return false;
+	struct stat sBuf;
+
+	if(stat(pszDirName, &sBuf) != 0)
+		return false;
+	if(sBuf.st_mode & S_IFDIR)
+	{
+		return true;
+	}
+	return false;
+	
+}
+bool CommonHelper::IsFile(const char* pszFileName)
+{
+	if(pszFileName == nullptr || 0 == strlen(pszFileName))
+		return false;
+	struct stat sBuf;
+
+	if(stat(pszFileName, &sBuf) != 0)
+		return false;
+	if(sBuf.st_mode & S_IFREG)
+	{
+		return true;
+	}
+	return false;
 
 bool CommonHelper::GetAllFileName(const char* pszPathName, std::vector<std::string>& listFileName, bool bRcv/* = false*/)
 
@@ -117,6 +145,27 @@ bool CommonHelper::GetFileTime(const char* pszFileName, time_t &lCreateTime, tim
 	lModifyTime = buf.st_mtime;
 	lAccessTime = buf.st_atime;
 
+	return true;
+}
+
+bool CommonHelper::GetFileInfo(const char* pszFileName, long& lFileSize, time_t& tModify)
+{
+	if(pszFileName == nullptr)
+		return false;
+	FILE * pFile = fopen(pszFileName, "r");
+	if(nullptr == pFile)
+	{
+		return false;
+	}
+	struct stat buf;
+	int fd = fileno(pFile);
+	if(fd <= 0)
+	{
+		return false;
+	}
+	fstat(fd, &buf);
+	lFileSize = buf.st_size;
+	tModify = buf.st_mtim.tv_sec;
 	return true;
 }
 
