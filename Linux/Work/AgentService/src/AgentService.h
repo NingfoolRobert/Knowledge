@@ -20,6 +20,10 @@
 #include "zmqPub.h"
 #include "BufferMgr.h"
 
+
+#include <future>
+
+
 class CAgentService:
 	public CService
 {
@@ -32,7 +36,9 @@ public:
 	virtual bool OnTimeOut(struct tm* pTime);
 	
 	virtual bool OnSecondIdle();
-	
+
+	virtual bool InvokeTerminate();
+
 	virtual bool OnTerminate();
 
 public:
@@ -41,16 +47,39 @@ public:
 public:
 	bool PostMsg(const char* pszTopic, CBuffer* pBufMsg);
 
+	bool PostTask(Task& task);
+
+	template<class F, class... Args>
+	auto PostTask(F&&f, Args&&... args) 
+	->std::future<typename std::result_of<F(Args...)>::type>
+	{
+		return m_pSThreadPool->AddTask(std::forward<F>(f), std::forward<Args>(args)...);
+	//	using return_type = typename std::result_of<F(Args...)>::type;
+
+	//	auto task = std::make_shared< std::packaged_task<return_type()> >(
+	//			std::bind(std::forward<F>(f), std::forward<Args>(args)...)
+	//			); 
+	//	std::future<return_type> res = task->get_future();
+	//	
+	//	m_pSThreadPool->AddTask([task](){(*task)();});
+
+	//	return res;
+	}
+
 public:
 	CBuffer*  GetBuffer(int nLength, const char* pszFileName = "", int nLine =  0);
 	
 	bool ReclaimBuffer(CBuffer* pBuffer);
 
 	unsigned long  GetPubSerialNum(int nIncrement = 1);
+protected:
+//	bool GetXMLProfileString(const char* pszSection, const char* pszKey, const char* pszDefaultValue, char* pszValue, const char* pszFileName = nullptr);
+bool GetXMLAttributeString(const char* pszSection, const char* pszKey, const char* pszDefaultValue, char* pszValue, const char* pszFileName/* = nullptr*/);
+
 private:
 
 	CSThreadPool*						m_pSThreadPool;
-	CZMQPub<CAgentService>*				m_pPubLog;
+	CZMQPub*							m_pPubLog;
 	std::shared_ptr<CLogMgr>			m_pLogMgr;
 };
 extern class CAgentService* g_ciccAgentService;

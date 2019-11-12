@@ -24,7 +24,9 @@
 #include "tinyxml2.h"
 
 
+
 typedef std::shared_ptr<CLogDir>  LOGDIRPtr;
+
 
 class CLogMgr
 {
@@ -49,22 +51,22 @@ public:
 	LOGDIRPtr  FindLogDir(const std::string strDirName);
 
 	bool  GetDirAllFile(std::set<std::string>& listFileName);
+
+	void CollectLastLogItem(const std::map<std::string, LOGDIRPtr>::value_type& value);
+
+	void CheckDirInfo();
+
+	void SaveReadedInfo2File();
 protected:
 	
-	bool LoadXMLConfigInfo(const char* pszConfigureFileName);
+	bool LoadXMLConfigInfo(const char* pszConfigureFileName, std::vector<LOGDIRINFO>& listLogDirInfo);
 	
-	bool AddLogDir(const char* pszLogDirName);
-	
-	bool DelLogDir(const char* pszLogDirName);
-
-	bool AddLogInfo(const char* pszLogFileName, const char* szAppType, const char* pszBusissType);
-
-	bool DelLogInfo(const char* pszLogFileName);
-
+	bool UpdateLogDirMgr(std::vector<LOGDIRINFO>& listLogDir);
 private:
+	time_t						m_tLastModify;
 	std::mutex					m_clsLock;
-	std::set<PLOGDIRINFO>		m_listLogDir;
+	char						m_szReadedFile[MAX_PATH];
+	std::map<std::string, LOGDIRPtr> m_mapLogDir;
 
-private:
-	std::map<std::string, LOGDIRPtr> m_mapLogDir;	
+	std::map<std::string, std::shared_ptr<LASTREADINFO>> m_listReadedInfo;
 };

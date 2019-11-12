@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-project(Test)
+project("AgentService")
 
 
 set(CMAKE_CXX_STANDARD 11)
@@ -19,8 +19,8 @@ else()
 	set(EXECUTABLE_OUTPUT_PATH  "${CMAKE_SOURCE_DIR}/build/Debug/bin")
 endif()
 
-set(Resource ../../Resource)
-
+set(Resource ${CMAKE_SOURCE_DIR}/../../Resource)
+set(Proto ${CMAKE_SOURCE_DIR}/../../proto)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/src SRCITEM)
 
@@ -29,6 +29,18 @@ AUX_SOURCE_DIRECTORY(${Resource}/Server ResSvr)
 include_directories(${Resource}/CICCTools)
 AUX_SOURCE_DIRECTORY(${Resource}/CICCTools ResCICCTools)
 
+include_directories(${Proto}/)
+include_directories(${Proto}/Msg/)
+include_directories(${Proto}/Msg/util/)
+include_directories(${Proto}/Msg/util/bean)
+include_directories(${Proto}/Msg/util/msg)
+
+link_libraries(${Proto}/lib)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	set(PBLIBPATH ${Proto}/lib/libPBDataFeed_D.a)
+elseif ( CMAKE_BUILD_TYPE STREQUAL "Release" )
+	set(PBLIBPATH ${Proto}/lib/libPBDataFeed.a)
+endif()
 
 #AUX_SOURCE_DIRECTORY(. SRC)
 
@@ -42,5 +54,6 @@ target_link_libraries(${PROJECT_NAME}
 	
 								libczmq.a
 								libzmq.a
+								${PBLIBPATH}
 								libprotobuf.a
 								libuuid.a)

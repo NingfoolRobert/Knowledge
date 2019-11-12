@@ -21,20 +21,22 @@
 #include <memory>
 #include <string.h>
 #include "tinyxml2.h"
+#include "Buffer.h"
 
 
 
 typedef struct stLogDirInfo
 {
 	char	szDirName[MAX_PATH];
-	char	szAppType[16];
-	char	szBussissType[16];
+	char	szServiceType[16];
+	char	szType[16];
 	int		nID;
+	int		nTTL;				//过期时间 (秒)
 	stLogDirInfo()
 	{
 		memset(szDirName, 0, sizeof(szDirName));
-		memset(szAppType, 0, sizeof(szAppType));
-		memset(szBussissType, 0, sizeof(szBussissType));
+		memset(szServiceType, 0, sizeof(szServiceType));
+		memset(szType, 0, sizeof(szType));
 	}
 	bool operator < (const stLogDirInfo* pLogDir)
 	{
@@ -42,16 +44,16 @@ typedef struct stLogDirInfo
 		if(nDirRet == 0)
 		{
 
-			int nAppRet = strcmp(szAppType, pLogDir->szAppType);
+			int nAppRet = strcmp(szServiceType, pLogDir->szServiceType);
 			if(nAppRet == 0)
 			{
-				int nBusRet = strcmp(szBussissType, pLogDir->szBussissType);
+				int nBusRet = strcmp(szType, pLogDir->szType);
 				if(nBusRet == 0)
 				{
 					return nID < pLogDir->nID;
 				}
 				else 
-					return nBusRet < 0;
+					return nBusRet < 0; 
 			}
 			else 
 				return nAppRet < 0;
@@ -61,6 +63,26 @@ typedef struct stLogDirInfo
 	}
 }LOGDIRINFO,*PLOGDIRINFO;
 
+typedef struct stLastReadInfo
+{
+	char	szDirName[MAX_PATH];	
+	std::set<std::string>	listIgnore;
+	std::vector<LOGINFO>	listReadInfo;
+	stLastReadInfo()
+	{
+		memset(szDirName, 0, sizeof(szDirName));
+		listIgnore.clear();
+		listReadInfo.clear();
+	}
+	void Clear()
+	{
+		memset(szDirName, 0, sizeof(szDirName));
+		listIgnore.clear();
+		listReadInfo.clear();	
+	}
+}LASTREADINFO, *PLASTREADINFO;
+
+
 typedef std::shared_ptr<CLogCollect> LOGPtr;
 
 class CLogDir
@@ -69,43 +91,33 @@ public:
 	CLogDir();
 	virtual ~CLogDir();
 public:
-	bool Init(PLOGDIRINFO pLogDirInfo, std::set<std::string>& listIgnoreLog);
-
-	bool Init(const char* pszDirName, const char* pszAppType, const char* pszBusiss, int nID, int nTTL = 360);
-
-	bool InitLogDirInfo(std::vector<PLOGINFO> listLogInfo, std::vector<std::string>& listIgnoreLog);
-
-	bool GetCollectLog(std::vector<LOGPtr>& listLog, std::vector<LOGPtr>& listIgnoreLog);
+	bool Init(PLOGDIRINFO pLogDirInfo, std::shared_ptr<LASTREADINFO> pReadDirInfo = nullptr);
 
 	void CheckLogValid();
-
-	void GetMsgTopic(char* pszTopic);
 
 	void CheckLogList();
 
 	void LoadXMLDirInfo(tinyxml2::XMLElement* pXMLDir);
+
+	void GetDirInfo(std::shared_ptr<LASTREADINFO> pLogDirInfo);
+
+	void GetLastestLogItem();
 public:
-	bool AddLogObj(const char* pszLogFileName);
-
-	bool DelLogObj(const char* pszLogFileName);
-
 	void CollectLogItem();	
 
 	//更新文件最新信息
 	void UpdateLogInfo(std::map<std::string, LOGPtr>::value_type& value);
 
-protected:
-	
-	void FormatTopic(char* pszTopic);
-
 	bool SerialMessage(char* pszTopic, CBuffer* pBuf, std::vector<std::string>& listLogItem);
+
 public:
-	 bool								m_bValid;       //该目录有效性
+	bool								m_bValid;       //该目录有效性
 private:
 	int									m_nTTL;			//日志过期时间
 	char								m_szService[32];	//日志所属业务类型 
 	char								m_szType[32];	//日志所属类型: SYS, BUS
 	int									m_nID;			//服务ID 
+	char								m_szDirName[MAX_PATH]; //当前日志目录
 private:
 	std::mutex 							m_clsLock;
 	std::map<std::string, LOGPtr>		m_listLogInfo;

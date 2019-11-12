@@ -21,11 +21,11 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/types.h>
-
-
 #include <vector>
 #include <string.h>
 #include <string>
+#include <mutex>
+#include "Log.h"
 
 
 #define MAX_PATH  256
@@ -49,18 +49,19 @@ public:
 	virtual ~CLogCollect();
 
 public:
-	bool Init(const char* pszLogFileName);
+	bool Init(const char* pszLogFileName,const char* pszLogDir, PLOGINFO  pLogInfo = nullptr);
 
 	bool CheckTTL(time_t tCurrent, int nTimeDiff);
 	
 	bool IsGatherData();
 
-	bool UpdateFileInfo(time_t tLastModify, long lFileSize);			//更新文件信息
+	bool UpdateFileInfo(time_t tLastModify, long lFileSize, int nTTL = 24 * 60 * 60);			//更新文件信息
+
+	bool GetLogInfo(PLOGINFO  pLogInfo);
 public:
-	virtual bool GetLastestLog(std::vector<CBuffer*>& listLogInfo);
 
-	virtual bool GetAugmenterLogItem(std::vector<std::string>& listAugLog);
-
+	virtual bool GetAugementerLogItem();
+	
 	virtual bool IsCaptureItem(const char* pszLogItem);
 
 protected:
@@ -71,7 +72,7 @@ private:
 	
 	int GetMapBlockCount(int& nStartPos, int& nResidLen);
 private:
-	bool		m_bTTL;				//文件是否过期 
+	std::mutex	m_clsLock;
 	time_t		m_tLastModify;
 	long		m_lPosition;
 	time_t		m_tLastRead;		//上一次读取时间
@@ -80,5 +81,6 @@ private:
 	long		m_lCurrentSize;		//文件当前大小
 public:
 	bool		m_bCheck;
+	bool		m_bTTL;				//文件是否过期 
 	static int	m_nPageSize;
 };

@@ -1,12 +1,20 @@
 #include "LogCap.h"
 #include <fstream>
 #include "Log.h"
+
 #include "AgentService.h"
 
 
+int CLogCollect::m_nPageSize = sysconf(_SC_PAGESIZE); 
+
 CLogCollect::CLogCollect()
 {
-
+	m_tLastRead = 0;
+	m_tLastModify = 0;
+	m_lPosition = 0;
+	m_lCurrentSize = 0;
+	memset(m_szLogFileName, 0, sizeof(m_szLogFileName));
+	memset(m_szLogDir, 0, sizeof(m_szLogDir));
 }
 
 CLogCollect::~CLogCollect()
@@ -14,65 +22,59 @@ CLogCollect::~CLogCollect()
 
 }
 	
-bool CLogCollect::Init(const char* pszLogFileName)
+bool CLogCollect::Init(const char* pszLogFileName,const char* pszLogDir, PLOGINFO  pLogInfo)
 {
 	if(nullptr == pszLogFileName)
 	{
 		return false;
 	}
+	
+	strcpy(m_szLogFileName, pszLogFileName);
+	strcpy(m_szLogDir, pszLogDir);	
+	if(pLogInfo == nullptr)
+	{
+		return true;
+	}
+	//
+	m_lPosition = pLogInfo->lPosition;
+	m_tLastRead = pLogInfo->tLastRead;
+
 	return true;
 }
 	
-bool CLogCollect::GetLastestLog(std::vector<CBuffer*>& listLogInfo)
+
+inline bool CLogCollect::CheckTTL(time_t tCurrent, int nTimeDiff)
 {
-	if(m_bTTL)
-	{
-		return false;
-	}
-	//
-	ifstream file(m_szLogFileName);
-	if(!file.is_open())
-	{
-		return false;
-	}
-	
-	//
-	file.seekg(0, ios::end);
-	long lSize = file.tellg();
-	
-//
-	FILE* fp = fopen(m_szLogFileName, "r+");
-	if(nullptr == fp)
-	{
-		LogError("Open File fail. File:%s", m_szLogFileName);
-		return false;
-	}
-	
-		
-	
-	return true;
+	if(tCurrent - m_tLastModify >  nTimeDiff)
+		m_bTTL = true;
+	return false;
 }
 
-bool CLogCollect::UpdateFileInfo(time_t tLastModify, long lFileSize)			//更新文件信息
+bool CLogCollect::UpdateFileInfo(time_t tLastModify, long lFileSize, int nTTL)			//更新文件信息
 {
+	time_t tNow = time(NULL);
+	
 	if(lFileSize != m_lCurrentSize)
 	{
 		m_lCurrentSize = lFileSize;
 		m_tLastModify = tLastModify;
+		
 		m_bTTL = false;
 	}
 	else 
 	{
-		time_t tNow = time(NULL);
-		if(tNow - tLastModify > m_nTTL)
+		if(tNow - tLastModify > nTTL)
 			m_bTTL = true;
 	}
 	return true;
 }
-bool CLogCollect::GetAugmenterLogItem(std::vector<std::string>& listAugLog)
+
+bool CLogCollect::GetAugementerLogItem()
 {
-	listAugLog.clear();
-	
+	if(m_lPosition == m_lCurrentSize)
+		return true;
+	std::unique_lock<std::mutex> locker(m_clsLock);
+		
 	int fLog = open(m_szLogFileName, O_RDWR);
 	if(fLog <= 0)
 	{
@@ -127,6 +129,7 @@ bool CLogCollect::GetAugmenterLogItem(std::vector<std::string>& listAugLog)
 
 		//GetLogItem
 		nResidLen = nLength;
+		std::vector<std::string> listAugLog;
 		if(!GetLogItem(listAugLog, pHead, nResidLen))
 		{
 			LogError("%s(%d) Get LogItem fail.", __FILE__, __LINE__);
@@ -149,7 +152,7 @@ bool CLogCollect::GetAugmenterLogItem(std::vector<std::string>& listAugLog)
 
 bool CLogCollect::IsCaptureItem(const char* pszLogItem)
 {
-	if(pszLogItem == nullptr)
+	if(pszLogItem == nullptr || 14 > strlen(pszLogItem))
 	{
 		return false;
 	}
@@ -158,14 +161,14 @@ bool CLogCollect::IsCaptureItem(const char* pszLogItem)
 }
 
 
-bool CLogCollect::GetLogItem(std::vector<std::string>& listLogItem, char* pszBuf int& nResidLen)
+bool CLogCollect::GetLogItem(std::vector<std::string>& listLogItem, char* pszBuf, int& nResidLen)
 {
 	if(pszBuf == nullptr)
 	{
 		LogError("%s(%d) Buffer is nullptr.", __FILE__, __LINE__);
 		return false;
 	}	
-	char* pEnd = pszBuf + nLen;
+	char* pEnd = pszBuf + nResidLen;
 	
 	char* pHead = pszBuf;
 	char* pTmp =  strchr(pszBuf, '\n');
@@ -174,7 +177,7 @@ bool CLogCollect::GetLogItem(std::vector<std::string>& listLogItem, char* pszBuf
 		return true;
 	}
 
-	
+	//	
 	while(pTmp)
 	{
 		*pTmp = 0;
@@ -201,4 +204,13 @@ inline int CLogCollect::GetMapBlockCount(int& nStartPos, int& nMapMinLen)
 	nMapMinLen = (m_lCurrentSize - nStartPos) % m_nPageSize;
 	int nMapCount = (m_lCurrentSize - nStartPos) / m_nPageSize  + nMapMinLen ?  1: 0;
 	return nMapCount;
+}
+
+
+bool CLogCollect::GetLogInfo(PLOGINFO  pLogInfo)
+{
+	pLogInfo->lPosition = m_lPosition;
+	strcpy(pLogInfo->szFileName, m_szLogFileName);
+	pLogInfo->tLastRead = m_tLastModify;
+	return true;
 }
