@@ -43,7 +43,7 @@ public:
 			return false;
 		}
 		//
-		std::unique_lock<std::mutex> locker(m_clsLock);
+//		std::unique_lock<std::mutex> locker(m_clsLock);
 		m_listMsgPub.push(msg);
 		m_condPub.notify_one();
 		return true;
@@ -51,40 +51,40 @@ public:
 
 	void OnMsg()
 	{
-		while(!m_bStop)
-		{
-			//std::unique_lock<std::mutex>  locker(m_clsLock);
-			m_clsLock.lock();
-			//size_t nSize = m_listMsgPub.size_approx();
-			//m_condPub.wait(locker, [&](){ return m_listMsgPub.size_approx(); });
-		//	m_condPub.wait(locker, [&]() -> bool{return !m_listMsgPub.empty();});
-			std::vector<zmsg_t*> listMsg;
-		//	listMsg.resize(m_listMsgPub.size_approx());
-		//	int nCount = m_listMsgPub.wait_dequeue_bulk(&listMsg[0], nSize);
-		
-			while(!m_listMsgPub.empty())
-			{
-				zmsg_t* pmsg = m_listMsgPub.front();
-				m_listMsgPub.pop();
-				listMsg.push_back(pmsg);
-			}
-			m_clsLock.unlock();
-			//locker.unlock();
-			//
-			for(int i = 0; i < listMsg.size(); ++i)
-			{		
-				auto pmsg =	listMsg[i];
-				if(pmsg == nullptr)
-					continue;
-				if(nullptr == m_zsock)
-					continue;
-				zmsg_send(&pmsg,m_zsock);
-				zmsg_destroy(&pmsg);
-				pmsg = nullptr;
-			}
-			listMsg.clear();
-		}
-		usleep(1000000);
+	//	while(!m_bStop)
+	//	{
+	//		//std::unique_lock<std::mutex>  locker(m_clsLock);
+//	//		m_clsLock.lock();
+	//		//size_t nSize = m_listMsgPub.size_approx();
+	//		//m_condPub.wait(locker, [&](){ return m_listMsgPub.size_approx(); });
+	//	//	m_condPub.wait(locker, [&]() -> bool{return !m_listMsgPub.empty();});
+	//		std::vector<zmsg_t*> listMsg;
+	//	//	listMsg.resize(m_listMsgPub.size_approx());
+	//	//	int nCount = m_listMsgPub.wait_dequeue_bulk(&listMsg[0], nSize);
+	//	
+	//		while(m_listMsgPub.size())
+	//		{
+	//			zmsg_t* pmsg = m_listMsgPub.front();
+	//			m_listMsgPub.pop();
+	//			listMsg.push_back(pmsg);
+	//		}
+	//		//m_clsLock.unlock();
+	//		//locker.unlock();
+	//		//
+	//		for(int i = 0; i < listMsg.size(); ++i)
+	//		{		
+	//			auto pmsg =	listMsg[i];
+	//			if(pmsg == nullptr)
+	//				continue;
+	//			if(nullptr == m_zsock)
+	//				continue;
+	//			zmsg_send(&pmsg,m_zsock);
+	//			zmsg_destroy(&pmsg);
+	//			pmsg = nullptr;
+	//		}
+	//		listMsg.clear();
+	//	}
+	//	usleep(1000000);
 	}
 
 	void Terminate();

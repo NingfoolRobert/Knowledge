@@ -33,8 +33,10 @@ bool CZMQPub::Init(std::string strURI)
 		return false;
 	}
 
-	zsock_set_hwm(m_zsock, 0);
-	zsock_set_sndbuf(m_zsock, 65535);
+	zsock_set_rcvhwm(m_zsock, 0);
+	zsock_set_sndhwm(m_zsock, 0);
+	zsock_set_sndbuf(m_zsock, 64 * 1024 * 1024);
+	zsock_set_rcvbuf(m_zsock, 64 * 1024 * 1024);
 	zsock_set_tcp_keepalive(m_zsock, 1);
 	zsock_set_tcp_keepalive_idle(m_zsock, 600);
 	zsock_set_tcp_keepalive_intvl(m_zsock, 10);
@@ -44,7 +46,10 @@ bool CZMQPub::Init(std::string strURI)
 	if(nPort <= 0)
 		return false;
 
-	std::thread tr1(&CZMQPub::OnMsg, this);
+	LogInfo("Init Pub Success. IP:Port = %s", strURI.c_str());
+
+//	std::thread tr1(&CZMQPub::OnMsg, this);
+//	tr1.detach();
 	return true;
 }
 
@@ -65,7 +70,7 @@ bool CZMQPub::PostMsg(const char* pszTopic, CBuffer* pBufMsg)
 	zmsg_append(msg, &zfTopic);
 	zmsg_append(msg, &zfData);
 
-	std::unique_lock<std::mutex>  locker(m_clsLock);
+//	std::unique_lock<std::mutex>  locker(m_clsLock);
 	m_listMsgPub.push(msg);
 	m_condPub.notify_one();
 	return true;
@@ -115,7 +120,7 @@ bool CZMQPub::PostMsg(const char* pszTopic, CBuffer* pBufMsg)
 void CZMQPub::Terminate()
 {
 	m_bStop = true;
-	std::unique_lock<std::mutex> locker(m_clsLock);
+//	std::unique_lock<std::mutex> locker(m_clsLock);
 	m_condPub.notify_all();
 	if(m_zsock == nullptr)
 		return ;
@@ -148,7 +153,7 @@ void CZMQPub::GetPubInfo(CBuffer* pBufInfo)
 //template<class T>
 unsigned long CZMQPub::GetPubSerialNum(int nIncrement/* = 1*/)
 {
-	std::unique_lock<std::mutex> locker(m_clsSerialNum);
+//	std::unique_lock<std::mutex> locker(m_clsSerialNum);
 	m_ulSerialNum += nIncrement;
 	return m_ulSerialNum;
 }

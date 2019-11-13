@@ -34,19 +34,25 @@ bool CLogDir::Init(PLOGDIRINFO pLogDirInfo, std::shared_ptr<LASTREADINFO> pReadD
 	std::vector<std::string> listAllFile; 
 	CommonHelper::GetAllFileName(m_szDirName, listAllFile, true);
 	//
-
+	std::unique_lock<std::mutex>  locker(m_clsLock);
 	//读取已存在的文件信息
 	std::map<std::string, LOGINFO> mapLogInfo;
 	if(pReadDirInfo != nullptr)
 	{
 		for_each(pReadDirInfo->listReadInfo.begin(), pReadDirInfo->listReadInfo.end(), [&](const LOGINFO& stInfo){
-				mapLogInfo.insert(make_pair(stInfo.szFileName,stInfo));
+ 				mapLogInfo.insert(make_pair(stInfo.szFileName,stInfo));
 				});
+		//忽略文件
+		for(auto it = pReadDirInfo->listIgnore.begin(); it != pReadDirInfo->listIgnore.end(); ++it)
+
+			m_listIgnoreLog.insert(*it);
 	}
 	//
 	
 	for(size_t i = 0; i < listAllFile.size(); ++i)
 	{
+		if(!CommonHelper::IsTxtFile(listAllFile[i].c_str()))
+			continue;
 		auto pLog = std::make_shared<CLogCollect>();
 		if(pLog == nullptr)
 		{
@@ -57,14 +63,13 @@ bool CLogDir::Init(PLOGDIRINFO pLogDirInfo, std::shared_ptr<LASTREADINFO> pReadD
 		if(m_listIgnoreLog.count(listAllFile[i]))
 		{
 			//标记为忽略文件
-			m_listIgnoreLog.insert(listAllFile[i]);
 			continue;
 		}
 		
 
 		auto it = mapLogInfo.find(listAllFile[i]);
 
-		if(it != mapLogInfo.end())
+		if(it == mapLogInfo.end())
 			pLog->Init(listAllFile[i].c_str(), m_szDirName, nullptr);
 		else 
 			pLog->Init(listAllFile[i].c_str(),m_szDirName, &it->second);
@@ -72,11 +77,6 @@ bool CLogDir::Init(PLOGDIRINFO pLogDirInfo, std::shared_ptr<LASTREADINFO> pReadD
 		m_listLogInfo.insert(std::make_pair(listAllFile[i], pLog));
 	}
 	
-//	for(auto it = pReadDirInfo->listIgnore.begin(); it != pReadDirInfo->listIgnore.end(); ++it)
-//	{
-//		m_listIgnoreLog.insert(*it);
-//	}
-		
 
 	return true;
 }
@@ -94,13 +94,15 @@ void CLogDir::CheckLogValid()
 			continue;
 		}
 		//过期文件从内存中清理
-		if(!pLog->m_bTTL)
+		if(pLog->m_bTTL)
 		{	
+			std::string str = it->first;
+			m_listIgnoreLog.insert(str);	//	保存进入忽略文件
 			m_listLogInfo.erase(it++);
-			m_listIgnoreLog.insert(it->first);	//	保存进入忽略文件
+			
 			continue;
 		}
-		it++;
+		++it;
 	}
 }
 
@@ -181,39 +183,51 @@ bool CLogDir::SerialMessage(char* pszTopic, CBuffer* pBuf, std::vector<std::stri
 void CLogDir::CheckLogList()
 {
 	std::unique_lock<std::mutex> locker(m_clsLock);
-	for_each(m_listLogInfo.begin(), m_listLogInfo.end(), [&](std::map<std::string, LOGPtr>::value_type& Log){
-			Log.second->m_bCheck = false;
-			});
 
+	for(auto it = m_listLogInfo.begin(); it != m_listLogInfo.end(); ++it)
+	{
+		LOGPtr pLog = it->second;
+		pLog->m_bCheck =  false;
+
+	}
 	//更新文件夹信息 
 
 	std::vector<std::string> listFile;
 	CommonHelper::GetAllFileName(m_szDirName, listFile, true);
 	
-	for_each(listFile.begin(), listFile.end(), [&](const std::string strFileName){
-			//TODO 新增文件
-			auto it = m_listAllFileName.find(strFileName);
-			if(it == m_listAllFileName.end())
+	for(size_t i = 0; i < listFile.size(); ++i)
+	{
+		std::string strFileName = listFile[i];
+		if(!CommonHelper::IsTxtFile(listFile[i].c_str()))
+			continue;
+		auto it = m_listAllFileName.find(strFileName);
+		if(it == m_listAllFileName.end())
+		{
+ 			//TODO 
+			LOGPtr pLog = std::make_shared<CLogCollect>();
+			if(pLog == nullptr)
 			{
- 				//TODO 
-				auto pLog = std::make_shared<CLogCollect>();
-				if(pLog == nullptr)
-				{
-					return ;
-				}
-				
-				pLog->Init(strFileName.c_str(), m_szDirName);
-				m_listLogInfo[strFileName] = pLog; 
-	 			m_listAllFileName.insert(strFileName);
+				return ;
 			}
+			
+			pLog->Init(strFileName.c_str(), m_szDirName);
+			m_listLogInfo.insert(make_pair(strFileName, pLog)); 
+	 		m_listAllFileName.insert(strFileName);
+		}
+		else 
+		{
+			auto pIt = m_listLogInfo.find(strFileName);
+			if(pIt != m_listLogInfo.end())
+	 			pIt->second->m_bCheck = true;
 			else 
 			{
-				auto pIt = m_listLogInfo.find(strFileName);
-				if(pIt != m_listLogInfo.end())
-	 				pIt->second->m_bCheck = true;
+			//	lLOGPtr pLog = std::make_shared<CLogCollect>();
+			//	pLog->Init(strFileName.c_str(), m_szDirName);
+			//	m_listLogInfo.insert(make_pair(strFileName, pLog));
 			}
-			});
-	
+		}
+
+	}
 
 	//TODO 更新文件信息 
 	
@@ -234,7 +248,7 @@ void CLogDir::UpdateLogInfo(std::map<std::string, LOGPtr>::value_type & value)
 	
 	auto pLog = value.second;
 	if(nullptr != pLog)
-		pLog->UpdateFileInfo(lFileSize, tModify,  m_nTTL);
+		pLog->UpdateFileInfo(tModify, lFileSize,  m_nTTL);
 }
 
 
@@ -263,22 +277,49 @@ void CLogDir::GetDirInfo(std::shared_ptr<LASTREADINFO> pLogDirInfo)
 void CLogDir::GetLastestLogItem()
 {
 	//更新文件夹信息
+	LogInfo("Check before: %d", m_listLogInfo.size());
 	CheckLogList();
 	//更新文件信息 
 //	UpdateFileInfo();
 	//获取最新条目信息	
-	
+	LogInfo("Check After: %d", m_listLogInfo.size());
 	//清除过期以及不存在文件
 	CheckLogValid();
-
+	LogInfo("CheckLogValid after: %d",m_listLogInfo.size());
 	//
-	for_each(m_listLogInfo.begin(),  m_listLogInfo.end(), [&](std::map<std::string, LOGPtr>::value_type & value){
-			auto pLog = value.second; 
-			if(pLog == nullptr) return;
-	//		pLog->GetAugementerLogItem();
-			g_ciccAgentService->PostTask(&CLogCollect::GetAugementerLogItem, pLog.get());
-			});
+
+	for(auto it = m_listLogInfo.begin(); it != m_listLogInfo.end(); ++it)
+	{
+		auto pLog = it->second;
+
+		pLog->CollectItem();
+//		CollectoLogItem(it->first.c_str());
+//		std::string str = it->first;
+//		g_ciccAgentService->PostTask(&CLogDir::CollectoLogItem, this, str.c_str());
+//		std::thread tr1(&CLogDir::CollectLogItem,this, std::ref(pLog)));
+//		tr1.detach();
+//			g_ciccAgentService->PostTask(&CLogCollect::GetAugementerLogItem, pLog.get());
+//				g_ciccAgentService->PostTask(CollectLogItem, pLog);
+	}
+	//	for_each(m_listLogInfo.begin(),  m_listLogInfo.end(), [&](std::map<std::string, LOGPtr>::value_type & value){
+//			auto pLog = value.second; 
+//			if(pLog == nullptr) return;
+//	//		pLog->GetAugementerLogItem();
+//			g_ciccAgentService->PostTask(&CLogCollect::GetAugementerLogItem, pLog.get());
+//			});
 	LogInfo("Read Dir: %s, File Count: %d", m_szDirName, m_listLogInfo.size());
 	
 }
 
+void CLogDir::CollectoLogItem(const char* pszLogFileName)
+{
+	if(pszLogFileName == nullptr )
+		return ;
+	
+	auto it = m_listLogInfo.find(pszLogFileName);
+	if(it != m_listLogInfo.end())
+	{
+		auto pLog = it->second;
+		pLog->GetAugementerLogItem();
+	}
+}

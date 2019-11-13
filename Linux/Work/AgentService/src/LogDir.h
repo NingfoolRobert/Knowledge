@@ -105,11 +105,20 @@ public:
 public:
 	void CollectLogItem();	
 
+	void CollectoLogItem(const char* pszLogFileName);
 	//更新文件最新信息
 	void UpdateLogInfo(std::map<std::string, LOGPtr>::value_type& value);
 
 	bool SerialMessage(char* pszTopic, CBuffer* pBuf, std::vector<std::string>& listLogItem);
+	static void CollectLogItem(LOGPtr pLog)
+	{
+		if(nullptr != pLog)
+		{
+			pLog->GetAugementerLogItem();
+		}
+	}
 
+	
 public:
 	bool								m_bValid;       //该目录有效性
 private:

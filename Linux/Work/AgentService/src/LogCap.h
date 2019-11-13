@@ -64,13 +64,15 @@ public:
 	
 	virtual bool IsCaptureItem(const char* pszLogItem);
 
+	void CollectItem();
 protected:
 
-	bool GetLogItem(std::vector<std::string>& listLogItem,char* pszBuf, int& nResidLen);
+	bool GetLogItem(std::vector<std::string>& listLogItem,char*& pszBuf, int& nResidLen);
 
 private:
 	
 	int GetMapBlockCount(int& nStartPos, int& nResidLen);
+	
 private:
 	std::mutex	m_clsLock;
 	time_t		m_tLastModify;

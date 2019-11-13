@@ -1,9 +1,8 @@
-<LogFileInfo>
-	<Read>
-		<Log FileName = "/home/nbf/WorkPlatform/Monitor/AlarmService/logs/2017-10-06/201710061235336.txt" Positon = "1235624" Time = "1573179932" />
-	</Read>
-	<Ignore>
-		<Info FileName = "/home/nbf/Test.txt" />
-		<Info FileName = "/home/nbf/Test.txt" />
-	</Ignore>
-</LogFileInfo>
+<?xml version="1.0"encoding="UTF-8"?>
+<LogFileInfo/>
+
+<Dir DirName="/home/nbf/Work/Platform/Monitor/AgentService/conf/Test">
+    <Read>
+        <Log FileName="/home/nbf/Work/Platform/Monitor/AgentService/conf/Test/Test.txt" Position="1215" Time="1573639515"/>
+    </Read>
+</Dir>

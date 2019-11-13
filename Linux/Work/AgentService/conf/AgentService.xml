@@ -6,12 +6,12 @@
 		<LogLevel>4</LogLevel>
 	</Setting>
 	<NetSetting>
-		<Pub URI = "192.168.148.146:30030"/>
+		<Pub URI = "tcp://192.168.148.146:31035"/>
 	</NetSetting>
 	<LogDir>
 		<Dir  TTL = "360">
-			<DirPath>/home/nbf/Test</DirPath>
-			<App>FIXGW</App>
+			<DirPath>/home/nbf/Work/Platform/Monitor/AgentService/conf/Test</DirPath>
+			<ServiceType>FIXGW</ServiceType>
 			<Type>SYS</Type>
 			<ID>11</ID>
 		</Dir>

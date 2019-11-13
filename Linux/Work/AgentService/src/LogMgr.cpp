@@ -106,7 +106,7 @@ bool  CLogMgr::LoadLastReadLogInfo(const char* pszReadFileInfo)
 
 bool  CLogMgr::Init()
 {
-	
+	std::unique_lock<std::mutex> locker(m_clsLock);	
 	LoadLastReadLogInfo(m_szReadedFile);
 
 	std::vector<LOGDIRINFO> listLogDir;
@@ -125,16 +125,24 @@ bool  CLogMgr::TimeOut(struct tm* pTime)
 		return false;
 
 	//检查文件列表是否更改
-	g_ciccAgentService->PostTask(&CLogMgr::CheckDirInfo, this);
+	CheckDirInfo();
+	//	g_ciccAgentService->PostTask(&CLogMgr::CheckDirInfo, this);
 	//保存当前已读取文件信息
-	g_ciccAgentService->PostTask(&CLogMgr::SaveReadedInfo2File, this);
+	SaveReadedInfo2File();
+	//g_ciccAgentService->PostTask(&CLogMgr::SaveReadedInfo2File, this);
 	return true;
 }
 
 bool  CLogMgr::SecondIdle()			//定时调用，判断是否有新文件产生 
 {
 	std::unique_lock<std::mutex> locker(m_clsLock);
-	for_each(m_mapLogDir.begin(), m_mapLogDir.end(), std::bind(&CLogMgr::CollectLastLogItem,this, std::placeholders::_1));
+	
+	for(auto it = m_mapLogDir.begin(); it != m_mapLogDir.end(); ++it)
+	{
+		auto pLog = it->second;	
+		pLog->GetLastestLogItem();
+	}
+	//	for_each(m_mapLogDir.begin(), m_mapLogDir.end(), std::bind(&CLogMgr::CollectLastLogItem,this, std::placeholders::_1));
 	return true;	
 }
 
@@ -366,32 +374,33 @@ bool CLogMgr::UpdateLogDirMgr(std::vector<LOGDIRINFO>& listLogDir)
 
 	for(size_t i = 0; i < listLogDir.size(); ++i)
 	{
-		auto stLogDir = listLogDir[i];
+		auto stDirInfo = listLogDir[i];
 
-		auto it = m_mapLogDir.find(stLogDir.szDirName);
+		auto it = m_mapLogDir.find(stDirInfo.szDirName);
 		if(it == m_mapLogDir.end())
 		{
 			auto pLogDir = std::make_shared<CLogDir>();
 			if(pLogDir == nullptr)
 			{
-				LogError("%s(%d) alloc LogDir  Shared pointer fail.", __FILE__, __LINE__);
+				LogError("%s(%d) alloc LogDir   Shared pointer fail.", __FILE__, __LINE__);
 				continue; 
 			}
 
-			auto it = m_listReadedInfo.find(stLogDir.szDirName);
+			auto it = m_listReadedInfo.find(stDirInfo.szDirName);
 			if(it == m_listReadedInfo.end())
 				
-				pLogDir->Init(&stLogDir, nullptr);
+				pLogDir->Init(&stDirInfo, nullptr);
 			else 
-				pLogDir->Init(&stLogDir, it->second);
+				pLogDir->Init(&stDirInfo, it->second);
 
-			m_mapLogDir[stLogDir.szDirName] = pLogDir;
+		//	m_mapLogDir[stLogDir.szDirName] = pLogDir;
+			m_mapLogDir.insert(make_pair(stDirInfo.szDirName, pLogDir));
 		}
 		else 
 		{
 			auto pLogDir = it->second;
 			pLogDir->m_bValid = true;
-			LogWarn("The LogDir existed.Dir: %s", stLogDir.szDirName);
+			LogWarn("The LogDir existed.Dir: %s", stDirInfo.szDirName);
 		}
 	}
 	return true;
@@ -404,7 +413,8 @@ void CLogMgr::CollectLastLogItem(const std::map<std::string, LOGDIRPtr>::value_t
 	if(nullptr == pLog) 
 		return;
 
-	g_ciccAgentService->PostTask(&CLogDir::GetLastestLogItem, pLog.get());
+	pLog->GetLastestLogItem();
+//	g_ciccAgentService->PostTask(&CLogDir::GetLastestLogItem, pLog.get());
 }
 
 void CLogMgr::CheckDirInfo()
