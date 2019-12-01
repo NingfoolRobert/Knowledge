@@ -1,4 +1,6 @@
 #include "Thread.h"
+
+
 CThread::CThread()
 {
 	m_fnc = nullptr;
