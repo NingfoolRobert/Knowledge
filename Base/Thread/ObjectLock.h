@@ -40,7 +40,7 @@ public:
 	}
 
 private:
-	pthread_mutex_t			m_clsLock = PTHREAD_MUTEX_INITIALIZER;		
+	pthread_mutex_t			m_clsLock;		// = PTHREAD_MUTEX_INITIALIZER;		
 };
 
 
