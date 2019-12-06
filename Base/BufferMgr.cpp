@@ -71,6 +71,7 @@ void CBufferMgr::ReleaseBuffer(CBuffer* pBuffer)
 	if(nullptr == pBuffer)	
 		return ;
 	//
+	pBuffer->Clear();
 	int nlen = pBuffer->GetCapability();
 	if(nlen > BUFFER_MGR_CAPABILITY/BUFFER_INIT_SIZE)	//大于内存池管理大小，直接释放
 	{
@@ -89,7 +90,7 @@ void CBufferMgr::ReleaseBuffer(CBuffer* pBuffer)
 	}
 	if(Index >= BUFFER_GROUP_COUNT)
 	{
-		pBuffer->Clear();
+		pBuffer->Clear(true);
 		delete pBuffer;
 		return ;
 	}
