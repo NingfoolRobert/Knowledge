@@ -56,6 +56,7 @@ CBuffer* CBufferMgr::GetBuffer(int nLength, const char* pszFileName, int nLine)
 		{
 			return pBuffer;
 		}
+		pBuffer->SetExpandLen(cnInit);
 		pBuffer->ExpandTo(nLength);
 	}
 	return pBuffer;
@@ -71,19 +72,20 @@ void CBufferMgr::ReleaseBuffer(CBuffer* pBuffer)
 	if(nullptr == pBuffer)	
 		return ;
 	//
-	pBuffer->Clear();
 	int nlen = pBuffer->GetCapability();
 	if(nlen > BUFFER_MGR_CAPABILITY/BUFFER_INIT_SIZE)	//大于内存池管理大小，直接释放
 	{
+		pBuffer->Clear(true);
 		delete pBuffer;
 		pBuffer = nullptr;
+		return ;
 	}
 
 	int Index = 0;
 	int cnInit = 256;
 	while(true)
 	{
-		if(nlen >= cnInit)
+		if(nlen <= cnInit)
 			break;
 		Index++;
 		cnInit <<= 1;
@@ -92,17 +94,24 @@ void CBufferMgr::ReleaseBuffer(CBuffer* pBuffer)
 	{
 		pBuffer->Clear(true);
 		delete pBuffer;
+		pBuffer = nullptr;
 		return ;
+
 	}
 
+	//pBuffer->Clear();
 	//当内存池满时，直接释放; 否则，收入内存池中
 	CAutoLock locker(&m_clsLock[Index]);
 	if((int)m_listBuf[Index].size() < BUFFER_MGR_CAPABILITY / cnInit)
+	{
+		pBuffer->Clear();
 		m_listBuf[Index].push(pBuffer);
+	}
 	else 
 	{
 		pBuffer->Clear(true);
 		delete pBuffer;
+		pBuffer = nullptr;
 	}
 }
 

@@ -10,7 +10,6 @@
 #endif
 
 #define BUFFER_INIT_SIZE 256
-#define BUFFER_MGR_CAPABILITY		4*1024*1024
 
 class CBuffer
 {
@@ -26,8 +25,7 @@ public:
 	
 	bool	Expand(int nExpand);
 	bool	ExpandTo(int nLength);
-	void	Exchange(CBuffer& buf);
-
+	bool	Exchange(CBuffer* pBuffer);
 	bool	Append(const void* pBuf, int nlen);
 	int		GetCapability() { return m_nlenCapability; }
 	int		GetBufLen() { return m_nlenData; }

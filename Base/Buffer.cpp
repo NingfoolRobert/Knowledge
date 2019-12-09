@@ -29,12 +29,14 @@ void CBuffer::Clear(bool bFree /*= false*/)
 {
 	if (bFree)
 	{
-		free(m_pBuf);
-		m_pBuf = nullptr;
+		if(m_pBuf)
+		{	
+			free(m_pBuf);
+			m_pBuf = nullptr;
+		}
 		m_nlenCapability = 0;
 	}
-
-	m_nlenExpand = 256;
+	
 	m_nlenData = 0;
 }
 
@@ -80,14 +82,30 @@ bool CBuffer::ExpandTo(int nLength)
 	return false;
 }
 
-void CBuffer::Exchange(CBuffer& buf)
+bool CBuffer::Exchange(CBuffer* pBuffer)
 {
+	if(pBuffer == nullptr)
+		return false;
+	
 	Clear();
-	Append(buf.GetBufPtr(), buf.GetBufLen());
+
+	if(pBuffer->GetBufPtr() == nullptr)
+		return false;
+	if(!Append(pBuffer->GetBufPtr(), pBuffer->GetBufLen()))
+	{
+		return false;
+	}
+
+	return true;
 }
+
 
 bool CBuffer::Append(const void* pBuf, int nlen)
 {
+	if(pBuf == nullptr)
+	{
+		return false;
+	}
 	int nTotalLen = m_nlenData + nlen;
 	if (m_nlenCapability < nTotalLen)
 	{
