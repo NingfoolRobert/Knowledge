@@ -120,6 +120,7 @@ void CBufferMgr::ClearAllBuffer()
 	CBuffer* pBuf = nullptr;
 	for(int i = 0; i < BUFFER_GROUP_COUNT; ++i)
 	{
+		CAutoLock locker(&m_clsLock[i]);
 		while(m_listBuf[i].size())
 		{
 			pBuf = m_listBuf[i].front();
