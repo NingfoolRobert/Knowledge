@@ -23,6 +23,7 @@ CAsyncObject::CAsyncObject(void):m_pAsyncObj(nullptr)
 	g_ciccAsyncObject = this;
 	m_pAsyncObj = this;
 }
+
 CAsyncObject::~CAsyncObject(void)
 {
 	if(!m_bStop)
@@ -52,26 +53,36 @@ bool CAsyncObject::PostMsg(PMSGHEADER pMsg)
 	{
 		return false;
 	}
+	//
 	if(!pBuffer->Append(pMsg, pMsg->dwLength + sizeof(MSGHEADER)))
 	{
 		LogError("%s(%d) Append data fail.", __FILE__, __LINE__);
 		return false;
 	}
-
-	PostMsg(pBuffer);
-
+	//
+	std::unique_lock<std::mutex> locker(m_clsLock);
+	m_listMessage.push(pBuffer);
+	m_condLock.notify_one();
 	return true;
 }
 
 bool CAsyncObject::PostMsg(CBuffer* pBuffer)
 {
-	if(pBuffer == nullptr)
+	if(pBuffer == nullptr || 0 == pBuffer->GetBufLen())
+	{
+		return false;
+	}
+	//
+	CBuffer* pBuf = g_pBufferMgr->GetBuffer(pBuffer->GetBufLen(), __FILE__, __LINE__);
+	if(nullptr == pBuffer)
 	{
 		return false;
 	}
 
+	pBuf->Exchange(pBuffer);
+	//
 	std::unique_lock<std::mutex> locker(m_clsLock);
-	m_listMessage.push(pBuffer);
+	m_listMessage.push(pBuf);
 	m_condLock.notify_one();
 	return true;
 }

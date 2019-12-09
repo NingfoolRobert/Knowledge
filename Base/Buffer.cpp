@@ -42,16 +42,16 @@ void CBuffer::Clear(bool bFree /*= false*/)
 
 bool CBuffer::Expand(int nExpand)
 {
-	int nEnd = nExpand + m_nlenData;
+	int nTotalLen = nExpand + m_nlenData;
 	int nOldSize = m_nlenCapability;
-	while (nEnd > m_nlenCapability)
+	while (nTotalLen > m_nlenCapability)
 	{
 		m_nlenCapability += m_nlenExpand;
 	}
 	//
 	if (m_pBuf)
 	{
-		if (nEnd < nOldSize) return true;
+		if (nTotalLen < nOldSize) return true;
 		char* ppBuf = (char*)realloc(m_pBuf, m_nlenCapability);
 		if (ppBuf == nullptr)
 			return false;
@@ -91,12 +91,8 @@ bool CBuffer::Exchange(CBuffer* pBuffer)
 
 	if(pBuffer->GetBufPtr() == nullptr)
 		return false;
-	if(!Append(pBuffer->GetBufPtr(), pBuffer->GetBufLen()))
-	{
-		return false;
-	}
-
-	return true;
+	
+	return Append(pBuffer->GetBufPtr(), pBuffer->GetBufLen());
 }
 
 
@@ -106,31 +102,32 @@ bool CBuffer::Append(const void* pBuf, int nlen)
 	{
 		return false;
 	}
-	int nTotalLen = m_nlenData + nlen;
-	if (m_nlenCapability < nTotalLen)
+//	int nTotalLen = m_nlenData + nlen;
+//	if (m_nlenCapability < nTotalLen)
+//	{
+//		while (nTotalLen > m_nlenCapability)
+//		{
+//			m_nlenCapability += m_nlenExpand;
+//		}
+//		//
+//		if (m_pBuf == nullptr)
+//		{
+//			m_pBuf = (char*)malloc(m_nlenCapability);
+//			if (m_pBuf == nullptr)
+//				return false;
+//		}
+//		else
+//		{
+//			char* ppBuf = (char*)realloc(m_pBuf, m_nlenCapability);
+//			if (ppBuf == nullptr)
+//				return false;
+//			m_pBuf = ppBuf;
+//		}
+//	}
+
+	if(!Expand(nlen))
 	{
-		while (true)
-		{
-			if (nTotalLen <= m_nlenCapability)
-			{
-				break;
-			}
-			m_nlenCapability += m_nlenExpand;
-		}
-		//
-		if (m_pBuf == nullptr)
-		{
-			m_pBuf = (char*)malloc(m_nlenCapability);
-			if (m_pBuf == nullptr)
-				return false;
-		}
-		else
-		{
-			char* ppBuf = (char*)realloc(m_pBuf, m_nlenCapability);
-			if (ppBuf == nullptr)
-				return false;
-			m_pBuf = ppBuf;
-		}
+		return false;
 	}
 
 	memmove(m_pBuf + m_nlenData, pBuf, nlen);
