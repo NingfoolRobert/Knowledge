@@ -41,13 +41,13 @@ CBuffer* CBufferMgr::GetBuffer(int nLength, const char* pszFileName, int nLine)
 		Index++;
 		cnInit = cnInit << 1;
 	}
+	
+	CAutoLock locker(&m_clsLock[Index]);
 	if(m_listBuf[Index].size() > 0)
 	{
-		CAutoLock locker(&m_clsLock[Index]);
 		pBuffer =  m_listBuf[Index].front();
 		m_listBuf[Index].pop();
 		return pBuffer;
-		
 	}
 	else 
 	{
