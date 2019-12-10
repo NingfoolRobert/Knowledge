@@ -114,9 +114,14 @@ bool CAsyncObject::AsyncMsgThread()
 		std::unique_lock<std::mutex> locker(m_clsLock);
 		m_condLock.wait(locker, [&]()->bool{ return !m_listMessage.empty(); });
 		locker.unlock();
-		while(!m_listMessage.empty())
+		while(true)
 		{
 			m_clsLock.lock();
+			if(m_listMessage.empty())
+			{
+				m_clsLock.unlock();
+				break;
+			}
 			auto pBuf = m_listMessage.front();
 			m_listMessage.pop();
 			m_clsLock.unlock();
