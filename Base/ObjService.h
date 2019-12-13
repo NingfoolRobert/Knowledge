@@ -5,23 +5,26 @@
  * proprietary information that should be used or copied only within
  * xxx, except with written permission of xxx.
  * 
- * @file:		ObjectService.h
- * @brief:		CObjectService 
+ * @file:		ObjService.h
+ * @brief:		CObjService
  * @author:		nbf,nbf0537@163.com
  * @version:	1.0
- * @date:	2019-12-13
+ * @date:		2019-12-13
  */
+#pragma once 
 
-#pragma once
 
-#include "AsyncObject.h"
+#include "ObjectService.h"
+#include "Service.h"
 
-class CObjectService: public CAsyncObject 
+
+class CObjService :
+	public CObjectService,
+	public CService 
 {
 public:
-	CObjectService();
-
-	virtual ~CObjectService();
+	CObjService();
+	virtual ~CObjService();
 public:
 	virtual bool OnInitialUpdate();
 	
@@ -30,14 +33,8 @@ public:
 	virtual bool OnSecondIdle();
 	
 	virtual bool OnTerminate();
-
-public:
-	virtual bool OnMsg(PMSGHEADER pAsyncMsg);
-
-	virtual bool PostAsyncMsg(PMSGHEADER pMsg);
-
-	virtual bool PostAsyncMsg(CBuffer* pBuffer);
-public:
-	virtual bool OnRegisterObject();
 	
+	virtual bool OnMsg(PMSGHEADER pMsg);
+
+	virtual bool OnRegisterObject();
 };
