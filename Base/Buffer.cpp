@@ -136,3 +136,13 @@ bool CBuffer::Append(const void* pBuf, int nlen)
 
 	return true;
 }
+
+bool CBuffer::AppendString(const char* pszBuf)
+{
+	if(nullptr == pszBuf)
+	{
+		return true;
+	}
+	
+	return Append(pszBuf, strlen(pszBuf) + 1);
+}

@@ -26,7 +26,10 @@ public:
 	bool	Expand(int nExpand);
 	bool	ExpandTo(int nLength);
 	bool	Exchange(CBuffer* pBuffer);
+	
 	bool	Append(const void* pBuf, int nlen);
+	bool	AppendString(const char* pszBuf);
+
 	int		GetCapability() { return m_nlenCapability; }
 	int		GetBufLen() { return m_nlenData; }
 private:
