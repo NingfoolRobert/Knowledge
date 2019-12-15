@@ -17,12 +17,14 @@ static void RecvThread(CNetClient* pNetClient)
 		return ;
 	pNetClient->RecvThread();
 }
+
 static void SendThread(CNetClient* pNetClient)
 {
 	if(nullptr == pNetClient)
 		return ;
 	pNetClient->SendThread();
 }
+
 static void ProcessThread(CNetClient* pNetClient)
 {
 	if(nullptr == pNetClient)

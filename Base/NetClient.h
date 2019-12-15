@@ -27,8 +27,6 @@
 
 
 
-
-
 //class CUserObject;
 class CNetIOMgr;
 class CNetService;

@@ -4,6 +4,7 @@ bool CObjService::OnInitialUpdate()
 {
 	return true;
 }
+
 bool CObjService::OnTimeOut(struct tm* pTime)
 {
 	if(!CObjectService::OnTimeOut(pTime))
