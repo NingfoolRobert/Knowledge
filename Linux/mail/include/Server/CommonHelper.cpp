@@ -35,8 +35,6 @@ bool CommonHelper::IsFile(const char* pszFileName)
 	return false;
 
 bool CommonHelper::GetAllFileName(const char* pszPathName, std::vector<std::string>& listFileName, bool bRcv/* = false*/)
-
-//int readFileList(char *basePath)
 {
     DIR *dir;
     struct dirent *ptr;
@@ -139,8 +137,15 @@ bool CommonHelper::GetFileTime(const char* pszFileName, time_t &lCreateTime, tim
 		return false;
 	struct stat buf;
 	int fd = fileno(pFile);
+	if(fd <= 0)
+	{
+		fclose(pFile);
+		return false;
+	}
 	fstat(fd, &buf);
-	
+
+	close(fd);
+	fclose(pFile);
 	lCreateTime = buf.st_ctime;
 	lModifyTime = buf.st_mtime;
 	lAccessTime = buf.st_atime;
