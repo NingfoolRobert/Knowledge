@@ -19,6 +19,11 @@ bool CObjectService::OnInitialUpdate()
 
 bool CObjectService::OnTimeOut(struct tm *pTime)
 {
+	if(nullptr == pTime)
+	{
+		return false;
+	}
+
 	return true;
 }
 
