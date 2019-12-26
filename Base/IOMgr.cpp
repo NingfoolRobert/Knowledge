@@ -71,8 +71,6 @@ bool CIOMgr::OnTerminate()
 }
 
 
-
-
 void CIOMgr::LoadEvent(const EventMap::value_type & event_pair)
 {
 	CNetIO* pNetClient = event_pair.first;

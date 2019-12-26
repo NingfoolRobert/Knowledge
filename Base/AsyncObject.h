@@ -31,7 +31,7 @@ public:
 
 	bool Init(int nThread = 1, CAsyncObject* pOwner = nullptr);
 
-	virtual bool PostMsg(PMSGHEADER pMsg);
+	virtual	bool PostMsg(PMSGHEADER pMsg);
 
 	virtual bool PostMsg(CBuffer* pBuffer);
 

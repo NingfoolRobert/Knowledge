@@ -17,11 +17,15 @@ CNetIO::~CNetIO()
 
 //bool CNetIO::OnInitialUpdate()
 //{
-
 //	return true;
 //}
 bool CNetIO::OnTimeOut(struct tm* pTime)
 {
+	if(nullptr == pTime)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -148,6 +152,7 @@ int CNetIO::Recv(char* pBuf, int nLength)
 	}
 	return nRecved;
 }
+
 int CNetIO::Recv(char* pBuf, int nLength, bool& bRecvAll/* = false*/)
 {
 	int nRecved = 0;
