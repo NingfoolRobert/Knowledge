@@ -51,17 +51,19 @@ void CThreadPoolExecutor::CWorker::Run()
 				ThreadPoolItr itr = m_pThreadPool->m_TrashThread.begin();
 				while(itr != m_pThreadPool->m_TrashThread.end())
 				{
-					(*itr)->Join();
 					delete (*itr);
+					*itr = nullptr;
 					m_pThreadPool->m_TrashThread.erase(itr);
 					itr = m_pThreadPool->m_TrashThread.begin();
 				}
 			}
+		//条件变量 触发 
 			continue;
 		}
 		else
 		{
 			pTask->Run();
+			delete pTask;
 			pTask = NULL;
 		}
 	}
@@ -167,6 +169,11 @@ unsigned int CThreadPoolExecutor::GetThreadPoolSize()
 {
 	return m_ThreadPool.size();
 }
+	
+void CThreadPoolExecutor::SetPendingTask(int cnPendingTask)
+{
+	m_maxPendingTasks = cnPendingTask;
+}
 
 void CThreadPoolExecutor::Terminate()
 {
@@ -174,7 +181,7 @@ void CThreadPoolExecutor::Terminate()
 	m_bEnableInsertTask = false;
 	while(m_Tasks.size() > 0)
 	{
-		Sleep(1);
+		usleep(1);
 	}
 	m_bRun = false;
 	m_minThreads = 0;
@@ -182,12 +189,12 @@ void CThreadPoolExecutor::Terminate()
 	m_maxPendingTasks = 0;
 	while(m_ThreadPool.size() > 0)
 	{
-		Sleep(1);
+		usleep(1);
 	}
 	ThreadPoolItr itr = m_TrashThread.begin();
 	while(itr != m_TrashThread.end())
 	{
-		(*itr)->Join(0);
+//		(*itr)->Join(0);
 		delete (*itr);
 		m_TrashThread.erase(itr);
 		itr = m_TrashThread.begin();

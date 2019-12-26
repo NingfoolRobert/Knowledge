@@ -6,7 +6,12 @@ CTimer::CTimer(CActiveObject* pObject, CBuffer* pBuf)
 		m_pObject = pObject;
 		m_pBuf = pBuf;
 }
-	
+
+CTimer::~CTimer(void)
+{
+	g_BufferMgr->ReleaseBuffer(m_pBuf);
+	m_pBuf = nullptr;	
+}
 void CTimer::Run()
 {
 	if(m_pBuf == nullptr)

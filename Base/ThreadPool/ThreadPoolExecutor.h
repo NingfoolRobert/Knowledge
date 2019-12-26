@@ -4,7 +4,6 @@
 #include "Thread.h"
 #include <set>
 #include <list>
-//#include <windows.h>
 #include <unistd.h> 
 
 
@@ -43,13 +42,12 @@ public:
 	**/
 	unsigned int GetThreadPoolSize();
 
+	void SetPendingTask(int cnPendingTask);
 private:
 	/**
 	  获取任务列表中的任务，若任务列表为空，返回NULL
 	**/
 	Runnable * GetTask();
-
-//	static unsigned int WINAPI StaticThreadFunc(void * arg);
 
 private:
 	class CWorker : public CThread

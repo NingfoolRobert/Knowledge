@@ -37,6 +37,28 @@ typedef struct stEventHeader
 }EVENTHEADER, *PEVENTHEADER;
 
 
+bool compTimer(const void* arg1, const void* arg2)
+{
+	CBuffer* pBuf1 = (CBuffer*)arg1;
+	CBuffer* pBuf2 = (CBuffer*)arg2;
+	if(pBuf1 == nullptr || nullptr == pBuf2)
+		return false;
+	PTIMERHEADER pTimer1 = (PTIMERHEADER)pBuf1->GetBufPtr();
+	PTIMERHEADER pTimer2 = (PTIMERHEADER)pBuf2->GetBufPtr();
+	if(nullptr == pTimer1 || nullptr == pTimer2)
+		return false;
+	if(pTimer1->lTimerOver == pTimer2->lTimerOver)
+	{
+		return pTimer1->dwTimerID < pTimer2->dwTimerID;
+	}
+	else 
+	{
+		return pTimer1->lTimerOver < pTimer2->lTimerOver;
+	}
+
+}
+
+
 class CTimer: public Runnable 
 {
 public:

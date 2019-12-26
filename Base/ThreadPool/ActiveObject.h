@@ -14,12 +14,12 @@
 
 #pragma once 
 
-#include "ThreadPoolExecutor.h"
 #include <set>
 #include <map>
 #include <mutex>
 #include <condition_variable>
 
+#include "ThreadPoolExecutor.h"
 #include "TaskDefine.h"
 
 
@@ -29,29 +29,33 @@ public:
 	CActiveObject(void);
 	virtual ~CActiveObject(void);
 public:
-public:
+	bool Init(int cnMaxThread = 1, int cnThread = 1, int nPendTask = 100);
 	
+	void SetPendingTask(int cnPendingTask);
+
+	void Terminate();
+public:
 	virtual bool OnTimer(PTIMERHEADER pTimer);
 	
 	virtual bool OnEvent(PEVENTHEADER pEvent);
 public:
-	
 	bool PostEvent(PEVENTHEADER pEvent);
-	
+
+	bool PostEvent(CBuffer* pBuffer);
+
 	bool SetTimer(PTIMERHEADER pTimer, int nSecond);
 
 	bool SetTimerMili(PTIMERHEADER pTimer, int nMiliSecond);
 public:
-	void ActiveTimerThread(CThread* pThread);
+	void ActiveTimerThread();
 private:
 	bool AddTask(Runnable* pRunnable);
 private:
 	CThreadPoolExecutor*		m_pThreadPool;
 private:
-	bool						m_bEnableTimer;
-	std::mutex					m_clsTimerLock;
-	std::condition_variable		m_condTimer;	
-	std::set<PTIMERHEADER>		m_listTimer;	
-	CThread						m_TimerThread;
+	bool											m_bEnableTimer;
+	bool											m_bStopTimer;
+	CObjectLock										m_clsTimerLock;	
+	std::set<CBuffer*, decltype(compTimer) >		m_listTimer;	
+	CThread*										m_pTimerThread;
 };
-extern class CActiveObject* g_ActiveObject;
