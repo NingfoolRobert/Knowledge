@@ -35,7 +35,7 @@ enum
 	LOG_LEVEL_TYPE_OFF,						//最高等级日志 关闭日志
 };
 
-class CLogFile 
+class CLogFile:public CThread  
 {
 public:
 	CLogFile(void);
@@ -58,7 +58,8 @@ public:
 public:
 	bool OpenFile();
 	bool WriteLogFile(const char* pszData, unsigned int dwLength);
-	void Check();
+public:
+	virtual void Run();
 private:
 	int					m_nLogLevelType;	
 	bool				m_szLogFileName[256];

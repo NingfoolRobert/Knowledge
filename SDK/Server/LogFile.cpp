@@ -29,8 +29,11 @@ bool CLogFile::OnInitialUpdate(const char* pszLogFileName)
 	}
 
 	strcpy(m_szLogFileName, pszLogFileName);
-	std::thread tr1(&CLogFile::Check, this);
-	tr1.detach();
+	
+	if(!CThread::Start())
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -126,7 +129,7 @@ bool CLogFile::WriteLogFile(const char* pszData, unsigned int dwLength)
 	return dwLen = dwLength;
 }
 	
-void CLogFile::Check()
+void CLogFile::Run()
 {
 	CBuffer buf;
 	while(!m_bStop)
