@@ -5,32 +5,30 @@
  * proprietary information that should be used or copied only within
  * xxx, except with written permission of xxx.
  * 
- * @file:xxxObjectService.h
- * @brief:xxxObjectService 
- * @author:xxxObjectServicenbf,nbf0537@163.com
+ * @file:xxxObjService.h
+ * @brief:xxxObjService 
+ * @author:xxxObjServicenbf,nbf0537@163.com
  * @version:com 1.0
- * @date:com2019-12-26
+ * @date:com2019-12-28
  */
 
 #pragma once 
 
-#include "ActiveObject.h"
+#include "ObjectService.h"
+#include "Service.h"
 
-
-class CObjectService:public CActiveObject 
+class CObjService: public CObjectService,
+	public CService 
 {
 public:
-	CObjectService(void);
-	virtual ~CObjectService(void);
+	CObjService(void);
+	virtual ~CObjService(void);
 public:
 	virtual bool OnInitialUpdate();
 
-	virtual bool OnTimeOut(struct tm *pTime);
-	
+	virtual bool OnTimeOut(struct tm* pTime);
+
 	virtual bool OnSecondIdle();
 
 	virtual void OnTerminate();
-public:
-	
-
 };

@@ -14,6 +14,13 @@ CObjectService::~CObjectService(void)
 
 bool CObjectService::OnInitialUpdate()
 {
+	//Load Ini configure 
+	if(!CActiveObject::Init(3))
+	{
+		return false;
+	}
+
+
 	return true;
 }
 
@@ -34,5 +41,5 @@ bool CObjectService::OnSecondIdle()
 
 void CObjectService::OnTerminate()
 {
-
+	CActiveObject::Terminate();
 }

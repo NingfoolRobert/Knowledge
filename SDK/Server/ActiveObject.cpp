@@ -235,11 +235,11 @@ void CActiveObject::ActiveTimerThread()
 		long lTimerNow = tv.tv_sec * 1000 + tv.tv_usec  / 1000;
 		while(true)
 		{
-			m_clsTimerLock.lock();
+			m_clsTimerLock.Lock();
 			auto it = m_listTimer.begin();
 			if(it == m_listTimer.end())
 			{
-				m_clsTimerLock.unlock();
+				m_clsTimerLock.UnLock();
 				break;
 			}
 			auto pTimer = *it;
@@ -254,11 +254,12 @@ void CActiveObject::ActiveTimerThread()
 				}
 				m_listTimer.erase(it);
 				AddTask(pTask);
-				m_clsTimerLock.unlock();
+				m_clsTimerLock.UnLock();
 				continue;
 			}
 			
-			m_clsTimerLock.unlock();
+//			m_clsTimerLock.unlock();
+			m_clsTimerLock.UnLock();
 			break;
 		}
 

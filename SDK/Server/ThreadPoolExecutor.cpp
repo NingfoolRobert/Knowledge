@@ -45,6 +45,7 @@ void CThreadPoolExecutor::CWorker::Run()
 					m_pThreadPool->m_TrashThread.insert(this);
 				}
 				m_bRun = false;
+				continue;
 			}
 			else
 			{
@@ -56,9 +57,12 @@ void CThreadPoolExecutor::CWorker::Run()
 					m_pThreadPool->m_TrashThread.erase(itr);
 					itr = m_pThreadPool->m_TrashThread.begin();
 				}
+				
 			}
 		//条件变量 触发 
-			continue;
+
+			std::unique_lock<std::mutex> tasklocker(m_pThreadPool->m_clsTaskLock);
+			m_pThreadPool->m_condTask.wait(tasklocker, [&]()->bool{return !m_pThreadPool->m_Tasks.empty();});
 		}
 		else
 		{
@@ -147,15 +151,16 @@ bool CThreadPoolExecutor::Execute(Runnable * pRunnable)
 	}
 	else
 	{
-		CAutoLock lockTask(&m_clsTaskLock);
+		std::unique_lock<std::mutex>  locker(m_clsTaskLock);
 		m_Tasks.push_back(pRunnable);
+		m_condTask.notify_one();
 	}
 	return true;
 }
 
 Runnable * CThreadPoolExecutor::GetTask()
 {
-	CAutoLock locker(&m_clsTaskLock);
+	std::unique_lock<std::mutex> locker(m_clsTaskLock);
 	Runnable * Task = NULL;
 	if(!m_Tasks.empty())
 	{

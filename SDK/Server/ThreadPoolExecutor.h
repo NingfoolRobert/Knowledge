@@ -5,9 +5,10 @@
 #include <set>
 #include <list>
 #include <unistd.h> 
+#include <condition_variable>
+#include <mutex>
 
-
-#include "ObjectLock.h"
+#include "AutoLock.h"
 
 
 class CThreadPoolExecutor
@@ -19,7 +20,7 @@ public:
 	/**
 	  初始化线程池，创建minThreads个线程
 	**/
-	bool Init(unsigned int minThreads = 1, unsigned int maxThreads = 50, unsigned int maxPendingTaskse = 1000);
+	bool Init(unsigned int minThreads = 1, unsigned int maxThreads = 50, unsigned int maxPendingTaskse = 10);
 
 	/**
 	  执行任务，若当前任务列表没有满，将此任务插入到任务列表，返回true
@@ -72,9 +73,11 @@ private:
 	ThreadPool m_TrashThread;
 	Tasks m_Tasks;
 
-	CObjectLock		m_clsTaskLock;
-	CObjectLock		m_clsThreadPoolLock;
+	//CObjectLock		m_clsTaskLock;
+	CObjectLock					m_clsThreadPoolLock;
 
+	std::mutex					m_clsTaskLock;
+	std::condition_variable		m_condTask;
 	volatile bool m_bRun;
 	volatile bool m_bEnableInsertTask;
 	volatile unsigned int m_minThreads;

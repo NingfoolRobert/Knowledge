@@ -1,5 +1,7 @@
 #include "TaskDefine.h"
 #include "ActiveObject.h"
+#include "GFunc.h"
+
 
 CTimer::CTimer(CActiveObject* pObject, CBuffer* pBuf)
 {

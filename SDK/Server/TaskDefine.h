@@ -14,9 +14,9 @@
 
 
 #pragma once 
-#include "../Buffer.h"
+
 #include "Thread.h"
-#include "../BufferMgr.h"
+#include "BufferMgr.h"
 
 class CActiveObject;
 

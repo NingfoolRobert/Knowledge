@@ -22,6 +22,7 @@
 #ifdef __GNUC__
 #include <sys/types.h>
 #include <pthread.h>
+#include <assert.h> 
 #define LOCK_TYPE  pthread_mutex_t
 #endif
 
@@ -35,7 +36,7 @@ public:
 #endif
 
 #ifdef __GNUC__
-		pthread_mutex_init(&m_lock);
+		::pthread_mutex_init(&m_lock, NULL);
 #endif
 
 	}
@@ -71,20 +72,4 @@ public:
     
 private:
     LOCK_TYPE  m_lock;
-};
-class CAutoLock
-{
-public:
-    CAutoLock(CObjectLock* plock)
-    {
-		assert(plock);
-		m_clsLock=plock;
-		m_clsLock->Lock();
-    }
-    virtual ~CAutoLock()
-    {
-		m_clsLock->UnLock();
-    }
-private:
-    CObjectLock*   m_clsLock;
 };
