@@ -27,6 +27,10 @@ bool CObjService::OnSecondIdle()
 	return true;
 }
 
+bool CObjService::InvokeTerminate()
+{
+	return true;
+}
 void CObjService::OnTerminate()
 {
 	CObjectService::OnTerminate();

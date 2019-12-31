@@ -46,7 +46,9 @@ bool CLogFile::WriteLog(int nLevelType, const char* pszFmt, ...)
 {
 	va_list args;
 	va_start(args, pszFmt);
-	return WriteLogV(nLevelType, pszFmt, args);
+	bool bRet = WriteLogV(nLevelType, pszFmt, args);
+	va_end(args);
+	return bRet;
 }
 
 bool CLogFile::WriteLogV(int nLevelType, const char* pszfmt, va_list args)
@@ -60,7 +62,6 @@ bool CLogFile::WriteLogV(int nLevelType, const char* pszfmt, va_list args)
 
 	//va_start(args, pszfmt);
 	vsprintf(szData, pszfmt, args);
-	va_end(args);
 
 	time_t tNow = time(NULL);
 	struct tm tm_Now; 
@@ -85,32 +86,62 @@ bool CLogFile::WriteData(const char* pszData, unsigned int dwLength)
 
 bool CLogFile::Fatal(const char* pszFmt, ...)
 {
-	return WriteLogV(LOG_LEVEL_TYPE_FATAL, pszFmt, __VA_ARGS__);
+	va_list args;
+	va_start(args, pszFmt);
+	bool bRet = WriteLogV(LOG_LEVEL_TYPE_FATAL, pszFmt, args);
+	va_end(args);
+	return bRet;
+	//return WriteLog(LOG_LEVEL_TYPE_FATAL, pszFmt, __VA_ARGS__);
 }
 
 bool CLogFile::Error(const char* pszFmt, ...)
 {
-	return WriteLogV(LOG_LEVEL_TYPE_ERROR, pszFmt, __VA_ARGS__);
+	va_list args;
+	va_start(args, pszFmt);
+	bool bRet = WriteLogV(LOG_LEVEL_TYPE_ERROR, pszFmt, args);
+	va_end(args);
+	return bRet;
+//	return WriteLog(LOG_LEVEL_TYPE_ERROR, pszFmt, __VA_ARGS__);
 }
 
 bool CLogFile::Warn(const char* pszFmt, ...)
 {
-	return WriteLogV(LOG_LEVEL_TYPE_WARN, pszFmt, __VA_ARGS__);
+	va_list args;
+	va_start(args, pszFmt);
+	bool bRet = WriteLogV(LOG_LEVEL_TYPE_WARN, pszFmt, args);
+	va_end(args);
+	return bRet;
+//	return WriteLog(LOG_LEVEL_TYPE_WARN, pszFmt, __VA_ARGS__);
 }
 
 bool CLogFile::Info(const char* pszFmt, ...)
 {
-	return WriteLogV(LOG_LEVEL_TYPE_INFO, pszFmt, __VA_ARGS__);
+	va_list args;
+	va_start(args, pszFmt);
+	bool bRet = WriteLogV(LOG_LEVEL_TYPE_INFO, pszFmt, args);
+	va_end(args);
+	return bRet;
+	//return WriteLog(LOG_LEVEL_TYPE_INFO, pszFmt, __VA_ARGS__);
 }
 
 bool CLogFile::Debug(const char* pszFmt, ...)
 {
-	return WriteLog(LOG_LEVEL_TYPE_DEBUG, pszFmt, __VA_ARGS__);
+	va_list args;
+	va_start(args, pszFmt);
+	bool bRet = WriteLogV(LOG_LEVEL_TYPE_DEBUG, pszFmt, args);
+	va_end(args);
+	return bRet;
+	//return WriteLog(LOG_LEVEL_TYPE_DEBUG, pszFmt, __VA_ARGS__);
 }
 	
 bool CLogFile::Trace(const char* pszFmt, ...)
 {
-	return WriteLog(LOG_LEVEL_TYPE_TRACE, pszFmt, __VA_ARGS__);
+	va_list args;
+	va_start(args, pszFmt);
+	bool bRet = WriteLogV(LOG_LEVEL_TYPE_TRACE, pszFmt, args);
+	va_end(args);
+	return bRet;
+	///return WriteLog(LOG_LEVEL_TYPE_TRACE, pszFmt, __VA_ARGS__);
 }
 	
 bool CLogFile::OpenFile()

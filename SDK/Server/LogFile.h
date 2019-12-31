@@ -62,7 +62,7 @@ public:
 	virtual void Run();
 private:
 	int					m_nLogLevelType;	
-	bool				m_szLogFileName[256];
+	char				m_szLogFileName[256];
 	CBuffer				m_bufLog;
 	unsigned int		m_dwFileLength;
 	int					m_hFile;

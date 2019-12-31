@@ -30,5 +30,7 @@ public:
 
 	virtual bool OnSecondIdle();
 
+	virtual bool InvokeTerminate();
+
 	virtual void OnTerminate();
 };

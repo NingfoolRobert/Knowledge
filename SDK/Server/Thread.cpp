@@ -35,7 +35,7 @@ bool CThread::Start(int nMod/* = RUNMODE_DETACH*/)
 
 	if(nMod == RUNMODE_DETACH && Detach())
 		return true;
-	if(nMod == RUNMODE_JOIN && Join());
+	if(nMod == RUNMODE_JOIN && Join())
 		return true;
 	
 	return false;

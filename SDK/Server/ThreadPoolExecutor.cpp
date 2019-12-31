@@ -53,7 +53,7 @@ void CThreadPoolExecutor::CWorker::Run()
 				while(itr != m_pThreadPool->m_TrashThread.end())
 				{
 					delete (*itr);
-					*itr = nullptr;
+					//*itr = nullptr;
 					m_pThreadPool->m_TrashThread.erase(itr);
 					itr = m_pThreadPool->m_TrashThread.begin();
 				}

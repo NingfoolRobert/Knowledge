@@ -72,7 +72,6 @@ void CActiveObject::Terminate()
 	{
 		auto pBuf = *it;
 		delete pBuf;
-		*it = nullptr;
 	}
 	m_listTimer.clear();
 	
@@ -242,7 +241,8 @@ void CActiveObject::ActiveTimerThread()
 				m_clsTimerLock.UnLock();
 				break;
 			}
-			auto pTimer = *it;
+			auto pBuffer = *it;
+			PTIMERHEADER pTimer = (PTIMERHEADER)pBuffer->GetBufPtr();
 			if(pTimer->lTimerOver <= lTimerNow)	
 			{
 				CBuffer* pBuf = nullptr;

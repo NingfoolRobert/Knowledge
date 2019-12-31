@@ -23,8 +23,8 @@ class CActiveObject;
 typedef struct stTimerHeader
 {
 	unsigned int	dwTimerID;
-	
-	long			lTimerOver;
+	unsigned long	dwOwner;	
+	unsigned long	lTimerOver;
 	unsigned int	dwLength;
 
 }TIMERHEADER, *PTIMERHEADER;
@@ -32,31 +32,36 @@ typedef struct stTimerHeader
 typedef struct stEventHeader 
 {
 	unsigned int	dwType;
-
 	unsigned int	dwLength;
 }EVENTHEADER, *PEVENTHEADER;
 
-
-bool compTimer(const void* arg1, const void* arg2)
+struct compTimer 
 {
-	CBuffer* pBuf1 = (CBuffer*)arg1;
-	CBuffer* pBuf2 = (CBuffer*)arg2;
-	if(pBuf1 == nullptr || nullptr == pBuf2)
-		return false;
-	PTIMERHEADER pTimer1 = (PTIMERHEADER)pBuf1->GetBufPtr();
-	PTIMERHEADER pTimer2 = (PTIMERHEADER)pBuf2->GetBufPtr();
-	if(nullptr == pTimer1 || nullptr == pTimer2)
-		return false;
-	if(pTimer1->lTimerOver == pTimer2->lTimerOver)
+	bool operator()(const void* arg1, const void* arg2)
 	{
-		return pTimer1->dwTimerID < pTimer2->dwTimerID;
-	}
-	else 
-	{
-		return pTimer1->lTimerOver < pTimer2->lTimerOver;
+		CBuffer* pBuf1 = (CBuffer*)arg1;
+		CBuffer* pBuf2 = (CBuffer*)arg2;
+		if(pBuf1 == nullptr || nullptr == pBuf2)
+			return false;
+		PTIMERHEADER pTimer1 = (PTIMERHEADER)pBuf1->GetBufPtr();
+		PTIMERHEADER pTimer2 = (PTIMERHEADER)pBuf2->GetBufPtr();
+		if(nullptr == pTimer1 || nullptr == pTimer2)
+			return false;
+		if(pTimer1->lTimerOver == pTimer2->lTimerOver)
+		{
+			if(pTimer1->dwTimerID == pTimer2->dwTimerID)
+				return pTimer1->dwOwner < pTimer2->dwOwner;
+			else 
+				return pTimer1->dwTimerID < pTimer2->dwTimerID;
+		}
+		else 
+		{
+			return pTimer1->lTimerOver < pTimer2->lTimerOver;
+		}
+	
 	}
 
-}
+};
 
 
 class CTimer: public Runnable 

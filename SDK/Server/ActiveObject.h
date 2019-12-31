@@ -55,6 +55,6 @@ private:
 	bool											m_bEnableTimer;
 	bool											m_bStopTimer;
 	CObjectLock										m_clsTimerLock;	
-	std::set<CBuffer*, decltype(compTimer) >		m_listTimer;	
+	std::set<CBuffer*, compTimer>					m_listTimer;	
 	CThread*										m_pTimerThread;
 };

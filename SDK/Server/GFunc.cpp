@@ -1,9 +1,10 @@
 #include "GFunc.h"
 #include <string.h>
 #include "BufferMgr.h"
+#include "LogFile.h"
 
 #include <unistd.h>
-#include "Log.h"
+//#include "Log.h"
 #include <arpa/inet.h>
 
 class CBufferMgr* g_pBufferMgr = nullptr;
@@ -15,10 +16,12 @@ bool GlobalBegin(const char* pszSimpleName)
 	sprintf(m_szServiceName, "%s%s", pszSimpleName, "Service");
 	
 	sprintf(m_szConfigureFileName, "./%s.xml",m_szServiceName);
-
-//	AddFilePath(m_szConfigureFileName);
 	
-	__LOGINIT__;
+	sprintf(m_szServiceLogFileName, "%s.log", m_szServiceName);
+	AddFilePath(m_szServiceLogFileName);
+	
+//	__LOGINIT__;
+	Singleton<CLogFile>::GetInstance().OnInitialUpdate(m_szServiceLogFileName);	
 
 	g_pBufferMgr = new CBufferMgr;
 	if(g_pBufferMgr ==  nullptr)
