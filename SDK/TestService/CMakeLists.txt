@@ -21,15 +21,17 @@ SET(SDK_DIR  ${CMAKE_SOURCE_DIR}/../)
 
 
 include_directories(${SDK_DIR}/Base/include)
-include_directories(${SDK_DIR}/Server/include)
+include_directories(${SDK_DIR}/Server)
 
+AUX_SOURCE_DIRECTORY(${SDK_DIR}/Server  SERVER_SRC)
 
 
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/src SRC)
 
 add_executable(${PROJECT_NAME} 
 								${SRC}
+								${SERVER_SRC}
 								)
-
+							#target_link_libraries(${PROJECT_NAME} )
 	
 

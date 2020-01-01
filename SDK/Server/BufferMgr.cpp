@@ -1,6 +1,6 @@
 
 #include "BufferMgr.h"
-#include "Log.h"
+#include "LogFile.h"
 
 
 CBufferMgr::CBufferMgr()

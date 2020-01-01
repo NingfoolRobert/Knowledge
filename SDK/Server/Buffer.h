@@ -29,6 +29,9 @@ public:
 	
 	bool	Append(const void* pBuf, int nlen);
 	bool	AppendString(const char* pszBuf);
+	bool	AppendFormatText(const char* pszFmt, ...);
+	bool	AppendFormatTextV(const char* pszFmt, va_list args);
+
 
 	int		GetCapability() { return m_nlenCapability; }
 	int		GetBufLen() { return m_nlenData; }

@@ -1,6 +1,16 @@
 #include "ObjService.h"
+	
 
 
+
+CObjService::CObjService(void)
+{
+}
+
+CObjService:: ~CObjService(void)
+{
+
+}
 
 
 bool CObjService::OnInitialUpdate()

@@ -1,7 +1,8 @@
-#include <string.h>
-
 #include "Buffer.h"
-
+#include <stdarg.h> 
+#include <string.h>
+#include <iostream> 
+#include <vector> 
 
 CBuffer::CBuffer(void)
 {
@@ -145,4 +146,30 @@ bool CBuffer::AppendString(const char* pszBuf)
 	}
 	
 	return Append(pszBuf, strlen(pszBuf) + 1);
+}
+	
+bool CBuffer::AppendFormatText(const char* pszFmt, ...)
+{
+	va_list args;
+	va_start(args, pszFmt);
+	bool bRet = AppendFormatTextV(pszFmt, args);
+	va_end(args);
+	return bRet;
+}
+
+bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
+{
+	if(pszFmt == nullptr | 0 == strlen(pszFmt))
+	{
+		return false;
+	}
+
+	int nLen = vsnprintf(NULL, 0, pszFmt, args);
+	char szData[1024] = { 0 };
+	std::string strData;
+	//std::vector<char> strData;
+	strData.resize(nLen + 1);
+	vsprintf(szData, pszFmt, args);
+
+	return Append(szData, strlen(szData));
 }

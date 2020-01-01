@@ -59,17 +59,28 @@ bool CLogFile::WriteLogV(int nLevelType, const char* pszfmt, va_list args)
 	}
 
 	char szData[1024] = { 0 };
-
+	
 	//va_start(args, pszfmt);
 	vsprintf(szData, pszfmt, args);
 
 	time_t tNow = time(NULL);
 	struct tm tm_Now; 
 	localtime_r(&tNow,  &tm_Now);
-	sprintf(szData, "%d-%d-%d %d:%d:%d %s %s\n", tm_Now.tm_year + 1900, tm_Now.tm_mon + 1, tm_Now.tm_mday, tm_Now.tm_hour, tm_Now.tm_min, tm_Now.tm_sec, szLogLevel[nLevelType], szData);
+	char szTime[64] = { 0 };
+	
+	sprintf(szTime, "%04d-%02d-%02d %02d:%02d:%02d", tm_Now.tm_year + 1900, tm_Now.tm_mon + 1, tm_Now.tm_mday, tm_Now.tm_hour, tm_Now.tm_min, tm_Now.tm_sec);
+	//sprintf(szData, "%s [%s] %s\n", szTime, szLogLevel[nLevelType], szData);
 
-	return WriteData(szData, strlen(szData));;
-
+	char szThread[16] = { 0 };
+	sprintf(szThread, "0x%X", GetThreadID());
+	//std::string str;
+	//str.append(szTime).append(szThread).append(szLogLevel[nLevelType]).append(szData).append("\n");
+	char szLog[1024] = { 0 };	
+	sprintf(szLog, "%s %s [%s] %s\n", szTime, szThread, szLogLevel[nLevelType], szData);
+//	std::unique_lock<std::mutex> locker(m_clsLock);
+//	bool bRet = m_bufLog.AppendFormatText("%s %s [%s] %s\n", szTime, szThread, szLogLevel[nLevelType], szData);
+//	m_condLog.notify_one();
+	return WriteData(szLog, strlen(szLog));
 }
 
 bool CLogFile::WriteData(const char* pszData, unsigned int dwLength)
@@ -162,6 +173,11 @@ bool CLogFile::WriteLogFile(const char* pszData, unsigned int dwLength)
 	
 void CLogFile::Run()
 {
+	if(!OpenFile())
+	{
+		return ;
+	}
+	
 	CBuffer buf;
 	while(!m_bStop)
 	{

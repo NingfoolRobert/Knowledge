@@ -88,7 +88,7 @@ CThreadPoolExecutor::~CThreadPoolExecutor(void)
 
 bool CThreadPoolExecutor::Init(unsigned int minThreads, unsigned int maxThreads, unsigned int maxPendingTasks)
 {
-	CAutoLock locker(&m_clsThreadPoolLock);
+	//CAutoLock locker(&m_clsThreadPoolLock);
 	if(minThreads == 0)
 	{
 		return false;

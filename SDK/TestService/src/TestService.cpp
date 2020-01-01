@@ -16,7 +16,7 @@ bool CTestService::OnInitialUpdate()
 		return false;
 	}
 	
-	
+	LogInfo("InitialUpdate Success.");	
 
 	return true;
 }
@@ -28,6 +28,7 @@ bool CTestService::OnTimeOut(struct tm* pTime)
 		return false;
 	}
 
+	LogInfo("Time out ");
 	return true;
 }
 
@@ -37,6 +38,8 @@ bool CTestService::OnSecondIdle()
 	{
 		return false;
 	}
+	
+	LogInfo("Second info");
 	return true;
 }
 

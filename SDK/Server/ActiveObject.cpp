@@ -231,7 +231,7 @@ void CActiveObject::ActiveTimerThread()
 		select(0, nullptr, nullptr, nullptr, &tv);
 		
 		gettimeofday(&tv, nullptr);
-		long lTimerNow = tv.tv_sec * 1000 + tv.tv_usec  / 1000;
+		unsigned long lTimerNow = tv.tv_sec * 1000 + tv.tv_usec  / 1000;
 		while(true)
 		{
 			m_clsTimerLock.Lock();

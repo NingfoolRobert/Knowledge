@@ -2,6 +2,8 @@
 #pragma once 
 
 #include "ObjService.h"
+#include "GlobalVar.h"
+#include "LogFile.h"
 
 
 

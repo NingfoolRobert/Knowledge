@@ -30,6 +30,11 @@ CEvent::CEvent(CActiveObject* pObj, CBuffer* pBuf)
 	m_pObject = pObj;
 	m_pBuf = pBuf;
 }
+CEvent::~CEvent(void)
+{
+	g_pBufferMgr->ReleaseBuffer(m_pBuf);
+	m_pBuf = nullptr;
+}
 
 void CEvent::Run()
 {

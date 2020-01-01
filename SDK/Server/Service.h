@@ -9,7 +9,7 @@
 
 
 
-#include "Log.h"
+#include "LogFile.h"
 #include "GlobalVar.h"
 
 
