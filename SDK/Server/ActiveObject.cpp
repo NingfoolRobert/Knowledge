@@ -19,7 +19,7 @@ private:
 
 class TimerThreadTask* g_pTimerTask = nullptr;
 
-CActiveObject::CActiveObject(void):m_pTimerThread(nullptr),m_pThreadPool(nullptr),m_bEnableTimer(false),m_bStopTimer(true)
+CActiveObject::CActiveObject(void):m_pThreadPool(nullptr),m_bEnableTimer(false),m_bStopTimer(true), m_pTimerThread(nullptr)
 {
 	
 }
@@ -222,6 +222,7 @@ bool CActiveObject::SetTimerMili(PTIMERHEADER pTimer, int nMiliSecond)
 
 void CActiveObject::ActiveTimerThread()
 {
+	//auto tNow = std::chrono::system_clock::now();//
 	while(!m_bStopTimer)
 	{
 		struct timeval tv;

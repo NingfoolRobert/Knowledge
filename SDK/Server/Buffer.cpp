@@ -159,7 +159,7 @@ bool CBuffer::AppendFormatText(const char* pszFmt, ...)
 
 bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 {
-	if(pszFmt == nullptr | 0 == strlen(pszFmt))
+	if(pszFmt == nullptr || 0 == strlen(pszFmt))
 	{
 		return false;
 	}
