@@ -27,22 +27,22 @@
 
 
 template<class T>
-class CStructReclaimMgr 
+class CMemoryReclaimMgr 
 {
 public:
-	CStructReclaimMgr(void)
+	CMemoryReclaimMgr(void)
 	{
 		m_nMallocType = MALLOC_TYPE_MALLOC;
 		m_nMaxEmpty = STRUCT_RECLAIM_MAX_COUNT;
 	}
 
-	CStructReclaimMgr(int nMallocType)
+	CMemoryReclaimMgr(int nMallocType)
 	{
 		m_nMallocType = nMallocType;
 		m_nMaxEmpty = STRUCT_RECLAIM_MAX_COUNT;
 	}
 
-	~CStructReclaimMgr(void)
+	~CMemoryReclaimMgr(void)
 	{
 		ClearAll();
 	}
