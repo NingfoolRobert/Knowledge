@@ -147,6 +147,22 @@ bool GetIPAndPort(unsigned int &dwHostIP, int& nPort, struct sockaddr_in* pSockA
 	return true;
 }
 
+bool HostIP2Str(unsigned int dwHostIP, char* pszIP)
+{
+	if(pszIP == nullptr)
+		return false;
+	struct in_addr addr;
+	unsigned int dwNetIP = htonl(dwHostIP);
+	memcpy(&addr, &dwNetIP, sizeof(unsigned int));
+	strcpy(pszIP, inet_aton(addr));
+	
+//	int nFirst  = dwHostIP & 0x1000;
+//	int nSecond = dwHostIP & 0x0100);
+//	int nThird = dwHostIP & 0x0010;
+//	int nForth = dwHostIP & 0x0001;
+//	sprintf(pszIP, "%d.%d.%d.%d", nFirst>>3, nSecond >> 2, nThird >> 1, nForth);
+	return true;
+}
 
 bool Compress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen)
 {

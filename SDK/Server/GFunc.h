@@ -44,7 +44,7 @@ bool GetLocalIPList(std::vector<std::string> &listIP);
 //sockaddr, 获取IP：Port 
 bool GetIPAndPort(unsigned int &dwHostIP, int& nPort, struct sockaddr_in* pSockAddr);
 
-
+bool HostIP2Str(unsigned int dwHostIP, char* pszIP);
 //压缩
 bool Compress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen);
 //解压缩
