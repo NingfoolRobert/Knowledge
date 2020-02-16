@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <sys/socket.h>
 #include <fcntl.h>
 #include <netdb.h>
@@ -29,21 +30,15 @@ public:
 public:
 	int Create(int nDomain = AF_INET, int nSockType = SOCK_STREAM, int nProtocol = IPPROTO_IP);
 	
-	bool Bind(int nHostPort = 0, const char* pszHostAddress = nullptr);
-
 	bool Bind(int nHostPort = 0, unsigned int dwHostIP = 0);
 	
 	bool Listen(int nListenCount = 10);
 
 	int  Accept();
 
-	bool Connect(const char* pszAddress, int nPort);
-
 	bool Connect(unsigned int dwHostIP, int nPort);
 
 	int Recv(char* pszBuf, int nBufLen);
-
-	bool Send(const char* pszBuf, int nBufLen);
 	
 	int Send(const char* pszBuf, int nBufLen);
 	

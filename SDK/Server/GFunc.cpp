@@ -154,7 +154,7 @@ bool HostIP2Str(unsigned int dwHostIP, char* pszIP)
 	struct in_addr addr;
 	unsigned int dwNetIP = htonl(dwHostIP);
 	memcpy(&addr, &dwNetIP, sizeof(unsigned int));
-	strcpy(pszIP, inet_aton(addr));
+	strcpy(pszIP, inet_ntoa(addr));
 	
 //	int nFirst  = dwHostIP & 0x1000;
 //	int nSecond = dwHostIP & 0x0100);

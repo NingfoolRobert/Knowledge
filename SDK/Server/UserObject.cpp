@@ -2,7 +2,7 @@
 //#include "NetClient.h"
 
 
-CUserObject::CUserObject(void):m_pNetClient(nullptr),m_nPort(0),m_dwIP(0)
+CUserObject::CUserObject(void):m_dwIP(0), m_nPort(0), m_pNetClient(nullptr)
 {
 }
 

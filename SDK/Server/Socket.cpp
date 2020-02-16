@@ -6,6 +6,7 @@ CSocket::CSocket()
 {
 	m_fd = 0;
 }
+
 CSocket::~CSocket()
 {
 	Close();
@@ -22,40 +23,16 @@ int  CSocket::Create(int nDomain/* = AF_INET*/, int nSockType/* = SOCK_STREAM*/,
 	return m_fd;
 }
 
-bool CSocket::Bind(int nHostPort/* = 0*/, const char* pszHostAddress/* = nullptr*/)
-{
-	struct sockaddr_in SvrAddr;
-	memset(&SvrAddr, 0, sizeof(SvrAddr));
-	
-	SvrAddr.sin_family = AF_INET;
-	//
-	if(pszHostAddress == nullptr)
-		SvrAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	else 
-		SvrAddr.sin_addr.s_addr = inet_addr(pszHostAddress);
-	//
-	SvrAddr.sin_port = htons(nHostPort);
-
-	if(bind(m_fd, (struct sockaddr*)&SvrAddr,sizeof(SvrAddr)) == -1)
-	{
-		return false;
-	}
-
-	return true;
-}
 	
 bool CSocket::Bind(int nHostPort/* = 0*/, unsigned int dwHostIP/* = 0*/)
 {
-	if(nHostPort == 0)
-		return false;
-	
 	struct sockaddr_in SvrAddr;
 	memset(&SvrAddr, 0, sizeof(SvrAddr));
 	
 	SvrAddr.sin_family = AF_INET;
 	//
 	if(dwHostIP == 0)
-		SvrAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+		SvrAddr.sin_addr.s_addr = inet_addr(INADDR_ANY);
 	else 
 		SvrAddr.sin_addr.s_addr = htonl(dwHostIP);
 
@@ -67,8 +44,6 @@ bool CSocket::Bind(int nHostPort/* = 0*/, unsigned int dwHostIP/* = 0*/)
 	}
 
 	return true;
-
-
 }
 
 bool CSocket::Listen(int nListenCount/* = 10*/)
@@ -95,34 +70,6 @@ int CSocket::Accept()
 	return fdClient;
 }
 
-// /*******************************************************
-/// @brief Connect 
-///
-/// @param: pszAddress
-/// @param: nPort
-///
-/// @returns: 
-// *******************************************************/
-bool CSocket::Connect(const char* pszAddress, int nPort)
-{
-	if(pszAddress == nullptr)
-		return false;
-	
-	struct sockaddr_in SvrAddr;
-	memset(&SvrAddr, 0, sizeof(SvrAddr));
-
-	SvrAddr.sin_family = AF_INET;
-	SvrAddr.sin_addr.s_addr = inet_addr(pszAddress);
-	SvrAddr.sin_port = htons(nPort);
-
-	int nRet = 0;
-	if((nRet = connect(m_fd, (struct sockaddr*)&SvrAddr,sizeof(SvrAddr)) ) < 0)
-	{
-		return false;
-	}
-	return true;
-}
-
 bool CSocket::Connect(unsigned int dwHostIP, int nPort)
 {
 	struct sockaddr_in SvrAddr;
@@ -141,30 +88,6 @@ bool CSocket::Connect(unsigned int dwHostIP, int nPort)
 int CSocket::Recv(char* pszBuf, int nBufLen)
 {
 	return read(m_fd, pszBuf, nBufLen);
-}
-
-bool CSocket::Send(const char* pszBuf, int nBufLen)
-{
-	int nSended = 0;
-	do 
-	{
-		int nSend = write(m_fd, pszBuf + nSended, nBufLen - nSended);
-		if(nSend < 0 )
-		{
-			if(errno == EINTR)
-				continue;
-			else 
-			{
-				//TODO Log
-				return false;
-			}
-		}
-
-		nSended += nSend;
-	}while(nSended < nBufLen);
-
-	
-	return true;
 }
 
 int CSocket::Send(const char* pszBuf, int nBufLen)

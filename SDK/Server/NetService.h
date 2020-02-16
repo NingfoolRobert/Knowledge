@@ -9,12 +9,21 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <set> 
+
+#define WORKFUNC_THREAD_COUNT 1
+
 
 struct compNetClient
 {
   bool operator()(const CNetClient* pNetClient1, const CNetClient* pNetClient2)
   {
-      return pNetClient1->Detach() < pNetClient2->Detach();
+		if(pNetClient1->m_dwIP == pNetClient2->m_dwIP)
+		{
+			return pNetClient1->m_nPort < pNetClient2->m_nPort;
+		}
+		
+		return pNetClient1->m_dwIP < pNetClient2->m_dwIP;
   }  
 };
 
@@ -25,7 +34,7 @@ public:
     CNetService(void);
     virtual ~CNetService();
 public:
-    virtual bool dfsa();
+    virtual bool OnInitualUpdate();
     
     virtual bool OnTimeOut(struct tm* pTime);
 
@@ -40,11 +49,8 @@ public:
     virtual CUserObject* OnNetUserObject(PHEADER pHeader);
 public:
     void ActiveWorkFuncThread();
-    
-    void ActiveDelNetClientThread();
 public:
     CNetClient*     CreateNetClient(int fdSock, CNetService* pNetService);
-
     
     void ActiveEpollThread();
 public:
@@ -73,10 +79,14 @@ private:
     typedef std::vector<struct epoll_event>                            FdSockList;
     typedef std::unordered_map<int, CNetClient*>                       FdClientMap;
     typedef std::set<CNetClient*, compNetClient>                       FdClientSet;
-    
+
+
+	CObjectLock						m_clsEpollLock;    
     FdClientMap                     m_mapClient;
     FdClientSet                     m_listClient;
 private:
     int                             m_nTimeOut;                     //
     int                             m_ep;                           //epoll 文件句柄
+private:
+	bool							m_bStop;
 };

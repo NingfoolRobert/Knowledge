@@ -39,6 +39,11 @@ bool CObjectService::OnSecondIdle()
 	return true;
 }
 
+bool CObjectService::InvokeTerminate()
+{
+	return true;
+}
+
 void CObjectService::OnTerminate()
 {
 	CActiveObject::Terminate();

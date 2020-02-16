@@ -1,11 +1,11 @@
 #!/bin/sh 
 
 if [ ! -d "./build/Debug" ]; then 
-	mkdir  ./build/Debug 
+	mkdir -p ./build/Debug 
 fi 
 
 if [ ! -d "./build/Release" ]; then 
-	mkdir  ./build/Release 
+	mkdir -p ./build/Release 
 fi 
 
 

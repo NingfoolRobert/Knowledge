@@ -29,7 +29,7 @@ typedef struct stHeader
 }HEADER,*PHEADER;
 
 
-#define HEADSIZE  sizeof(HEADER)
+#define HEADSIZE  (int)sizeof(HEADER)
 
 //消息源值
 enum 

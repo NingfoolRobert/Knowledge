@@ -30,10 +30,11 @@ public:
     void BindNetClient(CNetClient* pNetClient);
     
     bool IsBindNetClient();
-
+	
+	void SetPeerAddr(unsigned int dwIP, int nPort);
 public: 
-    int                 m_nPort;
     unsigned int        m_dwIP;
+    int                 m_nPort;
 private:
     CNetClient*        m_pNetClient;    
 };

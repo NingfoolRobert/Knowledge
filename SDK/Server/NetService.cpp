@@ -1,6 +1,15 @@
 #include "NetService.h"
+#include "AutoLock.h"
 
-CNetService::CNetService(void):m_pAcceptIO(nullptr),m_nTimeOut(1000)
+
+#include <sys/epoll.h> 
+#include <netinet/in.h>
+#include <arpa/inet.h> 
+#include <thread> 
+#include <algorithm> 
+
+
+CNetService::CNetService(void):m_pAcceptIO(nullptr),m_nTimeOut(100),m_bStop(false)
 {
 
 }
@@ -9,25 +18,81 @@ CNetService::~CNetService()
 {
 
 }
+
 bool CNetService::OnInitualUpdate()
 {
-    
+	m_pAcceptIO = new CAcceptIO;
+	if(nullptr == m_pAcceptIO)
+	{
+		LogError("%s(%d) Init Net AcceptIO fail.", __FILE__, __LINE__);
+		return false;
+	}
+	if(!m_pAcceptIO->InitialUpdate(m_nPort, this))
+	{
+		return false;
+	}
+	
+	
+	m_ep = epoll_create(1000);
+	if(m_ep <= 0)
+	{
+		LogError("%s(%d) Create epoll fd  fail.", __FILE__, __LINE__);
+		return false;
+	}
+	
+	std::thread tr1(&CNetService::ActiveEpollThread, this);
+	tr1.detach();
+	
+	for(int i = 0; i < WORKFUNC_THREAD_COUNT; ++i)
+	{
+		std::thread tr(&CNetService::ActiveWorkFuncThread, this);
+		tr.detach();
+	}
+
+	LogInfo("Start Net Service Success...");
     return true;
 }
     
 bool CNetService::OnTimeOut(struct tm* pTime)
 {
+	if(nullptr == pTime)
+	{
+		return false;
+	}
 
+	LogInfo("Connection Count: %d, Add: %d.", m_mapClient.size(), m_listAddClient.size());
+	return true;
 }
 
 bool CNetService::OnSecondeIdle()
 {
-
+	CAutoLock locker(&m_clsEpollLock);
+	CNetClient* pNetClient = nullptr;
+	for(auto it = m_mapClient.begin(); it != m_mapClient.end(); ++it)
+	{
+		pNetClient = it->second;
+		if(pNetClient)
+		{
+			pNetClient->OnSecondIdle();
+		}
+	}
+	return true;
 }
 
 void CNetService::OnTerminate()
 {
-
+	m_bStop = true;
+	CNetClient* pNetClient = nullptr;
+	CAutoLock locker(&m_clsEpollLock);
+	
+	for(auto it = m_mapClient.begin(); it != m_mapClient.end(); ++it)
+	{
+		pNetClient = it->second;
+		if(nullptr == pNetClient)
+			continue;
+		pNetClient->Terminate();		
+	}
+	
 }
 
 void CNetService::OnNetConnect(int& fd)     //网络链接上来
@@ -84,23 +149,6 @@ void CNetService::ActiveWorkFuncThread()
     }
 }
     
-void CNetService::ActiveDelNetClientThread()
-{
-    CNetClient* pNetClient = nullptr;
-    while(true)
-    {
-        m_clsDelClientLock.Lock();
-        if(m_listDelClient.empty())
-        {
-            m_clsDelClientLock.UnLock();
-            break;
-        }
-        pNetClient = m_listDelClient.front();
-        m_listDelClient.pop();
-        m_clsDelClientLock.UnLock();
-        //TODO Delete NetClient;
-    }
-}
 
 CUserObject*  CNetService::OnNetUserObject(PHEADER pHeader)
 {
@@ -110,10 +158,10 @@ CUserObject*  CNetService::OnNetUserObject(PHEADER pHeader)
 
 void CNetService::ActiveEpollThread()
 {
-    while(true)
+    while(!m_bStop)
     {
         UpdateEvent();
-        FdClientList    EventList;
+        FdSockList    EventList;
         int nMax = m_mapClient.size();
         EventList.resize(nMax);
         int nCount = epoll_wait(m_ep, &EventList[0], nMax, m_nTimeOut);
@@ -169,8 +217,32 @@ void CNetService::UpdateEvent()
         struct epoll_event ev;
         epoll_ctl(m_ep, EPOLL_CTL_DEL, ev.data.fd, &ev);
         
-        pNetClient->OnBreak();
-        delete pNetClient;
-        pNetClient = nullptr;
+        pClient->OnBreak();
+        delete pClient;
+        pClient = nullptr;
     }
+}
+    
+bool CNetService::AddClient(CNetClient* pNetClient)
+{
+	if(nullptr == pNetClient)
+	{
+		return false;
+	}
+
+	CAutoLock locker(&m_clsAddClientLock);
+	m_listAddClient.push(pNetClient);
+	return true;
+}
+
+bool CNetService::DelClient(CNetClient* pNetClient)
+{
+	if(nullptr == pNetClient)
+	{
+		return true;
+	}
+
+	CAutoLock locker(&m_clsDelClientLock);
+	m_listDelClient.push(pNetClient);
+	return true;
 }

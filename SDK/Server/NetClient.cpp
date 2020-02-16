@@ -3,17 +3,20 @@
 #include "BufferMgr.h"
 #include "LogFile.h"
 #include "UserObject.h"
+#include "NetService.h"
 
 
-CNetClient::CNetClient(void):m_pUserObject(nullptr),m_pSendBuf(nullptr),
-                            m_pRecvBuf(nullptr), m_ulRecvSerialNum(0), 
-                            m_ulSendSerialNum(0), m_dwSendLen(0), m_dwRecvLen(0)
+CNetClient::CNetClient():m_pUserObject(nullptr),m_pNetService(nullptr),
+						m_pSendBuf(nullptr), m_dwSendLen(0),
+						m_pRecvBuf(nullptr), m_dwRecvLen(0),
+						m_ulSendSerialNum(0), m_ulRecvSerialNum(0)
 {
 }
 
 CNetClient::~CNetClient()
 {
 }
+
 bool  CNetClient::Init(int& fd, CNetService* pNetService)
 {
     CSocket::Attach(fd);
@@ -109,7 +112,7 @@ bool CNetClient::SendMsg(PHEADER pMsg)
     {
         return false;
     }
-    return SendMsg((void*)pMsg, pMsg->dwLength + sizeof(HEADER));
+    return SendMsg((char*)pMsg, pMsg->dwLength + sizeof(HEADER));
 }
 
 bool CNetClient::SendZipMsg(PHEADER pMsg)
@@ -135,7 +138,7 @@ bool CNetClient::SendZipMsg(PHEADER pMsg)
 
 bool CNetClient::SendMsg(CBuffer* pBuffer)
 {
-    if(nullptr == pBuffer || pBuffer->GetBufLen() < sizeof(HEADER))
+    if(nullptr == pBuffer || pBuffer->GetBufLen() < (int)sizeof(HEADER))
         return false;
     
     //auto pBuf = g_pBufferMgr->GetBuffer(pBuffer->GetBufLen());
@@ -182,8 +185,8 @@ bool CNetClient::OnSend()
         if(nullptr == m_pSendBuf)
             return true;
         //
-        nSendLen =  CSocket::Send(m_pSendBuf->GetBufPtr(), m_pSendBufLen());
-        if(nSendLen == m_pSendBuf->GetBufLen() - m_dwSendLen)
+        nSendLen =  CSocket::Send(m_pSendBuf->GetBufPtr(), m_pSendBuf->GetBufLen() - m_dwSendLen);
+        if(nSendLen == m_pSendBuf->GetBufLen() - (int)m_dwSendLen)
         {
             g_pBufferMgr->ReleaseBuffer(m_pSendBuf);
             m_pSendBuf = nullptr;
@@ -195,7 +198,8 @@ bool CNetClient::OnSend()
             char szIP[16] = { 0 };
             HostIP2Str(m_dwIP, szIP);
             LogTrace("Socket closed. IP:Port=%s:%d", szIP, m_nPort);
-            
+           
+			m_pNetService->DelClient(this);
         }
         else if (nSendLen < 0)
         {
@@ -210,9 +214,9 @@ bool CNetClient::OnSend()
             }
             else 
             {
-                char szIP[32] =　{ 0 };
-                HostIP2Str(m_dwIP, szIP);
-                LogError("%s(%d) Send message error: %d.", errno);
+				char szIP[32] = { 0 };
+				HostIP2Str(m_dwIP, szIP);
+				LogError("%s(%d) Send message error: %d.", errno);
             }
         }
         else 
@@ -264,8 +268,11 @@ bool CNetClient::OnRecv()
             char szIP[16] = { 0 };
             HostIP2Str(m_dwIP, szIP);
             LogTrace("CounterPart Close. IP:Port=%s:%d", szIP, m_nPort);
-            UpdateEvent(EPOLLCOLSE);
-        }
+			if(m_pNetService)
+			{
+				m_pNetService->DelClient(this);
+			}
+		}
         else 
         {
             if(!m_pRecvBuf->Append(szBuf, 1024))
@@ -286,7 +293,7 @@ bool CNetClient::OnRecv()
             return true;
         //
         nMsgLen = pHeader->dwLength + HEADSIZE;
-        if(nMsgLen > m_pRecvBuf->GetBufLen() - m_dwRecvLen)
+        if(nMsgLen > m_pRecvBuf->GetBufLen() -(int)m_dwRecvLen)
             break;
         //
         auto pBuffer = g_pBufferMgr->GetBuffer(nMsgLen);
@@ -336,7 +343,7 @@ void CNetClient::ActiveRecvThread()
 }
 
 //Direct Send Peer
-bool CNetClient::SendMsg(void* pBuf, int nLen)
+bool CNetClient::SendMsg(const char* pBuf, int nLen)
 {
     if(nullptr == pBuf || 0 == nLen)
     {
@@ -411,7 +418,6 @@ bool CNetClient::SendMsg(void* pBuf, int nLen)
             }
             
             m_listSendBuf.push(pBuffer);
-            PermitSend();
         }
         else 
         {
@@ -421,6 +427,7 @@ bool CNetClient::SendMsg(void* pBuf, int nLen)
             return false;
         }
     }
+	return true;
 }
 
 bool CNetClient::Terminate()

@@ -13,7 +13,8 @@ public:
     virtual ~CAcceptIO();
 public:
     bool InitialUpdate(int nPort, CNetService* pNetService);
-    
+
+	bool Terminate();
 public:
     void ActiveAcceptThread();
 
@@ -22,4 +23,5 @@ private:
     int             m_ep;               //epoll fd 
     int             m_nPort;            //
     CNetService*    m_pNetService;
+	bool			m_bStop;
 };
