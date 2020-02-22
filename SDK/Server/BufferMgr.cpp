@@ -130,3 +130,19 @@ void CBufferMgr::ClearAllBuffer()
 		}
 	}
 }
+	
+void CBufferMgr::PrintInfo(CBuffer* pBuf)
+{
+	if(nullptr == pBuf)
+	{
+		return ;
+	}
+
+	char szBuf[256] = { 0 };
+	
+	sprintf(szBuf,"BufferMgr Count: %ld/%ld/%ld/%ld/%ld/%ld/%ld/%ld.", m_listBuf[0].size(), m_listBuf[1].size(), m_listBuf[2].size(), m_listBuf[3].size(), m_listBuf[4].size(), m_listBuf[5].size(), m_listBuf[6].size(), m_listBuf[7].size());
+	if(!pBuf->AppendString(szBuf))
+	{
+		LogError("%s(%d) Append Data fail.");
+	}
+}

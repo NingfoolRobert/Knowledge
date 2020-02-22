@@ -40,6 +40,8 @@ public:
 public:
 	bool InitialUpdate(unsigned int dwHostIP, int nPort);
 
+	bool InitialUpdate(const char* pszIP, int nPort);
+
 	bool CheckConnectState(bool bReconnect = true);
 	
 	bool SendMsg(PHEADER pHeader);

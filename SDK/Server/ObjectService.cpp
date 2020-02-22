@@ -1,7 +1,6 @@
 #include "ObjectService.h"
 
 
-
 CObjectService::CObjectService(void)
 {
 
@@ -31,6 +30,15 @@ bool CObjectService::OnTimeOut(struct tm *pTime)
 		return false;
 	}
 
+	if(pTime->tm_min % 30 == 0)
+	{
+		g_pBufferMgr->ClearAllBuffer();
+	}
+
+	CBuffer stBuf;
+	g_pBufferMgr->PrintInfo(&stBuf);
+
+	LogInfo("%s", stBuf.GetBufPtr());
 	return true;
 }
 

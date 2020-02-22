@@ -1,9 +1,11 @@
 #include "ActiveObject.h"
+#include "BufferMgr.h"
+
 
 #include <sys/select.h> 
 #include <sys/time.h> 
 	
-class CBufferMgr*	g_BufferMgr = nullptr;
+//class CBufferMgr*	g_BufferMgr = nullptr;
 class TimerThreadTask: public Runnable 
 {
 public:
@@ -18,7 +20,7 @@ private:
 };
 
 class TimerThreadTask* g_pTimerTask = nullptr;
-
+//
 CActiveObject::CActiveObject(void):m_pThreadPool(nullptr),m_bEnableTimer(false),m_bStopTimer(true), m_pTimerThread(nullptr)
 {
 	
@@ -95,7 +97,7 @@ bool CActiveObject::PostEvent(PEVENTHEADER pEvent)
 		return false;
 	}
 
-	CBuffer* pBuf = g_BufferMgr->GetBuffer(pEvent->dwLength + sizeof(EVENTHEADER));
+	CBuffer* pBuf = g_pBufferMgr->GetBuffer(pEvent->dwLength + sizeof(EVENTHEADER));
 	if(pBuf == nullptr)
 	{
 		//LogError
@@ -126,7 +128,7 @@ bool CActiveObject::PostEvent(CBuffer* pBuffer)
 		return false;
 	}
 
-	CBuffer* pBuf = g_BufferMgr->GetBuffer(pBuffer->GetBufLen());
+	CBuffer* pBuf = g_pBufferMgr->GetBuffer(pBuffer->GetBufLen());
 	if(pBuf == nullptr)
 	{
 		//LogError
@@ -184,7 +186,7 @@ bool CActiveObject::SetTimerMili(PTIMERHEADER pTimer, int nMiliSecond)
 		return false;
 	}
 
-	CBuffer* pBuf = g_BufferMgr->GetBuffer(pTimer->dwLength + sizeof(TIMERHEADER));
+	CBuffer* pBuf = g_pBufferMgr->GetBuffer(pTimer->dwLength + sizeof(TIMERHEADER));
 	if(pBuf == nullptr)
 	{
 		//LogError
@@ -244,24 +246,25 @@ void CActiveObject::ActiveTimerThread()
 			}
 			auto pBuffer = *it;
 			PTIMERHEADER pTimer = (PTIMERHEADER)pBuffer->GetBufPtr();
-			if(pTimer->lTimerOver <= lTimerNow)	
+			if(pTimer->lTimerOver > lTimerNow)	
 			{
-				CBuffer* pBuf = nullptr;
-				auto pTask = new CTimer(this, pBuf);
-				if(pTask == nullptr)
-				{
-					//TODO LOG
-					break;
-				}
-				m_listTimer.erase(it);
-				AddTask(pTask);
 				m_clsTimerLock.UnLock();
-				continue;
+				break;
 			}
-			
-//			m_clsTimerLock.unlock();
+		//	else //	if(pTimer->lTimerOver <= lTimerNow)	
+		//	{
+			auto pTask = new CTimer(this, pBuffer);
+			if(pTask == nullptr)
+			{
+				//TODO LOG
+				m_clsTimerLock.UnLock();
+				break;
+			}
+			m_listTimer.erase(it);
 			m_clsTimerLock.UnLock();
-			break;
+			AddTask(pTask);
+		//	}
+			
 		}
 
 				

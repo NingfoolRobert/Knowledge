@@ -47,8 +47,10 @@ public:
 	void	ReleaseBuffer(CBuffer* pBuffer);
 
 	void	ClearAllBuffer();
+
+	void	PrintInfo(CBuffer* pBuf);
 private:
-	CObjectLock			  m_clsLock[BUFFER_GROUP_COUNT];
-	std::queue<CBuffer*> m_listBuf[BUFFER_GROUP_COUNT];
+	CObjectLock				m_clsLock[BUFFER_GROUP_COUNT];
+	std::queue<CBuffer*>	m_listBuf[BUFFER_GROUP_COUNT];
 };
 extern class CBufferMgr* g_pBufferMgr;

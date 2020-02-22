@@ -33,6 +33,7 @@ typedef struct stEventHeader
 {
 	unsigned int	dwType;
 	unsigned int	dwLength;
+	unsigned long	dwOwner;
 }EVENTHEADER, *PEVENTHEADER;
 
 struct compTimer 
@@ -60,7 +61,6 @@ struct compTimer
 		}
 	
 	}
-
 };
 
 

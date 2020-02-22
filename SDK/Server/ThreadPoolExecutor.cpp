@@ -35,32 +35,33 @@ void CThreadPoolExecutor::CWorker::Run()
 
 		if(NULL == pTask)
 		{
-			CAutoLock locker(&m_pThreadPool->m_clsThreadPoolLock);
-			if(m_pThreadPool->GetThreadPoolSize() > m_pThreadPool->m_minThreads)
 			{
-				ThreadPoolItr itr = m_pThreadPool->m_ThreadPool.find(this);
-				if(itr != m_pThreadPool->m_ThreadPool.end())
+				CAutoLock locker(&m_pThreadPool->m_clsThreadPoolLock);
+				if(m_pThreadPool->GetThreadPoolSize() > m_pThreadPool->m_minThreads)
 				{
-					m_pThreadPool->m_ThreadPool.erase(itr);
-					m_pThreadPool->m_TrashThread.insert(this);
+					ThreadPoolItr itr = m_pThreadPool->m_ThreadPool.find(this);
+					if(itr != m_pThreadPool->m_ThreadPool.end())
+					{
+						m_pThreadPool->m_ThreadPool.erase(itr);
+						m_pThreadPool->m_TrashThread.insert(this);
+					}
+					m_bRun = false;
+					continue;
 				}
-				m_bRun = false;
-				continue;
-			}
-			else
-			{
-				ThreadPoolItr itr = m_pThreadPool->m_TrashThread.begin();
-				while(itr != m_pThreadPool->m_TrashThread.end())
+				else
 				{
-					delete (*itr);
-					//*itr = nullptr;
-					m_pThreadPool->m_TrashThread.erase(itr);
-					itr = m_pThreadPool->m_TrashThread.begin();
+					ThreadPoolItr itr = m_pThreadPool->m_TrashThread.begin();
+					while(itr != m_pThreadPool->m_TrashThread.end())
+					{
+						delete (*itr);
+						//*itr = nullptr;
+						m_pThreadPool->m_TrashThread.erase(itr);
+						itr = m_pThreadPool->m_TrashThread.begin();
+					}
+					
 				}
-				
 			}
-		//条件变量 触发 
-
+			//条件变量 触发 
 			std::unique_lock<std::mutex> tasklocker(m_pThreadPool->m_clsTaskLock);
 			m_pThreadPool->m_condTask.wait(tasklocker, [&]()->bool{return !m_pThreadPool->m_Tasks.empty();});
 		}

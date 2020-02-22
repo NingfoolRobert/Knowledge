@@ -11,10 +11,8 @@ CNetObjService::~CNetObjService()
 
 bool CNetObjService::OnInitialUpdate()
 {
-	if(!CNetService::OnInitualUpdate())
-	{
-		return false;
-	}
+	CNetService::OnInitualUpdate();
+	//
 	if(!CObjectService::OnInitialUpdate())
 	{
 		return false;
@@ -40,7 +38,8 @@ bool CNetObjService::OnTimeOut(struct tm* pTime)
 bool CNetObjService::OnSecondIdle()
 {
 	CNetService::OnSecondeIdle();
-	CObjectService::OnSecondIdle();
+
+//	CObjectService::OnSecondIdle();
 	
 	return true;
 }

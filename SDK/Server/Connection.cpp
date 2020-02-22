@@ -69,6 +69,13 @@ bool CConnection::InitialUpdate(unsigned int dwHostIP, int nPort)
 
 	return true;
 }
+
+bool CConnection::InitialUpdate(const char* pszIP, int nPort)
+{	
+	unsigned int dwHostIP  = String2HostIP(pszIP);
+	
+	return InitialUpdate(dwHostIP, nPort);
+}
 	
 bool CConnection::CheckConnectState(bool Reconnect /*= true*/)
 {

@@ -42,7 +42,8 @@ bool CService::Execute(const char* pszCommand)
 		}
 		return 0;
 	}
-	
+	//
+	Singleton<CLogFile>::GetInstance().WriteData("\n\n\n", sizeof("\n\n\n") - 1);
 	LogInfo("Init Service ...");
 	if(!OnInitialUpdate())
 	{

@@ -66,7 +66,7 @@ public:
 		::LeaveCriticalSection(&m_lock);
 #endif
 #ifdef __GNUC__
-		pthread_mutex_lock(&m_lock);
+		pthread_mutex_unlock(&m_lock);
 #endif
 	}
     

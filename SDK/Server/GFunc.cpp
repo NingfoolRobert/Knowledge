@@ -173,3 +173,22 @@ bool UnCompress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen)
 {
 	return true;
 }
+
+unsigned int String2HostIP(const char* pszIP)
+{
+	if(nullptr == pszIP)
+	{
+		return 0;
+	}
+	char *ps = strdup(pszIP);
+	char delim[] =".";
+	char *token;
+	unsigned int dwHostIP = 0;
+	for(token = strsep(&ps, delim); token != nullptr; token =strsep(&ps,delim))
+	{
+		dwHostIP <<= 8;
+		dwHostIP += atoi(token);
+	}
+	
+	return dwHostIP;
+}

@@ -15,7 +15,8 @@
 #pragma once 
 
 #include "ActiveObject.h"
-
+#include "GFunc.h"
+#include "LogFile.h"
 
 class CObjectService: public CActiveObject 
 {

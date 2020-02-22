@@ -4,6 +4,7 @@
 #include "NetService.h"
 #include "ObjectService.h"
 #include "Service.h"
+#include "GenericFactory.h"
 
 
 class CNetObjService:	public CNetService, 
