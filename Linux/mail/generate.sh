@@ -5,7 +5,7 @@ Bean="./util/bean"
 MSG="./util/msg"
 ENUM="./util"
 
-DstDir="./Msg"
+DstDir="./gene/"
 
 PBFILE="PBMessageDefine.h"
 
@@ -16,10 +16,10 @@ else
 fi 
 
 	protoc -I=./  -I=./util/bean -I=./util/msg -I=./util --cpp_out=$DstDir/ $ENUM/*.proto
-	protoc -I=./ --cpp_out=$DstDir/		$Bean/*.proto 
-	protoc -I=./ --cpp_out=$DstDir/		$MSG/*.proto
-	protoc -I=./ --cpp_out=$DstDir/		./util/*.proto
-	protoc -I=./ --cpp_out=$DstDir/		./*.proto
+	protoc -I=./ --cpp_out=$DstDir/ $Bean/*.proto 
+	protoc -I=./ --cpp_out=$DstDir/ $MSG/*.proto
+	protoc -I=./ --cpp_out=$DstDir/ ./util/*.proto
+
 
 
 #for fileName in ${Bean}/*
@@ -41,32 +41,14 @@ else
 	cat /dev/null > $PBFILE 
 fi 
 
-echo "#pragma once" >> $PBFILE 
+echo "pragma once" >> $PBFILE 
 echo -e "\n" >>$PBFILE
 
-function getdir(){
-	echo $1
-	for file in $1/*
-	do 
-		if test -f $file 
-		then 
-			if [ "${file##*.}"x = "h"x ]; then 
-				echo "#include \"$file\""  >> $PBFILE 
-			fi 
-		else 
-			getdir $file 
-		fi 
-	done 
-}
-
-getdir $DstDir
-
-#for fileName in ${DstDir}/* 
-#do 
-#	if [ "${fileName##*.}"x = "h"x ]; then 
-#		echo "#include \"$basename $fileName\"" >> $PBFILE 
-#	fi 
-#done 
-
+for fileName in ${DstDir}/* 
+do 
+	if [ "${fileName##*.}"x = "h"x ]; then 
+		echo "#include \"$basename $fileName\"" >> $PBFILE 
+	fi 
+done 
 echo >> $PBFILE 
 

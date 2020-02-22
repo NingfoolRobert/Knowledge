@@ -1,0 +1,403 @@
+package Protocol.Protobuf; //定义protobuf的包名称空间，对应C++,C#的nanmespace，Java的package
+
+option java_package = "com.framework.protobuf";
+option java_outer_classname = "PbMessageEnum";
+
+
+enum MSG
+{
+	Notification_Info = 1000;
+	Util_Msg = 10000;//util包所定义的msg
+	Trade_Msg = 20000;//trade包所定义的msg
+	MarketMaker_Msg = 21000;//trade包所定义的msg
+	Gateway_Msg = 30000;//gateway包所定义的msg
+	Reck_Msg=40000;//reck包所定义的msg
+	Web_Msg = 50000;//web包所定义的msg
+	GwmsAdm_Msg = 60000;//GwmsAdm包所定义的msg
+	GwmsIc_Msg = 60001;//GwmsIc包所定义的msg
+	GwmsWm_Msg = 60002;//GwmsWm包所定义的msg
+	GwmsUser_Msg = 60003;//GwmsWm包所定义的msg
+	Ta_Msg = 60005;//Ta包所定义的msg
+	Ac_Msg = 60006;//Ac包所定义的msg
+	BookingAs_Msg = 60007;//booking as包所定义的msg
+	PriceAs_Msg = 60008;//price as包所定义的msg
+	HedgingAs_Msg = 60010;//heding as包所定义的msg
+	UnionAcct_MSG = 60009;//union open account包所定义的msg
+	SeCustom_MSG = 60011;//Custom Se
+	SeModule_MSG = 60012;//Module Se
+	Quant_Msg = 60015;//quant msg
+	Fits_MSG = 70001;//fits包所定义的msg
+	Se_MSG = 80000; //Se包定义的msg
+	Monitor_MSG = 81000; //Se包定义的msg
+}
+
+
+
+//订单状态
+enum OrderStatus
+{
+	NEW = 1 ; //已接收
+	ALLTRD = 2 ; //全部成交
+	P_TRD_Q = 3 ; //部分成交还在队列中
+	P_TRD_NQ = 4 ; //部分成交不在队列中
+	N_TRD_Q = 5 ; //未成交还在队列中
+	N_TRD_NQ = 6 ; //未成交不在队列中
+	CANCEL = 7 ; //撤单
+	ACTIVE_N = 8 ; //激活订单-新状态
+	ACTIVE_S = 9 ; //激活订单-成功状态
+	ACTIVE_F = 10 ; //激活订单-失败状态
+	SUSPEND_N = 11 ; //挂起订单-新状态
+	SUSPEND_S = 12 ; //挂起订单-成功状态
+	SUSPEND_F = 13 ; //挂起订单-失败状态
+	DELETE_N = 14 ; //删除订单-新状态
+	DELETE_S_I = 15 ; //删除订单-内部撤单成功
+	DELETE_S_E = 16 ; //撤单成功
+	DELETE_F = 17 ; //删除订单-失败状态
+	CANCEL_FOK = 18 ; //撤单_FOK
+	CANCEL_FAK = 19 ; //撤单_FAK
+	EXEC_APPROVE = 20 ; //期权执行申请成功
+	CANCEL_P = 21 ; //部分撤单
+	CHECK_S = 22 ; //复核成功
+	CHECK_F = 23 ; //复核失败
+	SETTLE_S = 24 ; //交收成功
+	SETTLE_F = 25 ; //交收失败
+}
+
+//价格类型
+enum OrderPriceType
+{
+	ANY = 1 ; //任意价
+	LIMIT = 2 ; //限价
+	STOP_LOSS = 3 ; //止损
+	ARBI_ORDER = 4 ; //组合定单
+	STOP_PAYOFF = 5 ; //止盈订单
+	STOP_LOSS_LIMIT = 6 ; //限价止损订单
+	ARBI_CONFIRM = 7 ; //跨期套利确认
+	HEDGE_CONFIRM = 8 ; //持仓套保确认
+	STOP_PAYOFF_LIMIT = 9 ; //限价止盈订单
+}
+
+enum RiskCheckStatus
+{
+	RISK_PASS = 1;
+	RISK_WARNING = 2;
+	RISK_ERROR = 3;
+	RISK_FORBIDDEN = 4;
+}
+
+enum RiskCheckDetailStatus
+{
+	RISK_DETAIL_PASS = 1;
+	RISK_DETAIL_WARNING = 2;
+	RISK_DETAIL_ERROR = 3;
+	RISK_DETAIL_FORBIDDEN = 4;
+}
+
+enum RiskCheckThresholdLevel
+{
+	THRESHOLD_LEVEL1 = 1;
+	THRESHOLD_LEVEL2 = 2;
+	THRESHOLD_LEVEL3 = 3;
+}
+
+enum SECURITY_TYPE
+{
+	STOCK = 1; //普通股票
+	FUTURES = 2; //期货
+	MTSS = 3; //双融
+	IS_OPTION = 4; //个股期权
+}
+
+enum SideType
+{
+	Buy = 1; //买
+	Sell = 2; //卖
+	HuiGou_RongZi = 10; //回购类型-融资
+	HuiGou_RongQuan = 11; //回购类型-融券
+}
+
+enum NotiMSG
+{
+	QUOTEINFO  = 10001; //行情信息
+	KNOCKINFO  = 10002; //成交回报
+	GATEWAY_API_STATUS = 10003; //gateway api status report
+	Execution_Response = 10004; //gateway 执行报告
+	EXCEPTION = 10005; //gateway 执行报告
+	ORDERCONFIRM = 10006;	//委托确认
+	RECKONINGSTATUSNOTIFY=10007;//清算进度
+	MONITORRESULT = 10008; //监控数据
+	INSTRUCTINFO  = 10009; //指令信息
+	PRERECKONINGSTATUSNOTIFY=10010;//预清算进度
+	ORDERINFO=10011;//委托信息
+	FIXINSTRUCTION=10012;//FIX信息
+	FUNDINFO=10013;//资金信息
+	FIX_SEC_ORDER=10014;//FIX二级母单推送
+	FIX_BOX_INFO=10015;//FIX一级母单推送
+	MULTI_Execution_Response = 10016; //gateway 批量执行报告
+	PBMESSAGEALGO=10017;//ALGO信息
+	PBMESSAGEHEARTCHECK=10018;//心跳校验
+	GROUP_ORDER_INFO=10019;//算法组策略信息
+	STK_POSITION=10020; // app push to risk engine
+	LOGOUTINFO=10021; //gui logout notification
+	BASKETINFO=10022;	//basket info
+	DAYTRADE_NOTINFO=10023; //日内交易推送
+	ALGONOTIMSG=10024;//ALGO相关信息推送
+	STKINFO=10025;//合约增量查询
+	SECUSTOMINFO=10026;//SE_AS推送消息
+	SeCustom_Response=10027;//用户自定义SE推送
+	SEMODULEINFO=10028;//SE_AS推送消息
+	SeModule_Response=10029;//Module Se
+	SysConfig_MSG = 10030;//SysConfig
+	INSTRUCTION_ALARM_MSG = 10031;//SysConfig
+	BOOKNODE = 10032;// bookNode消息推送
+	INNERCROSS_ORDER = 10033;// INNERCROSS消息推送
+	FUTUREFIXPARA_REFRESH = 10034;// 刷新FUTUREFIXPARA消息推送
+	NEW_INSTRUCTION = 10035;// 刷新NEW_INSTRUCTION消息推送
+	FUNDCHANGEINFO = 10036;// 刷新FUNDCHANGEINFO消息推送
+  POSITIONCHANGEINFO = 10037;// 刷新POSITIONCHANGEINFO消息推送
+  KDJSTRATEGYSTATUS = 10038;// SE_MODULE策略状态推送
+  KDJTRIGGERINFO = 10039;// SE_MODULE KDJ触发推送
+  INSTRUCTIONEXECUTIONPROGRESS = 10040;// SE_MODULE 指令进度消息推送
+  REPOCOLLATERALORDERINFO  = 10041; // 协议式回购质押券委托推送
+  REPOCOLLATERALKNOCKINFO  = 10042; // 协议式回购质押券成交推送
+  PROFITTASKINFO = 10043; // 条件单盈损单推送
+  STRATEGYREPORT = 10044;// SE策略消息推送  	
+  STRATEGYINFO = 10045;//SE策略基本信息推送
+  ALGO_RESP = 10046;//ALGO推送母单状态
+  HIGHTOUCH_ORDERINFO=10047;//委托信息
+  FutureClientInfo_Report=10048;//期货看穿式监管，终端信息采集，报送结果信息
+	
+	FITSORDERINFO=20001;//fits委托信息
+	TRADERSLTINFO=20002;//fits成交信息
+	FITS_Execution_Response=20003;
+	FITS_QUOTE_REPORT=20004;
+	BONDORDERINFO=20005;//fits现券委托信息
+	FITS_ORDER_REPORT=20006;
+	QUOTEREPORTINFO=20007;//fits现券对话报价回复方接收委托信息
+	QUOTESTATUSUPDATE=20008;//fits现券接收交易所状态跟新通知
+	FITS_CSTPLOG_REPORT=20009;//CSTP日志信息
+	REPOORDERINFO=20010;//fits回购委托信息
+	FITS_SETTLEMENT_REPORT=20011;//fits结算信息
+	REPOTRADERSLTINFO=20012;//fits回购成交信息
+
+	MM_QuoteExec = 21001;	//做市商报价回报
+	MM_ArbiOrderInfo = 21002; //做市商组合拆分委托信息
+	MM_ArbiKnockInfo = 21003; //做市商组合拆分成交信息
+	MM_REFRESH_NOTIFY = 21010;
+	MM_INTERESTRATE_NOTIFY = 21011;
+  MM_DIVIDENDRATE_NOTIFY = 21012;
+  MM_OPTIONSTATUS_NOTIFY = 21013;  //期权状态推送
+  MM_RISKCHECKRESULT_NOTIFY = 21014;  //风控检查结果推送
+  MM_OPTIONINFO_NOTIFY = 21015;  //期权状态推送
+	SE_STRATEGY_STATUS_NOTIFY = 21016;  //se策略状态推送
+	KDJ_TRIGGER_STATUS_NOTIFY = 21017;  //kdj策略状态推送
+	//-------------以下为EDS号段-----------------
+	EDS_PRODUCT_INFO=50020;//eds产品信息推送
+	EDS_INSTRUMENT_INFO=50021;//eds信息推送
+	EDS_CONTRACT_INFO=50022;//eds合约信息推送
+	EDS_REPORT_INFO=50023;//eds DEAL VIEW推送
+	EDS_NOTIF_RECKONING = 50025;
+
+	EDS_HISTORYVOLATILITY_NOTIFY = 50026;
+  EDS_PRICINGVOLATILITY_NOTIFY = 50027;
+  EDS_IMPLIEDVOLATILITY_NOTIFY = 50028;
+
+  EDS_INTERESTRATE_NOTIFY = 50029;
+  EDS_DIVIDENDRATE_NOTIFY = 50030;
+	EDS_REFRESH_NOTIFY = 50031;
+	EDS_PARAMETER_NOTIFY = 50032;
+
+	EDS_PRICINGPARA_INFO=50033;//pricing计算参数推送
+	EDS_CONTRACTTYPE_INFO=50034;//合约事件监控推送
+
+  EDS_PRICINGNOTIF_CONTRACT=50040;//EDS合约信息 新
+	EDS_PRICINGNOTIF_PARA=50041;//EDS计算参数信息 新
+	EDS_PRICINGNOTIF_PRICE=50042;//EDS计算价格 新
+
+	ZEROMQ_NOTIFICATION=88888;//消息中心推送类型
+	
+
+}
+enum VER_UPDATE_MSG
+{
+	NO_NEED_UPDATE = 1;
+	NEED_UPDATE = 2;
+	FORCE_UPDATE = 3;
+	MANUAL_UPDATE = 4;
+}
+
+enum FUND_TYPE
+{
+	NORMAL = 1; //现货普通
+	FUTURE = 2; //期货普通
+	CREDIT = 3; //现货信用
+	OPTION = 4; //个股期权
+	HKTRD  = 5; //港股交易
+	HKMARGIN  = 6; //港股Margin
+	FITS = 8;//银行间
+	OSFUTURES = 9;//海外期货
+}
+
+enum AccessTradeAsRouter
+{
+	TradeAs = 1; 	//大陆AS
+	HkTradeAs = 2; 	//香港AS
+}
+
+enum LOG_MSG
+{
+	Login_Log  = 1; //登陆日志
+	Logout_Log  = 2; //登出日志
+}
+
+enum PRODQUERYMSG
+{
+	QUERY_ALL  = 0; //登陆请求
+	QUERY_FUND = 1;
+	QUERY_HOLDING = 2;
+	QUERY_STOCKASSET = 3;
+	QUERY_FUTURESASSET = 4;
+	QUERY_STOCKFUND = 5;
+	QUERY_FUTURESFUND = 6;
+	QUERY_STOCKHOLDING = 7;
+	QUERY_FUTUERSHOLDING = 8;
+	QUERY_TRADERIGHTS = 9;
+	QUERY_CAN_QUERY_PRODUCT = 10;
+	QUERY_INTERBANKFUND = 11;
+	QUERY_INTERBANKHOLDING = 12;
+}
+
+enum INITDATATYPE{
+	All = 10;
+	TradeFuncListData = 100;
+	RoleData = 101;
+	TradeTypeData = 102;
+	GlobalConstData = 103;
+	StkInfoData = 104;
+	FutureInfoData = 105;
+	ExchangeData = 106;
+	StkTypeData = 107;
+	FundTypeData = 108;
+	SalesData = 109;
+	ChannelData = 110;
+	SecurityBranchData = 111;
+	SecurityData = 112;
+	ConnectInfoData = 113;
+	FutureProductData = 114;
+	RiskTypeData = 115;
+	BUSINESSENTITY = 116;
+	RoleActionDefine = 117;
+	RoleInfo = 118;
+	EXCHANGEAREA= 119;
+	RiskStkTypeData =120;
+	RiskReportData = 121;
+	TradeFuncChannelInfo=130;
+}
+
+//篮子订单类型
+enum BasketOrderType{
+	NEW_BASKET = 1;			//新订单
+	REPLACE_BASKET = 2;		//改单
+}
+
+//distingush the change to risk engine is caused by order/knock
+enum StkPositionChangeType{
+   ORDER = 1;
+   KNOCK = 2;
+}
+
+enum EdsNotifyContractType
+{
+	ACS_EXPIRED_CONTRACT = 1;
+	ACS_KNOCK_IN_CONTRACT = 2;
+	ACS_MONTHLY_REPEATED_CONTRACT = 3;
+	EXPIRED_CONTRACT = 4;
+	RESUMPTION_CONTRACT = 5;
+	SUSPENSION_CONTRACT = 6;
+	DIVIDEND_CONTRACT = 7;
+}
+
+enum TradeType {
+    PositiveBasisPositionOpen = 1;    //正向开仓
+    PositiveBasisPositionClose = 2;   //正向平仓
+    NegativeBasisPositionOpen = 3;    //反向开仓
+    NegativeBasisPositionClose = 4;   //反向平仓
+}
+
+enum StatusFlag {
+    MonitorStart = 1;      		 //开始盯盘
+    MonitorStop = 2;      		 //停止盯盘
+	MonitorStopAndStart = 3;     //先停止后开启盯盘
+}
+
+enum TriggeredStatus {
+    ThresholdTriggered = 1;        //满足设定的阈值条件
+    ThresholdNotTriggered = 2;     //不满足设定的阈值条件
+}
+
+enum FitStage {
+	CreateBasket = 1;   //创建篮子
+	OpenPosition = 2;   //开仓
+	AdjustPositon = 3;  //调仓
+}
+
+// 期现套利篮子类型
+enum ArbiBasketType {
+    MarketValueWeighted = 1;   //权重篮子
+    FixQuantityWeighted = 2;   //数量篮子
+}
+
+// 询价应答状态
+enum EnquireStatus{
+
+	REPLY = 1;
+    NOREPLY = 2;
+}
+
+// 询价应答方式
+enum EnquireWay{
+
+	MANUAL = 1;
+	AUTO = 2;
+}
+
+// 询价应答有效性
+enum EnquireResult{
+
+	VALID = 1;
+	INVALID = 2;
+
+}
+
+// 询价应答是否豁免
+enum EnquireIsExempt{
+
+	YES = 1;
+	NO = 2;
+
+}
+
+// 指令阶段
+enum InstructionPhase {
+     
+	InstructionInput = 1; //指令录入
+	InstructionCancel = 2; //指令撤销
+	InstructionAuditReject = 3; //指令审批拒绝
+	InstrucitonDispatchReject = 4; //指令分发拒绝
+	InstructionChange = 5; //指令修改
+	InstructionUpdate = 6; //指令更新都用此项，SE过滤此项
+
+}
+
+// 期现套利指数拟合方式
+enum ArbiFittingCalculationType {
+	ARBI_STANDARD = 0; // 标准
+	ARBI_ETF = 1;      // ETF折溢率算法
+	ARBI_ETF_1000 = 2; // ETF*1000算法
+}
+
+// 期现套利平仓方式
+enum ArbiClosingType {
+	ARBI_NORMAL = 0;  // 普通
+	ARBI_REDEMPTION = 1;    // ETF赎回
+}

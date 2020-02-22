@@ -12,5 +12,10 @@ int main()
 #else 
 	printf("Release Mode.\n");
 #endif 
+	while(true)
+	{
+		;
+	}
+	
 	return 0;
 }
