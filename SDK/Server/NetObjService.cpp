@@ -11,12 +11,14 @@ CNetObjService::~CNetObjService()
 
 bool CNetObjService::OnInitialUpdate()
 {
-	CNetService::OnInitualUpdate();
 	//
 	if(!CObjectService::OnInitialUpdate())
 	{
 		return false;
 	}
+	
+	CNetService::OnInitualUpdate();
+		
 	return true;
 }
 

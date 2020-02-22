@@ -34,6 +34,8 @@ public:
 
 	virtual void OnTerminate();
 public:
-	
 
+	virtual void OnRegisterObject();
+public:
+	int			m_cnWorkThread;
 };

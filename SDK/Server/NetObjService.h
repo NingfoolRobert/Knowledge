@@ -26,6 +26,7 @@ public:
 	virtual void OnTerminate();
 public:
     virtual CUserObject* OnNetUserObject(PHEADER pHeader);
-	
+
 	virtual CUserObject*	CreateUserObject(int nOrigine) = 0;
+
 };

@@ -1,7 +1,10 @@
 #include "ObjectService.h"
 
+#define WORKTHREAD_COUNT_MULTI	4
 
-CObjectService::CObjectService(void)
+#define WORKTHREAD_TASK_COUNT_MULTI		50
+
+CObjectService::CObjectService(void):m_cnWorkThread(2)
 {
 
 }
@@ -13,12 +16,15 @@ CObjectService::~CObjectService(void)
 
 bool CObjectService::OnInitialUpdate()
 {
-	//Load Ini configure 
-	if(!CActiveObject::Init(3))
+	//Load Ini configure
+	if(!CActiveObject::Init(m_cnWorkThread * WORKTHREAD_COUNT_MULTI, m_cnWorkThread, m_cnWorkThread * WORKTHREAD_TASK_COUNT_MULTI))
 	{
 		return false;
 	}
 
+	OnRegisterObject();
+
+	LogInfo("Async Object Init Success...");
 
 	return true;
 }
@@ -55,4 +61,9 @@ bool CObjectService::InvokeTerminate()
 void CObjectService::OnTerminate()
 {
 	CActiveObject::Terminate();
+}
+	
+void CObjectService::OnRegisterObject()
+{
+	
 }
