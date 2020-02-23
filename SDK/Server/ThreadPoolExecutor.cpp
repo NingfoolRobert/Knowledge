@@ -206,3 +206,8 @@ void CThreadPoolExecutor::Terminate()
 		itr = m_TrashThread.begin();
 	}
 }
+	
+int CThreadPoolExecutor::GetTaskSize()
+{
+	return (int)m_Tasks.size();
+}

@@ -1,6 +1,6 @@
 #include "ActiveObject.h"
 #include "BufferMgr.h"
-
+#include "LogFile.h"
 
 #include <sys/select.h> 
 #include <sys/time.h> 
@@ -114,10 +114,12 @@ bool CActiveObject::PostEvent(PEVENTHEADER pEvent)
 	if(nullptr == pTask)
 	{
 		//LogError 
+		LogError("%s(%d) memory error.");
 		return false;
 	}
 	
-	return AddTask(pTask);
+//	return AddTask(pTask);
+	return m_pThreadPool->Execute(pTask);
 	
 }
 	
@@ -141,10 +143,11 @@ bool CActiveObject::PostEvent(CBuffer* pBuffer)
 	if(nullptr == pTask)
 	{
 		//LogError 
+		LogError("%s(%d) memory error.");
 		return false;
 	}
 	
-	return AddTask(pTask);
+	return m_pThreadPool->Execute(pTask);
 	
 }
 
@@ -167,12 +170,13 @@ bool CActiveObject::SetTimerMili(PTIMERHEADER pTimer, int nMiliSecond)
 		g_pTimerTask = new TimerThreadTask(this);
 		if(g_pTimerTask == nullptr)
 		{
-			//LogError 
+			LogError("%s(%d) memory error.");
 			return false;
 		}
 		m_pTimerThread = new CThread(g_pTimerTask);
 		if(nullptr == m_pTimerThread)
 		{
+			LogError("%s(%d) memory error.");
 			return false;
 		}
 		m_bStopTimer = false;	
@@ -182,7 +186,7 @@ bool CActiveObject::SetTimerMili(PTIMERHEADER pTimer, int nMiliSecond)
 
 	if(m_bStopTimer)
 	{
-		//LogError
+		LogError("%s(%d) Timer had stopped.");
 		return false;
 	}
 
@@ -200,6 +204,7 @@ bool CActiveObject::SetTimerMili(PTIMERHEADER pTimer, int nMiliSecond)
 	if(!pBuf->Append(pTimer, pTimer->dwLength + sizeof(TIMERHEADER)))
 	{
 		//LogError
+		LogError("%s(%d) Append Data fail.");
 		return false;
 	}
 	
@@ -207,11 +212,13 @@ bool CActiveObject::SetTimerMili(PTIMERHEADER pTimer, int nMiliSecond)
 	if(nullptr == pTask)
 	{
 		//LogError 
+		LogError("%s(%d) memory error.");
 		return false;
 	}
+	//
 	if(nMiliSecond <= 0)
 	{
-		return AddTask(pTask);
+		return m_pThreadPool->Execute(pTask);
 	}
 	else 
 	{
@@ -256,13 +263,13 @@ void CActiveObject::ActiveTimerThread()
 			auto pTask = new CTimer(this, pBuffer);
 			if(pTask == nullptr)
 			{
-				//TODO LOG
+				LogError("%s(%d) memory error.");
 				m_clsTimerLock.UnLock();
 				break;
 			}
 			m_listTimer.erase(it);
 			m_clsTimerLock.UnLock();
-			AddTask(pTask);
+			m_pThreadPool->Execute(pTask);
 		//	}
 			
 		}
@@ -271,12 +278,8 @@ void CActiveObject::ActiveTimerThread()
 	}
 }
 	
-bool CActiveObject::AddTask(Runnable* pRunnable)
-{
-	if(nullptr == pRunnable)
-	{
-		return false;
-	}
 	
-	return m_pThreadPool->Execute(pRunnable);
+void CActiveObject::PrintfInfo()
+{
+	LogInfo("ObjectService Information EventCount: %d, TimerCount:%d.", m_pThreadPool->GetTaskSize(), m_listTimer.size());	
 }

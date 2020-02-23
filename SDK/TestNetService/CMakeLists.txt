@@ -1,7 +1,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-project(TestService)
+project(TestClientService)
 
 SET(CMAKE_CXX_STANDARD 11)
 

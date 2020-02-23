@@ -2,6 +2,9 @@
 
 
 #include "Socket.h"
+#include <sys/epoll.h> 
+#include <netinet/in.h>
+#include <arpa/inet.h> 
 
 #define EPOLL_EVENT_TYPE_CLOSE		0x80000000
 

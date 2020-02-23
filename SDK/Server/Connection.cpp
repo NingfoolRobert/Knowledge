@@ -288,6 +288,10 @@ bool CConnection::SendMsg(PHEADER pHeader, bool bAck, int nOrgine, unsigned int 
 	return false;
 }
 
+void CConnection::Terminate()
+{
+	CSocket::Close();
+}
 
 
 /////////////////////////////////////////////////////////////////

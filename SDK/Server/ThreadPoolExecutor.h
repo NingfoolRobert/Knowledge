@@ -44,6 +44,8 @@ public:
 	unsigned int GetThreadPoolSize();
 
 	void SetPendingTask(int cnPendingTask);
+
+	int GetTaskSize();
 private:
 	/**
 	  获取任务列表中的任务，若任务列表为空，返回NULL

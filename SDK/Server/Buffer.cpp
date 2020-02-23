@@ -144,7 +144,12 @@ bool CBuffer::AppendString(const char* pszBuf)
 	{
 		return true;
 	}
-	
+	//	
+	if(m_nlenData > 0 && m_pBuf[m_nlenData - 1] == 0)
+	{
+		m_nlenData--;
+	}
+		
 	return Append(pszBuf, strlen(pszBuf) + 1);
 }
 	
@@ -164,11 +169,11 @@ bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 		return false;
 	}
 
-	int nLen = vsnprintf(NULL, 0, pszFmt, args);
+	//int nLen = vsnprintf(NULL, 0, pszFmt, args);
 	char szData[1024] = { 0 };
-	std::string strData;
+	//std::string strData;
 	//std::vector<char> strData;
-	strData.resize(nLen + 1);
+	//strData.resize(nLen + 1);
 	vsprintf(szData, pszFmt, args);
 
 	return Append(szData, strlen(szData));

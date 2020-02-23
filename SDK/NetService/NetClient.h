@@ -73,4 +73,6 @@ private:
 public:
     unsigned int            m_dwIP;                 //主机IP 
     int                     m_nPort;               
+private:
+	unsigned int			m_dwOrigin;
 };

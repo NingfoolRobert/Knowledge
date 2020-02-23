@@ -34,19 +34,19 @@ bool CNetService::OnInitualUpdate()
 	}
 	
 	
-	m_ep = epoll_create(1000);
+	m_ep = epoll_create(256);
 	if(m_ep <= 0)
 	{
 		LogError("%s(%d) Create epoll fd  fail.", __FILE__, __LINE__);
 		return false;
 	}
-
+	int fd = m_pAcceptIO->Detach();
 	struct epoll_event evAccept;
 	evAccept.events = EPOLLIN | EPOLLET;
-	evAccept.data.fd = m_pAcceptIO->Detach();
+	evAccept.data.fd = fd; 
 	evAccept.data.ptr = m_pAcceptIO;
 	
-	epoll_ctl(m_ep, EPOLL_CTL_ADD, evAccept.data.fd, &evAccept);
+	epoll_ctl(m_ep, EPOLL_CTL_ADD, fd, &evAccept);
 
 
 	m_mapNetIO.insert(std::make_pair(m_pAcceptIO->Detach(), m_pAcceptIO));
@@ -183,6 +183,7 @@ CUserObject*  CNetService::OnNetUserObject(PHEADER pHeader)
 
 void CNetService::ActiveEpollThread()
 {
+	LogInfo("Start Net Listen IP:Port = LocalIP:%d", m_nPort);
     while(!m_bStop)
     {
         UpdateEvent();
@@ -191,8 +192,13 @@ void CNetService::ActiveEpollThread()
         EventList.resize(nMax);
         int nCount = epoll_wait(m_ep, &EventList[0], nMax, m_nTimeOut);
         //
-        if(nCount > 0)
-            for_each(EventList.begin(), EventList.end(), std::bind(&CNetService::TriggerEvent, this, std::placeholders::_1));
+		if(nCount > 0)
+			for_each(EventList.begin(), EventList.begin() + nCount, std::bind(&CNetService::TriggerEvent, this, std::placeholders::_1));
+		else if (nCount < 0)
+		{
+			if(errno != EINTR)
+				LogError("epoll wait fail.errno: %d", errno);
+		}
     }
 }
 
@@ -268,7 +274,11 @@ void CNetService::UpdateEvent()
 	{
 		CAutoLock locker(&m_clsEpollLock);
 		for(auto it = m_listModifyNetIO.begin(); it != m_listModifyNetIO.end();++it)
+		{
 			_list.insert(std::make_pair(it->first, it->second));
+			m_mapNetIO.insert(std::make_pair(it->first, it->second));
+		}
+		m_listModifyNetIO.clear();
 	}
 	
 	for_each(_list.begin(), _list.end(), std::bind(&CNetService::LoadEvent, this, std::placeholders::_1));
@@ -344,6 +354,7 @@ void CNetService::LoadEvent(std::unordered_map<int, CNetIO*>::value_type &value)
 	struct epoll_event ev;
 	ev.data.fd = fd;
 	ev.events = pNetIO->m_nEventType | nStatus;
+	ev.data.ptr = pNetIO;
 	//删除
 	if(nStatus == EPOLL_EVENT_TYPE_CLOSE)
 	{
@@ -362,7 +373,11 @@ void CNetService::LoadEvent(std::unordered_map<int, CNetIO*>::value_type &value)
 	//	
 	if(nStatus)
 	{
-		epoll_ctl(m_ep, nStatus & (EPOLLIN | EPOLLOUT)? EPOLL_CTL_MOD : EPOLL_CTL_ADD, fd, &ev);
+		if(nStatus &(EPOLLIN | EPOLLOUT))
+		{
+			LogInfo("Add Client");
+		}
+		epoll_ctl(m_ep, nStatus & (EPOLLIN | EPOLLOUT)? EPOLL_CTL_ADD : EPOLL_CTL_MOD, fd, &ev);
 		pNetIO->m_nEventType |= nStatus;
 	}
 }

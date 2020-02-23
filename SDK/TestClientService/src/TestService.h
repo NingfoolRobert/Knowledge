@@ -5,7 +5,7 @@
 #include "GlobalVar.h"
 #include "LogFile.h"
 #include "Connection.h"
-
+#include "AgentUser.h"
 
 class CTestService:public CNetObjService 
 {
@@ -25,6 +25,8 @@ public:
 	virtual bool OnEvent(PEVENTHEADER pEvent);
 	
 	virtual bool OnTimer(PTIMERHEADER pTimer);
+
+	virtual void OnRegisterObject();
 
 	virtual CUserObject* CreateUserObject(int nOrigine);
 

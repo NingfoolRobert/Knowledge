@@ -145,5 +145,8 @@ bool CSocket::GetSockOpt(int nLevel, int OptName, void* Optval,socklen_t* pOptLe
 
 void CSocket::SetBlockMode(int nMode/* = O_NONBLOCK*/)
 {
-	fcntl(m_fd, F_SETFL, nMode & fcntl(m_fd, F_GETFL));
+	if(nMode == O_NONBLOCK)
+		fcntl(m_fd, F_SETFL, nMode | fcntl(m_fd, F_GETFL));
+	else 
+		fcntl(m_fd, F_SETFL, nMode & fcntl(m_fd, F_GETFL));
 }

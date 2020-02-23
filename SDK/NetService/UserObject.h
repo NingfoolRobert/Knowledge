@@ -4,6 +4,8 @@
 
 #include "Protocol.h"
 #include "Available.h"
+#include "LogFile.h"
+
 
 class CNetClient;
 

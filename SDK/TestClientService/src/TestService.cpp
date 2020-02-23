@@ -96,8 +96,21 @@ bool CTestService::OnTimer(PTIMERHEADER pTimer)
 	return true;
 }
 
+void CTestService::OnRegisterObject()
+{
+	REGISTER_CLASS(CUserObject, CAgentUser);
+}
+
 CUserObject* CTestService::CreateUserObject(int nOrigine)
 {
+	switch(nOrigine)
+	{
+		case 1:
+			return 	CREATE_CLASS(CUserObject, CAgentUser);
+		default:
+			LogError("Not define the Origine: %d", nOrigine);
+			break;
+	}
 	return nullptr;
 }
 
@@ -134,3 +147,4 @@ bool CTestService::OnSendTimer(PTIMERHEADER pTimer)
 	LogInfo("%s", __FUNCTION__);
 	return true;
 }
+	

@@ -9,8 +9,9 @@
 CNetClient::CNetClient():m_pUserObject(nullptr),m_pNetService(nullptr),
 						m_pSendBuf(nullptr), m_dwSendLen(0),
 						m_pRecvBuf(nullptr), m_dwRecvLen(0),
-						m_dwSendSerialNum(0), m_dwRecvSerialNum(0)
+						m_dwSendSerialNum(0), m_dwRecvSerialNum(0),m_dwOrigin(0)
 {
+	m_nNewEventType = EPOLLET | EPOLLIN | EPOLLOUT;
 }
 
 CNetClient::~CNetClient()
@@ -30,7 +31,7 @@ bool  CNetClient::Init(int& fd, CNetService* pNetService)
     {
         return false;
     }
-    
+    m_pNetService = pNetService;
     struct sockaddr_in PeerAddr;
     socklen_t nLen = sizeof(PeerAddr);
     if(!CSocket::GetPeerName((struct sockaddr*)&PeerAddr,&nLen))
@@ -41,13 +42,15 @@ bool  CNetClient::Init(int& fd, CNetService* pNetService)
 
     m_nPort = ntohs(PeerAddr.sin_port);
     m_dwIP = ntohl(PeerAddr.sin_addr.s_addr);
+
+	SetBlockMode();
     return true;
 }
 
 bool CNetClient::OnMsg(PHEADER pHeader)
 {
     //init UserObject 
-    if(m_dwRecvSerialNum++ == 0)
+    if(m_dwRecvSerialNum == 0)
     {
         if(nullptr == m_pNetService)
         {
@@ -64,6 +67,7 @@ bool CNetClient::OnMsg(PHEADER pHeader)
         pObj->BindNetClient(this);
 
         BindUserObject(pObj);
+		OnConnect();
     }
     //
     if(IsBindUserObject())
@@ -72,7 +76,7 @@ bool CNetClient::OnMsg(PHEADER pHeader)
     }
     //
     LogError("%s(%d) Not Bind UserObject.", __FILE__, __LINE__);
-    return false;
+		return false;
 }    
 
 void CNetClient::OnConnect()
@@ -211,7 +215,8 @@ bool CNetClient::OnRecv()
     }
     //Recv data 
     char szBuf[1024] = { 0 };
-    while(true)
+	int bTerminate = true;
+	while(true)
     {
         int nRecvLen = CSocket::Recv(szBuf, 1024);
         if(nRecvLen < 0)
@@ -234,7 +239,9 @@ bool CNetClient::OnRecv()
         }
         else if(nRecvLen == 0)
         {
-            char szIP[16] = { 0 };
+			if(!bTerminate)
+				break;
+			char szIP[16] = { 0 };
             HostIP2Str(m_dwIP, szIP);
             LogTrace("CounterPart Close. IP:Port=%s:%d", szIP, m_nPort);
 			Terminate();
@@ -242,6 +249,7 @@ bool CNetClient::OnRecv()
 		}
         else 
         {
+			bTerminate = false;
             if(!m_pRecvBuf->Append(szBuf, 1024))
             {
                 LogError("%s(%d) Append Data fail.");
@@ -260,7 +268,7 @@ bool CNetClient::OnRecv()
             return true;
         //
         nMsgLen = pHeader->dwLength + HEADSIZE;
-        if(nMsgLen > m_pRecvBuf->GetBufLen() -(int)m_dwRecvLen)
+        if(nMsgLen > m_pRecvBuf->GetBufLen() - (int)m_dwRecvLen)
             break;
         //
         auto pBuffer = g_pBufferMgr->GetBuffer(nMsgLen);
@@ -280,7 +288,15 @@ bool CNetClient::OnRecv()
             CAutoLock locker(&m_clsRecvLock);
             m_listRecvBuf.push(pBuffer);
         }
-    }
+		//
+		if(m_dwRecvLen == m_pSendBuf->GetBufLen())
+		{
+			if(m_pSendBuf->GetBufLen() >= 1024 * 1024)
+				m_pSendBuf.Clear(true);
+			else  
+				m_pSendBuf.Clear(false);
+		}
+	}
 	//
 	if(m_listRecvBuf.size())
 	{

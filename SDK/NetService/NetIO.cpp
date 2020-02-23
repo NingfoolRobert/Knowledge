@@ -1,6 +1,6 @@
 #include "NetIO.h"
 	
-CNetIO::CNetIO()
+CNetIO::CNetIO():m_nEventType(0), m_nNewEventType(0)
 {
 }
 CNetIO::~CNetIO()

@@ -10,6 +10,7 @@
 
 CAcceptIO::CAcceptIO(void):m_pNetService(nullptr)
 {
+	m_nEventType = EPOLLIN | EPOLLET;
 }
 
 CAcceptIO::~CAcceptIO()
@@ -43,8 +44,9 @@ bool CAcceptIO::InitialUpdate(int nPort, CNetService* pNetService)
         LogError("%s(%d) Local Service Listen fail. Port:%d", __FILE__, __LINE__, nPort);
         return false;
     }
- 
-	LogInfo("Net Listen Success IP:Port = LocalIP:%d", m_nPort);
+
+	CSocket::SetBlockMode();
+	LogInfo("Init Net Listen Success IP:Port = LocalIP:%d", m_nPort);
 	
     return true;
 }

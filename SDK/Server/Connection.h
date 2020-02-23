@@ -51,6 +51,8 @@ public:
 	bool SendMsg(PHEADER pHeader, bool bAck, int nOrgine, unsigned int dwAckType, CBuffer* pBuffer);
 	
 	bool SendMsg(unsigned int dwHostIP, int nPort, PHEADER pHeader);
+
+	void Terminate();
 protected:
 	PHEADER				m_pHeader;
 	CBuffer*			m_pBuf;

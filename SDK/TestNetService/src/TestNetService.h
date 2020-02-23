@@ -3,6 +3,8 @@
 
 
 #include "NetObjService.h"
+#include "Connection.h"
+
 
 class CTestService: public CNetObjService 
 {
@@ -22,5 +24,7 @@ public:
 
 public:
 	virtual CUserObject* CreateUserObject(int nOrigine);
-
+private:
+	CConnection			m_connection;
+	int					m_nCount;
 };

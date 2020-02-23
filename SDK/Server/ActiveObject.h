@@ -33,6 +33,8 @@ public:
 	void SetPendingTask(int cnPendingTask);
 
 	void Terminate();
+
+	void PrintfInfo();
 public:
 	virtual bool OnTimer(PTIMERHEADER pTimer);
 	
@@ -47,8 +49,6 @@ public:
 	bool SetTimerMili(PTIMERHEADER pTimer, int nMiliSecond);
 public:
 	void ActiveTimerThread();
-private:
-	bool AddTask(Runnable* pRunnable);
 private:
 	CThreadPoolExecutor*		m_pThreadPool;
 private:

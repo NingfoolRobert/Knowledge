@@ -45,6 +45,8 @@ bool CObjectService::OnTimeOut(struct tm *pTime)
 	g_pBufferMgr->PrintInfo(&stBuf);
 
 	LogInfo("%s", stBuf.GetBufPtr());
+
+	CActiveObject::PrintfInfo();
 	return true;
 }
 
