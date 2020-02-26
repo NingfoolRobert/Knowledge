@@ -250,7 +250,7 @@ bool CNetClient::OnRecv()
         else 
         {
 			bTerminate = false;
-            if(!m_pRecvBuf->Append(szBuf, 1024))
+            if(!m_pRecvBuf->Append(szBuf, nRecvLen))
             {
                 LogError("%s(%d) Append Data fail.");
                 break;
@@ -292,9 +292,10 @@ bool CNetClient::OnRecv()
 		if(m_dwRecvLen == m_pSendBuf->GetBufLen())
 		{
 			if(m_pSendBuf->GetBufLen() >= 1024 * 1024)
-				m_pSendBuf.Clear(true);
+				m_pSendBuf->Clear(true);
 			else  
-				m_pSendBuf.Clear(false);
+				m_pSendBuf->Clear(false);
+			m_dwRecvLen = 0;
 		}
 	}
 	//

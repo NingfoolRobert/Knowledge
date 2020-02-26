@@ -23,6 +23,8 @@ CBuffer::~CBuffer(void)
 
 void CBuffer::SetExpandLen(int nlenExpand)
 {
+	if(0 == nlenExpand)
+		return ;
 	m_nlenExpand = nlenExpand;
 }
 

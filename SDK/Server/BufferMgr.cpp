@@ -105,6 +105,7 @@ void CBufferMgr::ReleaseBuffer(CBuffer* pBuffer)
 	if((int)m_listBuf[Index].size() < BUFFER_MGR_CAPABILITY / cnInit)
 	{
 		pBuffer->Clear();
+		pBuffer->SetExpandLen(BUFFER_INIT_SIZE  << Index);
 		m_listBuf[Index].push(pBuffer);
 	}
 	else 
