@@ -14,6 +14,21 @@ CTimer::~CTimer(void)
 	g_pBufferMgr->ReleaseBuffer(m_pBuf);
 	m_pBuf = nullptr;	
 }
+
+bool CTimer::Init(CActiveObject* pObj, CBuffer* pBuf)
+{
+	m_pObject = pObj;
+	m_pBuf = pBuf;
+	return true;
+}
+
+bool CTimer::Terminate()
+{
+	g_pBufferMgr->ReleaseBuffer(m_pBuf);
+	m_pBuf = nullptr;
+	return true;
+}
+
 void CTimer::Run()
 {
 	if(m_pBuf == nullptr)
@@ -44,4 +59,18 @@ void CEvent::Run()
 	}
 	PEVENTHEADER pEvent = (PEVENTHEADER)m_pBuf->GetBufPtr();
 	m_pObject->OnEvent(pEvent);
-}
+}	
+ 	
+//bool CEvent::Init(CActiveObject* pObj, CBuffer* pBuf)
+//{
+//	m_pObject = pObj;
+//	m_pBuf = pBuf;
+//	return true;
+//}
+//
+//bool CEvent::Terminate()
+//{
+//	g_pBufferMgr->ReleaseBuffer(m_pBuf);
+//	m_pBuf = nullptr;
+//	return true;
+//}
