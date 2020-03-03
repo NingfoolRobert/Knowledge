@@ -97,3 +97,15 @@ bool CService::SysRun()
 {
 	return true;		
 }
+	
+void CService::OnRegisterVersion(const char* pszVersion)
+{
+	if(pszVersion == nullptr || 0 == strlen(pszVersion))
+	{
+		strcpy(m_szVersion, "0.0.0.0");
+		return ;
+	}
+
+	strcpy(m_szVersion, pszVersion);
+	
+}
