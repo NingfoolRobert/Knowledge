@@ -27,6 +27,5 @@ public:
 public:
     virtual CUserObject* OnNetUserObject(PHEADER pHeader);
 
-	virtual CUserObject*	CreateUserObject(int nOrigine) = 0;
-
+	virtual CUserObject* OnCreateUserObject(int nOrigin);
 };

@@ -27,6 +27,7 @@ public:
 	virtual bool  InvokeTerminate() = 0;
 	virtual void  OnTerminate() = 0;
 
+	virtual void  OnRegisterVersion();
 public:
 	
 	bool	Execute(const char* pszCommand);
@@ -40,6 +41,8 @@ protected:
 	time_t		m_tStart;
 	std::mutex	m_clsLock;
 	std::condition_variable  m_condStop;
+	
+	char		m_szVersion[128];
 };
 
 extern CService* g_Service;

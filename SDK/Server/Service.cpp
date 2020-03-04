@@ -30,6 +30,8 @@ CService::~CService()
 
 bool CService::Execute(const char* pszCommand)
 {
+	OnRegisterVersion();
+	//
 	if(pszCommand != nullptr && 0 != strlen(pszCommand) )
 	{
 		if(strncmp(pszCommand, "-V",2) == 0 || strncmp(pszCommand, "--version", 9) ==0)
@@ -98,14 +100,7 @@ bool CService::SysRun()
 	return true;		
 }
 	
-void CService::OnRegisterVersion(const char* pszVersion)
+void CService::OnRegisterVersion()
 {
-	if(pszVersion == nullptr || 0 == strlen(pszVersion))
-	{
-		strcpy(m_szVersion, "0.0.0.0");
-		return ;
-	}
-
-	strcpy(m_szVersion, pszVersion);
-	
+	strcpy(m_szVersion, "0.0.0.0");
 }

@@ -24,6 +24,12 @@ SET(SDK_DIR  ${CMAKE_SOURCE_DIR}/../../SDK)
 
 include_directories(${SDK_DIR}/Base/include)
 include_directories(${SDK_DIR}/Server)
+include_directories(${SDK_DIR}/Other/Sqlite3/include)
+
+
+link_directories(${SDK_DIR}/Other/Sqlite3/lib)
+
+
 
 AUX_SOURCE_DIRECTORY(${SDK_DIR}/Server  SERVER_SRC)
 

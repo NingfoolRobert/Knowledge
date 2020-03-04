@@ -17,6 +17,7 @@
 #include "ActiveObject.h"
 #include "GFunc.h"
 #include "LogFile.h"
+#include "UserObject.h"
 
 class CObjectService: public CActiveObject 
 {
@@ -34,6 +35,7 @@ public:
 
 	virtual void OnTerminate();
 public:
+	virtual CUserObject* OnCreateUserObject(int nOrigin) = 0;
 
 	virtual void OnRegisterObject();
 public:

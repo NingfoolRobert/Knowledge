@@ -61,6 +61,10 @@ void CNetObjService::OnTerminate()
  
 CUserObject* CNetObjService::OnNetUserObject(PHEADER pHeader)
 {
-	return CreateUserObject(pHeader->wOrigin);
+	return OnCreateUserObject(pHeader->wOrigin);
 }
 	
+CUserObject* CNetObjService::OnCreateUserObject(int nOrigin)
+{
+	return nullptr;
+}
