@@ -14,6 +14,9 @@ SET(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/lib")
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/ SRC)
+
+link_libraries(dl)
+
 add_library(Sqlite3 STATIC ${SRC})
 
 
