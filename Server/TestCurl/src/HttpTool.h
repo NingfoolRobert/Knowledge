@@ -28,19 +28,19 @@
 class CHttpTool 
 {
 public: 
-	CHttpTool(void);
-	~CHttpTool(void);
+	CHttpTool();
+	~CHttpTool();
 public:
 	//
 	static size_t OnReceiveData(void* pContents, size_t Size, size_t nMemb, void* pStream);
 	
 	static size_t OnWriteData2File(void* pData, size_t Size, size_t nMemb, FILE* pFile);
 	//文件下载接口
-	CURLCode OnDownLoadFile(const char* pszURL, const char* pszFileName);
+	CURLcode OnDownLoadFile(const char* pszURL, const char* pszFileName);
 	//http Get 请求 
-	CURLCode  OnHttpGet(const std::string & strUrl, std::string& strResponse, int nTimeOut);
+	CURLcode  OnHttpGet(const std::string & strUrl, std::string& strResponse, int nTimeOut);
 	//http Post 请求接口 
-	CURLCode  OnHttpPost(const std::string& strUrl, std::string& strReq, std::string& strResponse, int nTimeOut);
+	CURLcode  OnHttpPost(const std::string& strUrl, std::string& strReq, std::string& strResponse, int nTimeOut);
 
 	
 
@@ -50,4 +50,4 @@ public:
 private:
 	char		szErrorMsg[256];
 	
-}
+};
