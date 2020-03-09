@@ -3,6 +3,7 @@
 #include "BufferMgr.h"
 
 #include <thread> 
+#include <sys/time.h> 
 
 
 
@@ -150,4 +151,80 @@ bool CAsyncObject::SetOwner(CAsyncObject* pOwner)
 	m_pAsyncObj = pOwner;
 
 	return true;
+}
+	
+bool CAsyncObject::SetTimer(PTIMERHEADER pTimer, int nSec)
+{
+	if(pTimer == nullptr)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool CAsyncObject::SetTimerMili(PTIMERHEADER pTimer, int nMiliSec)
+{
+	if(nullptr == pTimer)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+
+bool CAsyncObject::OnTimer(PTIMERHEADER pTimer)
+{
+	if(nullptr == pTimer)
+	{
+		return false;
+	}
+
+	return true; 
+}
+
+void CAsyncObject::ActiveTimerThread()
+{
+	while(!m_bTimerStop)
+	{
+		
+		std::unique_lock<std::mutex> locker(m_clsTimerLock);
+		std::cv_status nStatus = m_condTimer.wait_for(locker, std::chrono::microseconds(100));
+
+		if(nStatus != std::cv_status::timeout)
+		{
+			break;
+		}
+		
+		locker.unlock();
+		struct timeval tv;
+		gettimeofday(&tv, NULL);
+		long long llTimer = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+		while(!m_listTimer.empty())
+		{
+			m_clsTimerLock.lock();
+			auto pBuf = m_listTimer.front();
+			PTIMERHEADER pTimer = (PTIMERHEADER)pBuf->GetBufPtr();
+			if(nullptr == pTimer)
+			{
+				m_listTimer.pop();
+				m_clsTimerLock.unlock();
+				continue;		
+			}
+			
+			if(pTimer->llnTimerOver > llTimer)
+			{
+				m_listTimer.pop();
+				//TODO 扔到线程池中解决
+			}
+			else 
+			{
+				m_clsTimerLock.unlock();
+				break;
+			}
+			//	
+			m_clsTimerLock.unlock();
+		}
+	}
 }

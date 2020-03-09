@@ -23,23 +23,24 @@ SET(SDK_DIR  ${CMAKE_SOURCE_DIR}/../../SDK)
 
 
 include_directories(${SDK_DIR}/Base/include)
-include_directories(${SDK_DIR}/Server)
-include_directories(${SDK_DIR}/Other/Sqlite3/include)
+include_directories(${SDK_DIR}/Server/include)
+#include_directories(${SDK_DIR}/NetService)
+#include_directories(${SDK_DIR}/Other/Sqlite3/include)
 
 
 link_directories(${SDK_DIR}/Other/Sqlite3/lib)
+link_directories(${SDK_DIR}/Base/lib)
+link_directories(${SDK_DIR}/Server/lib)
 
-
-
-AUX_SOURCE_DIRECTORY(${SDK_DIR}/Server  SERVER_SRC)
+link_libraries(Base)
+link_libraries(Service)
+link_libraries(ObjService)
+link_libraries(NetService)
 
 
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/src SRC)
 
 add_executable(${PROJECT_NAME} 
 								${SRC}
-								${SERVER_SRC}
 								)
-							#target_link_libraries(${PROJECT_NAME} )
-	
 

@@ -372,6 +372,7 @@ bool CICCTools::CLog::WriteLogFileDefault(LogInfo * log)
 	{
 		return IntialLogFile(0);
 	}
+
 	return true;
 }
 

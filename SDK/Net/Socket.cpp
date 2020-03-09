@@ -67,8 +67,6 @@ bool CSocket::Bind(int nHostPort/* = 0*/, unsigned int dwHostIP/* = 0*/)
 	}
 
 	return true;
-
-
 }
 
 bool CSocket::Listen(int nListenCount/* = 10*/)

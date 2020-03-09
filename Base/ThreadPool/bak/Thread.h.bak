@@ -1,0 +1,47 @@
+#ifndef _THREAD_H_
+#define _THREAD_H_
+
+#include <stdio.h>
+#include <stdlib.h> 
+#include <process.hpp>
+#include <pthread.h> 
+
+// marco ∑®‘Ú
+#define CLASS_UNCOPYABLE(classname) \
+        private:\
+        classname##(const classname##&);\
+        classname##& operator=(const classname##&);
+
+class Runnable
+{
+public:
+    virtual void Run()=0;
+    virtual ~Runnable(){}
+};
+
+class CThread: public Runnable
+{
+    CLASS_UNCOPYABLE(CThread)
+public:
+
+    CThread(Runnable* target = NULL);
+    virtual         ~CThread();
+public:
+    virtual void    Run() {}
+    bool            Start(const char* pszFileName = __FILE__,const int nLine = __LINE__);
+    void            Join(int _nTimeout = 0);
+	bool			Resume();
+	bool			Suspend();
+	bool			Detach();
+
+    unsigned int    GetThreadID(){return m_uThreadID;}
+private:
+    static unsigned _stdcall ThreadProc(void *param);
+private:
+    Runnable*           m_pTarget;
+    unsigned int        m_uThreadID;
+	bool				m_bRunning;
+	bool				m_bDetached;
+};
+
+#endif // !_THREAD_H_

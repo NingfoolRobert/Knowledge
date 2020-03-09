@@ -70,7 +70,6 @@ bool CIOMgr::OnTerminate()
 	return true;
 }
 
-
 void CIOMgr::LoadEvent(const EventMap::value_type & event_pair)
 {
 	CNetIO* pNetClient = event_pair.first;
@@ -107,10 +106,8 @@ void CIOMgr::LoadEvent(const EventMap::value_type & event_pair)
 	}
 }
 
-
 void CIOMgr::UpdateEvent()
 {
-
 	EventMap mapEvent;
 	for(auto it = m_mapNew.begin(); it != m_mapNew.end(); ++it)
 	{

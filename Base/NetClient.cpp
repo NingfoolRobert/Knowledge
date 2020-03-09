@@ -227,12 +227,15 @@ void CNetClient::RecvThread()				//接受线程
 	while(true)
 	{
 		nRecvLen = Recv(&szTmp[0], 1024);
-		if(errno == EAGAIN)
+		if(nRecvLen == 0)
 		{
-			//内存空间中的数据接收完成 
-			break;
+			if(errno == EAGAIN)
+			{
+				//内存空间中的数据接收完成 
+				break;
+			}
+			//Append Data buffer 
 		}
-		//Append Data buffer 
 		if(!m_pbufRecv->Append(&szTmp[0], nRecvLen))
 		{
 			LogError("%s(%d) Append Data fail.", __FILE__, __LINE__);

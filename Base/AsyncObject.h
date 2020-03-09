@@ -21,6 +21,17 @@
 #include <queue>
 #include <condition_variable> 
 
+typedef struct stTimerHeader
+{
+	unsigned int	dwTimerType;
+	unsigned int	dwTimerID;
+	long long		llnTimerOver;
+	unsigned int	dwOwnerID;
+	unsigned int	dwLength;
+
+}TIMERHEADER, *PTIMERHEADER;
+
+
 class CAsyncObject
 {
 public:
@@ -38,15 +49,31 @@ public:
 	virtual bool OnMsg(PMSGHEADER pMsg);
 
 	virtual void Terminate();
+	
+	virtual bool SetTimer(PTIMERHEADER pTimer, int nSec);
+	
+	virtual bool SetTimerMili(PTIMERHEADER pTimer, int nMiliSec);
+	
+	virtual bool OnTimer(PTIMERHEADER pTimer);
 public:
 	bool AsyncMsgThread();
-
+	void ActiveTimerThread();
+public:
+	
 	bool SetOwner(CAsyncObject* pOwner);
 private:
 	bool							m_bStop;
 	std::mutex						m_clsLock;
 	std::condition_variable			m_condLock;
 	std::queue<CBuffer*>			m_listMessage;
+private:
+	bool							m_bEnableTimer;
+	
+	bool							m_bTimerStop;
+	std::mutex						m_clsTimerLock;
+	std::condition_variable			m_condTimer;
+	std::queue<CBuffer*>			m_listTimer
+private:
 	CAsyncObject*					m_pAsyncObj;
 };
 extern class CAsyncObject* g_ciccAsyncObject; 
