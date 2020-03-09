@@ -15,19 +15,19 @@ CTimer::~CTimer(void)
 	m_pBuf = nullptr;	
 }
 
-bool CTimer::Init(CActiveObject* pObj, CBuffer* pBuf)
-{
-	m_pObject = pObj;
-	m_pBuf = pBuf;
-	return true;
-}
-
-bool CTimer::Terminate()
-{
-	g_pBufferMgr->ReleaseBuffer(m_pBuf);
-	m_pBuf = nullptr;
-	return true;
-}
+//bool CTimer::Init(CActiveObject* pObj, CBuffer* pBuf)
+//{
+//	m_pObject = pObj;
+//	m_pBuf = pBuf;
+//	return true;
+//}
+//
+//bool CTimer::Terminate()
+//{
+//	g_pBufferMgr->ReleaseBuffer(m_pBuf);
+//	m_pBuf = nullptr;
+//	return true;
+//}
 
 void CTimer::Run()
 {
