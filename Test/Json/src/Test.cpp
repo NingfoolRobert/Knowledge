@@ -12,13 +12,21 @@
 #include <string> 
 
 
+bool Gene(rapidjson::Value& val)
+{
+	int nName = val["name"].GetInt();
+	std::cout << nName << std::endl;
+	int nID = val["id"].GetInt();
+	std::cout << nID << std::endl;
+	return true;
+}
 
 int main()
 {
 
 	using namespace rapidjson;
 	
-	char *pszJson = "{ \"name\":\"tom\", \"age\":15 }";
+	char *pszJson = "{ \"name\":\"tom\", \"age\":15,\"class\":[{\"name\":1, \"id\":10}] }";
 
 	Document doc;
 	if(doc.Parse<0>(pszJson).HasParseError())
@@ -32,7 +40,17 @@ int main()
 	
 	int nAge = doc["age"].GetInt();
 	std::cout << nAge << std::endl;
-	
+
+	Value& val = doc["class"];
+
+	if(val.IsArray())
+	{
+		for(auto i = 0; i < val.Size(); ++i)
+		{
+			Value& cl = val[i];
+			Gene(cl);
+		}
+	}
 
 	return 0;
 }
