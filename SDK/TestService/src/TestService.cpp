@@ -18,6 +18,7 @@ bool CTestService::OnInitialUpdate()
 	
 	LogInfo("InitialUpdate Success.");	
 
+	LogFatal("InitialUpdate");
 	return true;
 }
 
@@ -28,7 +29,7 @@ bool CTestService::OnTimeOut(struct tm* pTime)
 		return false;
 	}
 
-	LogInfo("Time out ");
+	LogFatal("Time Out %d:%d", pTime->tm_hour, pTime->tm_min);
 	return true;
 }
 
@@ -46,4 +47,9 @@ bool CTestService::OnSecondIdle()
 void CTestService::OnTerminate()
 {
 	CObjService::OnTerminate();
+}
+	
+CUserObject* CTestService::OnCreateUserObject(int nOrgine)
+{
+	return nullptr;
 }

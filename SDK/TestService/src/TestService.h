@@ -7,7 +7,8 @@
 
 
 
-class CTestService:public CObjService 
+class CTestService:
+	public CObjService
 {
 public:
 	CTestService(void);
@@ -21,4 +22,5 @@ public:
 
 	virtual void OnTerminate();
 
+	virtual	CUserObject* OnCreateUserObject(int nOrgine);
 };

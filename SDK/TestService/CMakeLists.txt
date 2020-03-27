@@ -23,7 +23,11 @@ SET(SDK_DIR  ${CMAKE_SOURCE_DIR}/../)
 
 
 include_directories(${SDK_DIR}/Base/include)
-include_directories(${SDK_DIR}/Server)
+include_directories(${SDK_DIR}/Server/include)
+
+link_directories(${SDK_DIR}/Server/lib)
+
+link_libraries("libObjService.a")
 
 AUX_SOURCE_DIRECTORY(${SDK_DIR}/Server  SERVER_SRC)
 
