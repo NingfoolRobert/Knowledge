@@ -32,7 +32,9 @@ bool CAcceptIO::InitialUpdate(int nPort, CNetService* pNetService)
         LogError("Create Socket fail.errcode: %d", errno);
         return false;
     }
-    //
+	int bOn = 1;
+	SetSockOpt(SOL_SOCK, SO_REUSEADDR, &bOn, sizeof(bOn));	
+	//
     if(!Bind(nPort))
     {
         LogError("Bind Socket fail,errno:%d. LocalInternal:%d", errno, nPort);
