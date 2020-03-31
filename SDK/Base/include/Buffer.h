@@ -18,10 +18,11 @@ public:
 	virtual ~CBuffer(void);
 public:
 	void	SetExpandLen(int nlenExpand);
+	void	SetHeaderLen(int nHeaderLen);
 	void	Clear(bool  bFree = false);
 public:
 	char*	GetBufPtr() { return m_pBuf; }
-	char*	GetDataPtr() { if (m_pBuf == NULL) { return NULL; } else { return m_pBuf; } }
+	char*	GetDataPtr() { if (m_pBuf == NULL) { return NULL; } else { return m_pBuf + m_nlenHeader; } }
 	
 	bool	Expand(int nExpand);
 	bool	ExpandTo(int nLength);
@@ -40,4 +41,5 @@ private:
 	int			m_nlenData;
 	int			m_nlenCapability;
 	int			m_nlenExpand;
+	int			m_nlenHeader;
 };

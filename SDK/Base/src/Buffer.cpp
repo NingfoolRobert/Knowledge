@@ -9,6 +9,7 @@ CBuffer::CBuffer(void)
 	m_pBuf = nullptr;
 	m_nlenData = 0;
 	m_nlenCapability = 0;
+	m_nlenHeader = 0;
 	m_nlenExpand = BUFFER_INIT_SIZE;
 }
 
@@ -39,8 +40,15 @@ void CBuffer::Clear(bool bFree /*= false*/)
 		}
 		m_nlenCapability = 0;
 	}
-	
+	m_nlenHeader = 0;	
 	m_nlenData = 0;
+}
+	
+void CBuffer::SetHeaderLen(int nHeaderLen)
+{
+	m_nlenHeader = nHeaderLen;	
+	m_nlenData = nHeaderLen;
+	Expand(nHeaderLen);
 }
 
 bool CBuffer::Expand(int nExpand)
@@ -133,7 +141,7 @@ bool CBuffer::Append(const void* pBuf, int nlen)
 		return false;
 	}
 
-	memmove(m_pBuf + m_nlenData, pBuf, nlen);
+	memmove(m_pBuf +  m_nlenData, pBuf, nlen);
 
 	m_nlenData += nlen;
 
