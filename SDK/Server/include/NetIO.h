@@ -21,6 +21,8 @@ public:
 	virtual bool OnRecv();
 
 	virtual bool OnClose();
+
+	virtual bool OnTerminate();
 public:
 	unsigned int			m_nEventType;
 	unsigned int			m_nNewEventType;

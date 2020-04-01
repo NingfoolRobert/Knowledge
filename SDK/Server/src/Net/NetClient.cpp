@@ -439,6 +439,7 @@ bool CNetClient::OnClose()
 	{
 		if(m_nEventType == EPOLL_EVENT_TYPE_CLOSE && m_listRecvBuf.empty())
 			m_pNetService->DelClient(this);
+		OnBreak();
 	}
 	return true;
 }

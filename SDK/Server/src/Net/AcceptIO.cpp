@@ -33,7 +33,7 @@ bool CAcceptIO::InitialUpdate(int nPort, CNetService* pNetService)
         return false;
     }
 	int bOn = 1;
-	SetSockOpt(SOL_SOCK, SO_REUSEADDR, &bOn, sizeof(bOn));	
+	SetSockOpt(SOL_SOCKET, SO_REUSEADDR, &bOn, sizeof(bOn));	
 	//
     if(!Bind(nPort))
     {

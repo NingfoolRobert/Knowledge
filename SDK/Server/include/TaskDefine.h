@@ -20,7 +20,7 @@
 
 class CActiveObject;
 
-typedef struct stTimerHeader
+typedef struct tagTimerHeader
 {
 	unsigned int	dwTimerID;
 	unsigned long	dwOwner;	
@@ -29,7 +29,7 @@ typedef struct stTimerHeader
 
 }TIMERHEADER, *PTIMERHEADER;
 
-typedef struct stEventHeader 
+typedef struct tagEventHeader 
 {
 	unsigned int	dwType;
 	unsigned int	dwLength;

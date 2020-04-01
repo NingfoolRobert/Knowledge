@@ -71,7 +71,7 @@ bool CNetService::OnTimeOut(struct tm* pTime)
 		return false;
 	}
 
-	LogInfo("Connection Current Information: %d/%d/%d.", m_mapNetIO.size() - 1 , m_listModifyNetIO.size(), m_listDelClientS.size());
+	LogInfo("Connection Current Information: %d/%d/%d.", m_mapNetIO.size() - 1 , m_listModIO.size(), m_listDelClientS.size());
 	return true;
 }
 
@@ -273,12 +273,12 @@ void CNetService::UpdateEvent()
 	FdNetIOMap _list;
 	{
 		CAutoLock locker(&m_clsEpollLock);
-		for(auto it = m_listModifyNetIO.begin(); it != m_listModifyNetIO.end();++it)
+		for(auto it = m_listModIO.begin(); it != m_listModIO.end();++it)
 		{
 			_list.insert(std::make_pair(it->first, it->second));
 			m_mapNetIO.insert(std::make_pair(it->first, it->second));
 		}
-		m_listModifyNetIO.clear();
+		m_listModIO.clear();
 	}
 	
 	for_each(_list.begin(), _list.end(), std::bind(&CNetService::LoadEvent, this, std::placeholders::_1));
@@ -293,7 +293,7 @@ bool CNetService::AddClient(CNetClient* pNetClient)
 	}
 	
 	CAutoLock locker(&m_clsEpollLock);
-	m_listModifyNetIO.insert(std::make_pair(pNetClient->Detach(), pNetClient));		
+	m_listModIO.insert(std::make_pair(pNetClient->Detach(), pNetClient));		
 	
 	return true;
 }
@@ -329,7 +329,7 @@ void CNetService::OnNetBreak(CNetClient* pNetClient)				//网络断开
 	//
 	{
 		CAutoLock locker(&m_clsEpollLock);
-		m_listModifyNetIO.insert(std::make_pair(pNetClient->Detach(), pNetClient));		
+		m_listModIO.insert(std::make_pair(pNetClient->Detach(), pNetClient));		
 		
 		auto it = m_listClient.find(pNetClient);
 		if(it != m_listClient.end())

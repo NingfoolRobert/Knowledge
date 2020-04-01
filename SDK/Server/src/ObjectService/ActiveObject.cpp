@@ -23,7 +23,7 @@ class TimerThreadTask* g_pTimerTask = nullptr;
 //
 CActiveObject::CActiveObject(void):m_pThreadPool(nullptr),m_bEnableTimer(false),m_bStopTimer(true), m_pTimerThread(nullptr)
 {
-	
+	m_pOwner = nullptr;	
 }
 
 CActiveObject::~CActiveObject(void)
@@ -57,6 +57,11 @@ bool CActiveObject::Init(int cnMaxThread/* = 1*/, int cnThread/* = 1*/, int nPen
 	return true;
 }
 	
+void CActiveObject::SetOwner(CActiveObject* pOwner)
+{
+	m_pOwner = pOwner;
+}
+	
 void CActiveObject::SetPendingTask(int cnPendingTask)
 {
 	if(nullptr == m_pThreadPool)
@@ -87,6 +92,10 @@ bool CActiveObject::OnTimer(PTIMERHEADER pTimer)
 
 bool CActiveObject::OnEvent(PEVENTHEADER pEvent)
 {
+	if(m_pOwner)
+	{
+		return m_pOwner->OnEvent(pEvent);
+	}
 	return false;
 }
 

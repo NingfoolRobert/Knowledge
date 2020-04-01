@@ -22,4 +22,8 @@ bool CNetIO::OnClose()
 {
 	return false;
 }
-
+	
+bool CNetIO::OnTerminate()
+{
+	return false;
+}

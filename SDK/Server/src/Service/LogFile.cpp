@@ -75,7 +75,7 @@ bool CLogFile::WriteLogV(int nLevelType, const char* pszfmt, va_list args)
 	//sprintf(szData, "%s [%s] %s\n", szTime, szLogLevel[nLevelType], szData);
 
 	char szThread[16] = { 0 };
-	sprintf(szThread, "%X", (unsigned int)GetThreadID());
+	sprintf(szThread, "%08X", (unsigned int)GetThreadID());
 	//std::string str;
 	//str.append(szTime).append(szThread).append(szLogLevel[nLevelType]).append(szData).append("\n");
 	char szLog[1024] = { 0 };	

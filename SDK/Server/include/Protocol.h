@@ -29,6 +29,13 @@ typedef struct stHeader
 }HEADER,*PHEADER;
 
 
+
+typedef struct tagZMQMsg
+{
+	unsigned int	dwLength;
+	unsigned int	dwType;
+	char			szTag[64];
+}ZMQMSG, *PZMQMSG;
 #define HEADSIZE  (int)sizeof(HEADER)
 
 //消息源值

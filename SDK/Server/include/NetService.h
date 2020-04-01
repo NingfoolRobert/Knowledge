@@ -89,7 +89,7 @@ private:
 	CObjectLock						m_clsEpollLock;    
     FdNetIOMap						m_mapNetIO;
     FdClientSet                     m_listClient;
-	FdNetIOMap						m_listModifyNetIO;
+	FdNetIOMap						m_listModIO;
 private:
     int                             m_nTimeOut;                     //
     int                             m_ep;                           //epoll 文件句柄

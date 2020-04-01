@@ -32,6 +32,8 @@ public:
 	
 	void SetPendingTask(int cnPendingTask);
 
+	void SetOwner(CActiveObject* pOwner);
+
 	void Terminate();
 
 	void PrintfInfo();
@@ -57,4 +59,7 @@ private:
 	CObjectLock										m_clsTimerLock;	
 	std::set<CBuffer*, compTimer>					m_listTimer;	
 	CThread*										m_pTimerThread;
+	
+private:
+	CActiveObject*									m_pOwner;
 };
