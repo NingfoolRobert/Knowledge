@@ -53,35 +53,36 @@ bool CActiveObject::PostEvent(PEVENTHEADER pEvent)
 	if(nullptr  == pEvent)
 		return false;
 
-	auto pBuffer = g_pBufferMgr->GetBuffer(sizeof(EVENTHEADER) + pEvent->dwLength);
-	if(nullptr == pBuffer)
-	{
-		return false;
-	}
-
-	if(!pBuffer->Append(pEvent, sizeof(EVENTHEADER) + pEvent->dwLength))
-	{
-		return false;
-	}
-
-	m_clsLock.lock();
-	m_listEvent.Add(pBuffer);
-	m_clsLock.unlock();
-	m_condVar.notify_one();
+//	auto pBuffer = g_pBufferMgr->GetBuffer(sizeof(EVENTHEADER) + pEvent->dwLength);
+//	if(nullptr == pBuffer)
+//	{
+//		return false;
+//	}
+//
+//	if(!pBuffer->Append(pEvent, sizeof(EVENTHEADER) + pEvent->dwLength))
+//	{
+//		return false;
+//	}
+//
+////	m_clsLock.lock();
+//	m_listEvent.Add(pBuffer);
+//	m_clsLock.unlock();
+//	m_condVar.notify_one();
 //	CEvent* pEve = m_ContainerEvent.GetEmpty();
 //	if(nullptr == pEvent)
 //	{
 //		return false;
 //	}
+	CEvent* pEve = m_ContainerEvent.GetEmpty();	
+	if(nullptr == pEve)
+		return false;
+	if(!pEve->Init(this, (char*)pEvent, sizeof(EVENTHEADER) + pEvent->dwLength))
+	{
+		m_ContainerEvent.ReclaimEmpty(pEve);
+		return false;
+	}
 	
-//	if(!pEve->Init(this, (char*)pEvent, sizeof(EVENTHEADER) + pEvent->dwLength))
-//	{
-//		m_ContainerEvent.ReclaimEmpty(pEve);
-//		return false;
-//	}
-//	
-//	return Execute(pEve);
-	return true;
+	return Execute(pEve);
 }
 
 bool CActiveObject::PostBuffer(CBuffer* pBuffer)
@@ -119,11 +120,20 @@ bool CActiveObject::SetTimerMilli(PTIMEHEADER pTimer, int nMilliSec)
 		tr1.detach();
 	}
 	//立即执行
-	if(nMilliSec == 0)
+	if(nMilliSec <= 0)
 	{
-		CTimer* pTimer = nullptr;
+		CTimer* pTimerEve = m_ContainerTimer.GetEmpty();
+		if(nullptr == pTimerEve)
+		{
+			return false;
+		}
+		if(!pTimerEve->Init(this, (char*)pTimer, pTimer->dwLength + sizeof(TIMERHEADER)))
+		{
+			m_ContainerTimer.ReclaimEmpty(pTimerEve);
+			return false;
+		}
 		//初始化
-		return Execute(pTimer);
+		return Execute(pTimerEve);
 	}
 	//当有该Timer时，修改到期时间 
 	struct timeval tnow;
@@ -191,24 +201,22 @@ void CActiveObject::ActiveEventFunc(CActiveObject* pObj)
 	while(!m_bStop)
 	{
 		std::unique_lock<std::mutex> locker(m_clsLock);
-		m_condVar.wait(locker, [this]()->bool{ return m_listEvent.GetCount();});
+		m_condVar.wait(locker, [this]()->bool{ return m_listEventCyc.GetCount();});
 		locker.unlock();
-		while(m_listEvent.GetCount())
+		while(m_listEventCyc.GetCount())
 		{
 			m_clsLock.lock();
-			//pRunnable = m_listEventCyc.Get();
-			pBuffer = m_listEvent.Get();
+			pRunnable = m_listEventCyc.Get();
+			//pBuffer = m_listEvent.Get();
 			m_clsLock.unlock();
 
-			if(nullptr == pBuffer)
-				continue;
+		//	if(nullptr == pBuffer)
+		//		continue;
 
-			CAsyncObject::OnEvent((PEVENTHEADER)(pBuffer->GetBufPtr()));
-
-
-			g_pBufferMgr->ReleaseBuffer(pBuffer);
-			pBuffer = nullptr;
-			continue;
+		//  CAsyncObject::OnEvent((PEVENTHEADER)(pBuffer->GetBufPtr()));
+		//	g_pBufferMgr->ReleaseBuffer(pBuffer);
+		//	pBuffer = nullptr;
+		//	continue;
 
 			if(nullptr == pRunnable)
 				break;
@@ -216,7 +224,6 @@ void CActiveObject::ActiveEventFunc(CActiveObject* pObj)
 			pRunnable->Terminate();
 
 //			delete pRunnable;
-			pRunnable = nullptr;
 			CEvent* pEvent = nullptr;
 			CTimer* pTimer = nullptr;
 			switch(pRunnable->m_nType)

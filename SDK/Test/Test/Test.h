@@ -5,12 +5,15 @@
 #include <atomic> 
 #include <stdlib.h> 
 #include <stdio.h> 
+#include <mutex> 
 
 
 
 typedef struct tagTestEvent
 {
 	EVENTHEADER header;
+	long	tSec;
+	long	tUsec;
 	int64_t  tStat;
 }TESTEVENT, *PTESTEVENT;
 
@@ -35,7 +38,10 @@ public:
 	void PrintInfo();
 
 	void TestAlloc();
+
+	void TestLocker();
 private:
+	std::mutex					m_clsLock;
 	std::atomic_long			m_llSum;
 	std::atomic_long			m_nSend;
 	std::atomic_long			m_nRecv;

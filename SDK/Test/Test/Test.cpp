@@ -17,9 +17,9 @@ CTest::~CTest()
 
 bool CTest::OnInitialUpdate()
 {
-	CActiveObject::Init(1, this);
+	CActiveObject::Init(1);
 
-	CActiveObject::SetMaxEventType(100000);
+	CActiveObject::SetMaxEventType(10000);
 	
 	return true;
 }
@@ -45,7 +45,9 @@ void CTest::TestEvent()
 	struct timeval tnow;
 	gettimeofday(&tnow, NULL);
 
-	stEvent.tStat = tnow.tv_sec * 1000000LL + tnow.tv_usec;
+	//stEvent.tStat = tnow.tv_sec * 1000000LL + tnow.tv_usec;
+	stEvent.tSec = tnow.tv_sec;
+	stEvent.tUsec = tnow.tv_usec;
 
 	PostEvent((PEVENTHEADER)&stEvent);
 	m_nSend++;
@@ -56,15 +58,18 @@ bool CTest::OnTestEvent(PEVENTHEADER pEvent)
 	m_nRecv++;
 	struct timeval tnow;
 	gettimeofday(&tnow, NULL);
-
 	PTESTEVENT pTest = (PTESTEVENT)pEvent;
-	m_llSum += tnow.tv_sec * 1000000LL  + tnow.tv_usec - pTest->tStat;
+	
+	long ll = (tnow.tv_sec - pTest->tSec) * 1000000LL + tnow.tv_usec - pTest->tUsec;
+	
+	m_llSum += ll;
+//	m_llSum += tnow.tv_sec * 1000000LL  + tnow.tv_usec - pTest->tStat;
 }
 	
 void CTest::PrintInfo()
 {
 	double avg = (double)m_llSum / m_nRecv;
-	printf("Send:%ld,Recv:%ld, avg:%lf\n", m_nSend.load(), m_nRecv.load(), avg);
+	printf("Send:%ld,Recv:%ld, Sum:%ld, avg:%lf\n", m_nSend.load(), m_nRecv.load(), m_llSum.load(),avg);
 }
 	
 void CTest::TestAlloc()
@@ -78,4 +83,14 @@ void CTest::TestAlloc()
 	delete pEvent;
 	
 	pEvent = nullptr;
+}
+	
+void CTest::TestLocker()
+{
+	m_clsLock.lock();
+
+	static long ll = 0;
+	ll++;
+	
+	m_clsLock.unlock();
 }
