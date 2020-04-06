@@ -111,7 +111,7 @@ bool CActiveObject::SetTimer(PTIMEHEADER pTimer, int nSecond)
 
 bool CActiveObject::SetTimerMilli(PTIMEHEADER pTimer, int nMilliSec)
 {
-	if(nullptr == pTimer) return false;
+	if(nullptr == pTimer || m_bStop) return false;
 	std::unique_lock<std::mutex>	locker(m_clsTimer);
 	if(!m_bEnableTimer)
 	{
@@ -284,4 +284,36 @@ bool CActiveObject::Execute(CRunable* pRunnable)
 	m_listEventCyc.Add(pRunnable);
 	m_condVar.notify_one();
 	return true;
+}
+	
+void CActiveObject::InvokeStopActiveWork()
+{
+	//TODO 唤起正在
+	
+	m_condVar.notify_all();
+		
+}
+
+void CActiveObject::WaitStopActiveWork()
+{
+	//TODO 
+	
+	m_listEventCyc.DeleteAll();
+	m_listEvent.DeleteAll();
+
+	m_clsTimer.lock();
+	m_bStop = true;
+	CTimer* pTimer = nullptr;
+	for(auto i = 0U; i < m_listTimer.size(); ++i)
+	{
+		pTimer = m_listTimer[i];
+		if(pTimer)
+		{
+			delete pTimer;
+			pTimer = nullptr;
+		}
+
+	}
+	m_listTimer.clear();
+	m_clsTimer.unlock();
 }

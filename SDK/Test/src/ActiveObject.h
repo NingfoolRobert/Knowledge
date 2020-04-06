@@ -37,6 +37,8 @@ public:
 	void	SetMaxEventType(int nMaxEventType);
 	int		GetWaitEventCnt() { return m_listEventCyc.GetCount(); }
 	int     GetWaitTimerCnt() { return m_listTimer.size(); }
+	void	InvokeStopActiveWork();
+	void	WaitStopActiveWork();
 public:
 	virtual bool PostEvent(PEVENTHEADER pEvent);
 	virtual bool PostBuffer(CBuffer* pBuffer);
@@ -99,7 +101,7 @@ private:
 	std::mutex							m_clsLock;
 	std::condition_variable				m_condVar;
 	CPtrCycle<CBuffer>					m_listEvent;
-	CPtrCycle<CRunable>				m_listEventCyc;
+	CPtrCycle<CRunable>					m_listEventCyc;
 private:
 	bool								m_bEnableTimer;
 	std::mutex							m_clsTimer;
