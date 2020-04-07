@@ -29,11 +29,11 @@ public:
 		PZMQMSG pMsg = (PZMQMSG)(pEvent + 1);
 		if(m_pObj == nullptr || nullptr == m_pfn) return false;
 		
-		return (m_pObj->(*m_pfn))(pMsg);
+		return (m_pObj->*m_pfn)(pMsg);
 	}
 
 
-	bool Init(TYPE* pObject, PZMQMSGFUNC* pfn, int cnThread  = 1, int nGroup  = 0)
+	bool Init(TYPE* pObject, PZMQMSGFUNC pfn, int cnThread  = 1, int nGroup  = 0)
 	{
 		if(nullptr == pObject || nullptr == pfn )
 		{
@@ -87,7 +87,7 @@ public:
 		PEVENTHEADER pEvent = (PEVENTHEADER) pBuf->GetBufPtr();
 		pEvent->dwLength = pBuf->GetBufLen() - sizeof(EVENTHEADER);
 	
-		CActiveObject pObj = nullptr;
+		CActiveObject* pObj = nullptr;
 		if(m_cnSerial ==  0)	
 			pObj = this;
 		else 
