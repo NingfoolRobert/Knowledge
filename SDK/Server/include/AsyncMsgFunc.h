@@ -33,8 +33,16 @@ public:
 	}
 
 
-	bool Init(int cnThread  = 1, int nGroup  = 0)
+	bool Init(TYPE* pObject, PZMQMSGFUNC* pfn, int cnThread  = 1, int nGroup  = 0)
 	{
+		if(nullptr == pObject || nullptr == pfn )
+		{
+			return false;
+		}
+		m_pObj = pObject;
+		m_pfn = pfn;
+
+		//
 		if(nGroup == 0)
 			CActiveObject::Init(cnThread, 1, cnThread * 100);
 		else 
