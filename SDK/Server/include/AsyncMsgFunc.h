@@ -22,6 +22,8 @@ class CAsyncMsgFunc:public CActiveObject
 {
 public:
 	typedef bool (TYPE::*PZMQMSGFUNC)(PZMQMSG);
+	CAsyncMsgFunc():m_pObj(nullptr),m_pfn(nullptr), m_cnSerial(0){}
+	virtual ~CAsyncMsgFunc(){}
 public:
 
 	virtual bool OnEvent(PEVENTHEADER  pEvent)
