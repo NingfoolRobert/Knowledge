@@ -78,7 +78,7 @@ public:
 		
 		PEVENTHEADER pEvent = (PEVENTHEADER) pBuf->GetBufPtr();
 		pEvent->dwLength = pBuf->GetBufLen() - sizeof(EVENTHEADER);
-	
+
 		CActiveObject pObj = nullptr;
 		if(m_cnSerial ==  0)	
 			pObj = this;
@@ -93,6 +93,7 @@ public:
 		}
 	
 		g_pBufferMgr->ReleaseBuffer(pBuf);
+		return true;
 	}
 	
 private:
