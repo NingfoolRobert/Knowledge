@@ -22,6 +22,8 @@ class CAsyncMsgFunc:public CActiveObject
 {
 public:
 	typedef bool (TYPE::*PZMQMSGFUNC)(PZMQMSG);
+	CAsyncMsgFunc():m_pObj(nullptr),m_pfn(nullptr), m_cnSerial(0){}
+	virtual ~CAsyncMsgFunc(){}
 public:
 
 	virtual bool OnEvent(PEVENTHEADER  pEvent)
@@ -29,12 +31,20 @@ public:
 		PZMQMSG pMsg = (PZMQMSG)(pEvent + 1);
 		if(m_pObj == nullptr || nullptr == m_pfn) return false;
 		
-		return (m_pObj->(*m_pfn))(pMsg);
+		return (m_pObj->*m_pfn)(pMsg);
 	}
 
 
-	bool Init(int cnThread  = 1, int nGroup  = 0)
+	bool Init(TYPE* pObject, PZMQMSGFUNC pfn, int cnThread  = 1, int nGroup  = 0)
 	{
+		if(nullptr == pObject || nullptr == pfn )
+		{
+			return false;
+		}
+		m_pObj = pObject;
+		m_pfn = pfn;
+
+		//
 		if(nGroup == 0)
 			CActiveObject::Init(cnThread, 1, cnThread * 100);
 		else 
@@ -80,6 +90,7 @@ public:
 		pEvent->dwLength = pBuf->GetBufLen() - sizeof(EVENTHEADER);
 
 		CActiveObject pObj = nullptr;
+	
 		if(m_cnSerial ==  0)	
 			pObj = this;
 		else 

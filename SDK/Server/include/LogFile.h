@@ -76,8 +76,8 @@ private:
 #define LogTrace(fmt, ...) (Singleton<CLogFile>::GetInstance().Trace(fmt, ##__VA_ARGS__)) 
 #define LogDebug(fmt, ...) (Singleton<CLogFile>::GetInstance().Debug(fmt, ##__VA_ARGS__)) 
 #define LogInfo(fmt, ...) (Singleton<CLogFile>::GetInstance().Info(fmt, ##__VA_ARGS__)) 
-#define LogWarn(fmt, ...) (Singleton<CLogFile>::GetInstance().Warn("%s(%d) " fmt, ##__VA_ARGS__)) 
-#define LogError(fmt, ...) (Singleton<CLogFile>::GetInstance().Error("%s(%d) " fmt, ##__VA_ARGS__)) 
+#define LogWarn(fmt, ...) (Singleton<CLogFile>::GetInstance().Warn("%s(%d) " fmt, FileName(__FILE__), __LINE__, ##__VA_ARGS__)) 
+#define LogError(fmt, ...) (Singleton<CLogFile>::GetInstance().Error("%s(%d) " fmt, FileName(__FILE__), __LINE__, ##__VA_ARGS__)) 
 #define LogFatal(fmt, ...) (Singleton<CLogFile>::GetInstance().Fatal("%s(%d) " fmt, FileName(__FILE__), __LINE__, ##__VA_ARGS__)) 
 
 
