@@ -67,7 +67,7 @@ public:
 				m_cnSerial++;
 			}
 		}
-		
+		return true;	
 	}
 
 	bool AddMsg(PZMQMSG pMsg, int nGroupID = 0)
