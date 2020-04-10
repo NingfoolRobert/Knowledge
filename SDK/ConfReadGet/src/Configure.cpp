@@ -289,15 +289,16 @@ bool CIniConfigure::ReadIniFile(const char* pszFileTxt, unsigned int dwFileSize)
 		int nLen = strlen(pHead);
 		buf.resize(nLen + 1);
 		strncpy(&buf[0], pHead, nLen + 1);
-		
+		pHead = strtok_r(NULL, pSplite, &pSave);
+		//
 		char* ptr = &buf[0];
-		
 		while(*ptr == '\t' || *ptr == ' ') ptr++;
 		char* pEnd = &buf[0] + nLen;
 		while(*pEnd == '\t' || *pEnd == ' ') ptr--;
 		++pEnd;
 		*pEnd = 0;
-
+		if(pEnd < ptr) continue;
+		//
 		if(*ptr == ';')
 		{
 			 strNote += ptr;
@@ -350,7 +351,6 @@ bool CIniConfigure::ReadIniFile(const char* pszFileTxt, unsigned int dwFileSize)
 			}
 		}
 		
-		pHead = strtok_r(NULL, pSplite, &pSave);
 	}
 	
 	return true;
