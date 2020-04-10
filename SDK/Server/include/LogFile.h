@@ -18,14 +18,14 @@
 #include "ObjectLock.h"
 #include "Singleton.h"
 
-
+#include <string.h> 
 #include <mutex>
 #include <condition_variable> 
 #include <unistd.h> 
 
 enum 
 {
-	LOG_LEVEL_TYPE_TRACE,					//所有日志均打印
+	LOG_LEVEL_TYPE_TRACE = 1,					//所有日志均打印
 	LOG_LEVEL_TYPE_NOTIC,					//最低级别日志
 	LOG_LEVEL_TYPE_DEBUG,					//调试日志
 	LOG_LEVEL_TYPE_INFO,					//服务运行正常日志

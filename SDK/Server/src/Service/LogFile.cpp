@@ -14,7 +14,7 @@ static char szLogLevel[8][8] = { "TRACE", "NOTIC", "DEBUG", "INFO", "WARN", "ERR
 
 CLogFile::CLogFile(void)
 {
-
+	m_nLogLevelType = LOG_LEVEL_TYPE_INFO;
 }
 
 CLogFile::~CLogFile(void)
