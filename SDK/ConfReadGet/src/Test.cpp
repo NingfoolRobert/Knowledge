@@ -14,8 +14,10 @@ int main()
 
 	char szTmp[20] = { 0 };
 	stIni.GetIniString("Stage", "Addr", "", szTmp);
-
 	printf("%s\n", szTmp);
+
+
+	printf("%lf", stIni.GetIniDouble("WIN", "price", 0.0));
 	return 0;
 
 	

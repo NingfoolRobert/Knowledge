@@ -3,9 +3,8 @@
 #include <unistd.h> 
 #include <fcntl.h> 
 #include <set>
-
-
-
+#include <sys/stat.h> 
+#include <sys/types.h> 
 
 	
 CIniConfigure::CIniConfigure()
@@ -17,6 +16,13 @@ CIniConfigure::CIniConfigure()
 
 CIniConfigure::~CIniConfigure()
 {
+	for(auto i = 0u; i < m_listIniConf.size(); ++i)
+	{
+		auto pSec = m_listIniConf[i];
+		delete pSec;
+		pSec = nullptr;
+	}
+	m_listIniConf.clear();
 }
 
 
@@ -32,15 +38,21 @@ bool CIniConfigure::Init(const char* pszConfigureFileName)
 	{
 		return false;
 	}
-	fseek(pFile, 0, SEEK_END);
-	unsigned int dwFileSize = ftell(pFile);
+	struct stat st;
+	int fd = fileno(pFile);
+	fstat(fd, &st);
+	if(m_tLastModTime == st.st_mtime)
+	{
+		fclose(pFile);
+		return true;
+	}
+	m_tLastModTime = st.st_mtime;
+	unsigned int dwFileSize = st.st_size;
 
-	rewind(pFile);
 	std::vector<char> buf;
 	buf.resize(dwFileSize);
-
 	fread(&buf[0], 1, dwFileSize, pFile);
-
+	fclose(pFile);
 	return ReadIniFile(&buf[0], dwFileSize);
 }
 
@@ -66,34 +78,6 @@ bool CIniConfigure::GetIniString(const char* pszSec, const char* pszKey, const c
 		}
 	}
 
-	return true;
-//	auto itSec  = m_listConfInfo.find(pszSec);
-//	if(itSec == m_listConfInfo.end())
-//		strcpy(pszValue, pszDefault);
-//	else 
-//	{
-//		auto pSec = itSec->second;
-//		if(nullptr == pSec)
-//		{
-//			strcpy(pszValue, pszDefault);
-//		}
-//		else 
-//		{
-//			auto it = pSec->find(pszKey);
-//			if(it == pSec->end())
-//				strcpy(pszValue, pszDefault);
-//			else 
-//			{
-//				auto pEntry = it->second;
-//				if(nullptr == pEntry)
-//					strcpy(pszValue, pszDefault);
-//				else 
-//					strcpy(pszValue, pEntry->szValue);
-//			}
-//				
-//		}
-//		
-//	}
 	return true;
 }
 
@@ -201,7 +185,7 @@ bool CIniConfigure::WriteIniString(const char* pszSec, const char* pszKey, const
 		m_listIniConf.push_back(pSec);
 	}
 
-	return WirteIniFile(); 
+	return WriteIniFile(); 
 }
 
 bool CIniConfigure::WriteIniInt(const char* pszSec, const char* pszKey, const int nValue/* = 0*/, const char* pszNote/* = nullptr*/)
@@ -227,11 +211,60 @@ bool CIniConfigure::WriteIniInt64(const char* pszSec, const char* pszKey, const 
 	
 bool CIniConfigure::DelIniSecEntry(const char* pszSec, const char* pszKey)
 {
+	if(nullptr == pszSec || nullptr == pszKey)
+		return true;
+	bool bFind = false;
+	for(auto it = m_listIniConf.begin(); it != m_listIniConf.end(); ++it)
+	{
+		auto pSec = *it;
+		for(auto itEntry = pSec->begin(); itEntry != pSec->end(); ++itEntry)
+		{
+			auto pEntry = *itEntry;
+			if(strcmp(pEntry->szSec, pszSec) != 0)
+			{
+				break;
+			}
+			//
+			if(strcmp(pEntry->szEntry, pszKey)== 0)
+			{
+				pSec->erase(itEntry);
+				bFind = true;
+				return WriteIniFile();
+			}
+		}
+	}
+	
 	return true;
 }
 
 bool CIniConfigure::DelIniSec(const char* pszSec)
 {
+	if(nullptr == pszSec)
+		return true;
+	bool bFind = false;
+	for(auto it = m_listIniConf.begin(); it != m_listIniConf.end(); ++it)
+	{
+		auto pSec = *it;
+		for(auto itEntry = pSec->begin(); itEntry != pSec->end(); ++itEntry)
+		{
+			auto pEntry = *itEntry;
+			if(strcmp(pEntry->szSec, pszSec) == 0)
+			{
+				bFind = true;
+				break;
+			}
+		}
+		if(bFind)
+		{
+			delete pSec;
+			pSec = nullptr;
+			m_listIniConf.erase(it);
+			break;
+		}
+	}
+	//
+	if(bFind)
+		return WriteIniFile();
 	return true;
 }
 	
@@ -315,7 +348,6 @@ bool CIniConfigure::ReadIniFile(const char* pszFileTxt, unsigned int dwFileSize)
 				strNote = "";
 				pSec->push_back(pEntry);
 			}
-
 		}
 		
 		pHead = strtok_r(NULL, pSplite, &pSave);
@@ -324,7 +356,7 @@ bool CIniConfigure::ReadIniFile(const char* pszFileTxt, unsigned int dwFileSize)
 	return true;
 }
 
-bool CIniConfigure::WirteIniFile()
+bool CIniConfigure::WriteIniFile()
 {
 	int fd = open(m_szIniFileName, O_TRUNC | O_APPEND | O_WRONLY, 0644);
 	if(fd < 0)

@@ -70,17 +70,14 @@ public:
 	bool	DelIniSecEntry(const char* pszSec, const char* pszKey);
 
 	bool	DelIniSec(const char* pszSec);
-public:
-	
+protected:
 	bool	ReadIniFile(const char* pszFileTxt, unsigned int dwFileSize);
 
-	bool	WirteIniFile();
-	
+	bool	WriteIniFile();
 private:
 	char															m_szIniFileName[256];
 	int																m_eErrorType;
 	unsigned int													m_tLastModTime;
 	std::mutex														m_clsLock;
 	std::vector<std::vector<INIENTRYINFOPtr>* >						m_listIniConf;
-	std::map<std::string, std::map<std::string, INIENTRYINFOPtr>* >				m_listConfInfo;
 };
