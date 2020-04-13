@@ -10,7 +10,7 @@
 
 
 
-static char szLogLevel[8][8] = { "TRACE", "NOTIC", "DEBUG", "INFO", "WARN", "ERROR", "FATAL" }; 
+static char szLogLevel[8][8] = { "ALL", "TRACE", "NOTIC", "DEBUG", "INFO", "WARN", "ERROR", "FATAL" }; 
 
 CLogFile::CLogFile(void)
 {
