@@ -10,6 +10,8 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h> 
+#include <vector> 
+
 
 
 struct Base64Date6
@@ -36,11 +38,12 @@ class CSmtp
 		bool  SendEnd();
 	protected:
 
-		int		LogOn();
+		int		LogOn(bool bAnonymiate = false);
 		
 		int		SendMsg(const char* pszBuf, int nLen,bool bWaitRecv = false, char* pszRecvBuf = nullptr, int nLength = 0);
 
-		
+		int		SendMail(std::vector<std::string>& To, std::vector<std::string>& CC, const char* pszSubject, const char* pszTxt, unsigned int dwLength);
+
 	void EncodeBase64(char *dbuf, char *buf128, int len);
 
 	char ConvertToBase64(char uc);

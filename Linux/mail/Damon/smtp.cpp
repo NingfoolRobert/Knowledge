@@ -90,7 +90,7 @@ bool CSmtp::OpenSocket()
 	return true;
 }
 
-int	CSmtp::LogOn()
+int	CSmtp::LogOn(bool bAnonymiate/* = false*/)
 {
 	char szRecv[256] = { 0 };
 	if(SendMsg(m_szEHLO, strlen(m_szEHLO), true, szRecv, sizeof(szRecv)) < 0)
@@ -378,3 +378,99 @@ char CSmtp::ConvertToBase64(char uc)
 	}
 	return '/';
 }
+		
+int	CSmtp::SendMail(std::vector<std::string>& To, std::vector<std::string>& CC, const char* pszSubject, const char* pszTxt, unsigned int dwLength)
+{
+	if(nullptr == pszTxt|| 0 == dwLength || 0 == To.size())
+		return -1;
+	
+	char szRecv[256] = {0};
+	char szTmp[256] = { 0 };
+	strcpy(szTmp, "MAIL FROM: <it_support_app_sende@cicc.com.cn>\r\n");
+	int nRet = SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv));
+	if(nRet < 0)
+	{
+		printf("Send HEADER MAIL FROM Msg fail.");
+		return 0;
+	}
+	else if(nRet == 0)
+	{
+		printf("Recv Msg fail.");
+		return 0;
+	}
+
+	//TO  
+	for(auto i = 0u; i < To.size(); ++i)
+	{
+		memset(szRecv, 0, sizeof(szRecv));
+		sprintf(szTmp, "RCPT TO: <%s>\r\n", To[i].c_str());
+		nRet = SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv));
+		if(nRet < 0)
+		{
+			printf("Send HEADER RCPT TO Msg fail.");
+			return 0;
+		}
+		else if(nRet == 0)
+		{
+			printf("Recv Msg fail.");
+			return 0;
+		}
+	}
+
+	//CC 
+	
+	for(auto i = 0u; i < CC.size(); ++i)
+	{
+		memset(szRecv, 0, sizeof(szRecv));
+		sprintf(szTmp, "RCPT CC: <%s>\r\n", CC[i].c_str());
+		nRet = SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv));
+		if(nRet < 0)
+		{
+			printf("Send HEADER RCPT TO Msg fail.");
+			return 0;
+		}
+		else if(nRet == 0)
+		{
+			printf("Recv Msg fail.");
+			return 0;
+		}
+	}
+
+	//Body
+	strcpy(szTmp, "DATA\r\n");
+	
+	nRet = SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv));
+	if(nRet < 0)
+	{
+		printf("Send HEADER DATA HEADER Msg fail.");
+		return 0;
+	}
+	else if(nRet == 0)
+	{
+		printf("Recv Msg fail.");
+		return 0;
+	}
+
+	//
+	
+	strcpy(szTmp, "From: \"IT\"<it_support_app_sende@cicc.com.cn>\r\nTo: <Beifei.Ning@cicc.com.cn>\r\nSubject:ninhao\r\n\r\nTestOne.\r\n.\r\n");
+	
+	memset(szRecv, 0, sizeof(szRecv));
+	nRet = SendMsg(szTmp, strlen(szTmp), true, szRecv, sizeof(szRecv));
+	if(nRet < 0)
+	{
+		printf("Send HEADER DATA HEADER Msg fail.");
+		return 0;
+	}
+	else if(nRet == 0)
+	{
+		printf("Recv Msg fail.");
+		return 0;
+	}
+	printf("Send Result: %s", szRecv);
+
+
+
+	return 1;
+}
+		
