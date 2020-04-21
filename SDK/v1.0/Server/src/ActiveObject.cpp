@@ -8,7 +8,7 @@
 
 	
 //
-CActiveObject::CActiveObject(void):m_bStop(true)
+CActiveObject::CActiveObject(void):m_bStop(false)
 {
 	m_pOwner = nullptr;	
 }
