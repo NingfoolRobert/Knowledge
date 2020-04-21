@@ -26,7 +26,7 @@ bool CActiveObject::Init(int cnThread/* = 1*/, CActiveObject* pOwner/* = nullptr
 
 	for(auto i = 0; i < m_cnThread; ++i)
 	{
-		std::thread tr1(&CActiveObject::ActiveThreadFunc, this);
+		std::thread tr1(&CActiveObject::ActiveEventThreadFunc, this);
 		tr1.detach();
 	}
 
@@ -95,15 +95,16 @@ bool CActiveObject::PostEvent(CBuffer* pBuffer)
 	return true;
 }
 	
-void CActiveObject::ActiveThreadFunc()
+void CActiveObject::ActiveEventThreadFunc()
 {
 	CBuffer* pBuffer = nullptr;
 	PEVENTHEADER pEvent = nullptr;
 	while(!m_bStop)
 	{
 		std::unique_lock<std::mutex> locker(m_clsLock);
-		m_condEvent.wait(locker, [&]()->bool{return m_listEvent.GetCount();});
-		while(m_listEvent.GetCount())
+		m_condEvent.wait(locker, [&]()->bool{return !m_listEvent.IsEmpty();});
+		locker.unlock();
+		while(!m_listEvent.IsEmpty())
 		{
 			m_clsLock.lock();
 			pBuffer = m_listEvent.Get();
