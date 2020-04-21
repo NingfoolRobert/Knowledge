@@ -60,7 +60,8 @@ CPtrCycle<TYPE>::CPtrCycle(int nExpandLen/* = 20*/)
 	m_nTailPos = 0;
 	m_nCount = 0;
 	m_nCapLen = 0;
-	
+
+	m_ppElementList = nullptr;
 }
 
 template<class TYPE>
