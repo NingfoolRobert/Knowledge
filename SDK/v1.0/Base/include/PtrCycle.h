@@ -34,7 +34,7 @@ public:
 
 	void			FreeAll(bool bFreeList = false);
 protected:
-	bool			ReacllocCapbility();
+	bool			ReallocCapbility();
 	
 private:
 	
@@ -117,7 +117,7 @@ TYPE* CPtrCycle<TYPE>::GetHead()
 template<class TYPE>
 bool CPtrCycle<TYPE>::Add(TYPE* pElement)
 {
-	if(!ReacllocCapbility())
+	if(!ReallocCapbility())
 		return false;
 	m_ppElementList[m_nTailPos++] = pElement;
 	if(m_nTailPos >= m_nCapLen)
@@ -133,7 +133,7 @@ void CPtrCycle<TYPE>::SetExpandLen(unsigned int nExpandLen)
 }
 
 template<class TYPE>	
-bool CPtrCycle<TYPE>::ReacllocCapbility()
+bool CPtrCycle<TYPE>::ReallocCapbility()
 {
 	if(m_nCapLen > m_nCount)
 		return true;
