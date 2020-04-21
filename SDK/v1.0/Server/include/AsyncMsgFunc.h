@@ -46,7 +46,7 @@ public:
 
 		//
 		if(nGroup == 0)
-			CActiveObject::Init(cnThread, 1, cnThread * 100);
+			CActiveObject::Init(cnThread);
 		else 
 		{
 			CActiveObject* pObj = nullptr;
