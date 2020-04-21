@@ -45,7 +45,7 @@ public:
 
 	virtual bool PostEvent(CBuffer* pBuffer);
 public:
-	void ActiveThreadFunc();
+	void ActiveEventThreadFunc();
 private:
 	bool										m_bStop;
 	std::mutex									m_clsLock;
