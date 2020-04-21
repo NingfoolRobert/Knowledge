@@ -30,6 +30,8 @@ public:
 public:
 	bool Init(int cnThread = 1, CActiveObject* pOwner = nullptr);
 
+	void SetPendingCnt(int nLen);
+
 	CActiveObject* GetOwner(){return m_pOwner;}
 	
 	void Terminate();

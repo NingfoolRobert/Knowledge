@@ -29,9 +29,16 @@ bool CActiveObject::Init(int cnThread/* = 1*/, CActiveObject* pOwner/* = nullptr
 		std::thread tr1(&CActiveObject::ActiveThreadFunc, this);
 		tr1.detach();
 	}
+
+	SetPendingCnt(1000);
 	return true;
 }
 
+	
+void CActiveObject::SetPendingCnt(int nLen)
+{
+	m_listEvent.SetExpandLen(nLen);
+}
 	
 void CActiveObject::Terminate()
 {

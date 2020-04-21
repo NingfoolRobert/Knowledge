@@ -27,6 +27,7 @@ bool CObjectService::OnInitialUpdate()
 
 	LogInfo("Async Object Init Success...");
 
+	CActiveObject::SetPendingCnt(10000);
 	return true;
 }
 
