@@ -2,6 +2,9 @@
 #include "BufferMgr.h"
 #include "LogFile.h"
 
+#if __GNUC__ 
+#include <malloc.h> 
+#endif 
 
 class CBufferMgr* g_pBufferMgr = nullptr;
 CBufferMgr::CBufferMgr()
@@ -121,6 +124,7 @@ void CBufferMgr::ReleaseBuffer(CBuffer* pBuffer)
 void CBufferMgr::ClearAllBuffer()
 {
 	CBuffer* pBuf = nullptr;
+	
 	for(int i = 0; i < BUFFER_GROUP_COUNT; ++i)
 	{
 		CAutoLock locker(&m_clsLock[i]);
@@ -132,6 +136,9 @@ void CBufferMgr::ClearAllBuffer()
 			pBuf = nullptr;
 		}
 	}
+#if __GNUC__ 
+	malloc_trim(0);
+#endif
 }
 	
 void CBufferMgr::PrintInfo(CBuffer* pBuf)
@@ -173,13 +180,13 @@ void CBufferMgr::ReclaimBuffer(CBuffer*& pBuffer)
 	}
 	// 
 	m_clsLock[Index].Lock();
-	if(m_listBuf.size() >= BUFFER_MGR_CAPABILITY / cnInit)
+	if((int)m_listBuf[Index].size() >= (BUFFER_MGR_CAPABILITY / cnInit))
 	{
 		delete pBuffer;
 	}
 	else 
 	{
-		m_listBuf.push(pBuffer);
+		m_listBuf[Index].push(pBuffer);
 	}
 
 	m_clsLock[Index].UnLock();
