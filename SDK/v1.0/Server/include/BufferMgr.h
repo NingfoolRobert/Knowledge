@@ -46,6 +46,8 @@ public:
 	
 	void	ReleaseBuffer(CBuffer* pBuffer);
 
+	void	ReclaimBuffer(CBuffer*& pBuffer);
+
 	void	ClearAllBuffer();
 
 	void	PrintInfo(CBuffer* pBuf);

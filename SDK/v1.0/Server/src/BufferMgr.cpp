@@ -149,3 +149,40 @@ void CBufferMgr::PrintInfo(CBuffer* pBuf)
 		LogError("Append Data fail.");
 	}
 }
+	
+void CBufferMgr::ReclaimBuffer(CBuffer*& pBuffer)
+{
+	if(nullptr == pBuffer)
+		return ;
+	pBuffer->Clear();
+
+	int nlen = pBuffer->GetCapability();
+	if(nlen > BUFFER_MGR_CAPABILITY/BUFFER_INIT_SIZE)	//大于内存池管理大小，直接释放
+	{
+		delete pBuffer;
+		pBuffer = nullptr;
+		return ;
+	}
+
+	int Index = 0;
+	int cnInit = 256;
+	while(nlen > cnInit)
+	{
+		Index++;
+		cnInit <<= 1;
+	}
+	// 
+	m_clsLock[Index].Lock();
+	if(m_listBuf.size() >= BUFFER_MGR_CAPABILITY / cnInit)
+	{
+		delete pBuffer;
+	}
+	else 
+	{
+		m_listBuf.push(pBuffer);
+	}
+
+	m_clsLock[Index].UnLock();
+
+	pBuffer = nullptr;
+}
