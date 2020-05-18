@@ -198,3 +198,49 @@ bool GetXMLConfigString(const char* pszNode, const char* pszAttr, const char* ps
 		return false;
 	return true;
 }
+
+bool CreateAllPath(const char* pszAllDir)
+{
+	if(nullptr == pszAllDir)
+		return false;
+
+	char szTmp[256] = { 0 };
+	strcpy(szTmp, pszAllDir);
+
+	int nLen = strlen(pszAllDir);
+	if('/' != szTmp[nLen - 1])
+	{
+		strcat(szTmp, "/");
+		nLen++;
+	}
+//	
+	for(int  i = 1; i < nLen; ++i)
+	{
+		if('/' == szTmp[i])
+		{
+			szTmp[i] = 0;
+			if(access(szTmp, F_OK) == -1)
+			{
+				if(!mkdir(szTmp, 0777) == -1)
+				{
+					return false;
+				}
+			}
+			szTmp[i] = '/';
+		}
+
+	}
+
+	return true;
+}
+
+bool GetCurrentPath(char* pszDirName)
+{
+	if(nullptr == pszDirName)
+		return false; 
+	//TDO 
+
+	getcwd(pszDirName, 256);
+
+	return true;
+}

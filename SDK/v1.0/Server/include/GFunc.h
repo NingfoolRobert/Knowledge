@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include <vector>
 #include <memory> 
-
+#include <sys/stat.h>
 #include "GlobalVar.h"
 
 
@@ -54,3 +54,7 @@ bool Compress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen);
 bool UnCompress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen);
 
 bool GetXMLConfigString(const char* pszNode, const char* pszAttr, const char* pszDefault,  char* pszValue);
+
+bool CreateAllPath(const char* pszAllDir);
+
+bool GetCurrentPath(char* pszDirName);
