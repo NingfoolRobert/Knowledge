@@ -1,0 +1,6 @@
+//helloConfig.h.in
+#define Hello_world_version_major @Hello_world_version_major@
+#define Hello_world_version_minor @Hello_world_version_minor@
+#define Hello_world_version_patch @Hello_world_version_patch@
+#define Hello_world_version_build @Hello_world_version_build@
+#define Hello_world_version_STR @Hello_world_VERSION_STR@
