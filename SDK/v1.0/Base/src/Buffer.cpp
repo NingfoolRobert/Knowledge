@@ -47,8 +47,8 @@ void CBuffer::Clear(bool bFree /*= false*/)
 void CBuffer::SetHeaderLen(int nHeaderLen)
 {
 	m_nlenHeader = nHeaderLen;	
-	m_nlenData = nHeaderLen;
 	Expand(nHeaderLen);
+	m_nlenData = nHeaderLen;
 }
 
 bool CBuffer::Expand(int nExpand)
