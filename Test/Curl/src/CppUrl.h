@@ -31,7 +31,7 @@ public:
 public:
 	virtual bool HttpsGet(const char* pszUrl, std::string& respdata);
 
-	bool HttpsPost(const char* pszUrl, std::string& respdata);
+	bool HttpsPost(const char* pszUrl, const char* pszBody, std::string& respheaddata, std::string& respbody);
 public:
 	void SetURLOpt(int nLevel, const char* pszOptional);
 private:
