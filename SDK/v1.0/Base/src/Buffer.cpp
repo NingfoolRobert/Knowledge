@@ -179,12 +179,21 @@ bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 		return false;
 	}
 
-	//int nLen = vsnprintf(NULL, 0, pszFmt, args);
-	char szData[1024] = { 0 };
-	//std::string strData;
-	//std::vector<char> strData;
-	//strData.resize(nLen + 1);
-	vsprintf(szData, pszFmt, args);
+	unsigned int dwLen = vsnprintf(NULL, 0, pszFmt, args);
 
-	return Append(szData, strlen(szData));
+	if(!Expand(dwLen))
+	{
+		return false;
+	}
+	vsprintf(m_pBuf + m_nlenData,  pszFmt, args);
+	m_nlenData += dwLen;
+	//int nLen = vsnprintf(NULL, 0, pszFmt, args);
+//	char szData[1024] = { 0 };
+//	//std::string strData;
+//	//std::vector<char> strData;
+//	//strData.resize(nLen + 1);
+//	vsprintf(szData, pszFmt, args);
+//
+//	return Append(szData, strlen(szData));
+	return true;
 }
