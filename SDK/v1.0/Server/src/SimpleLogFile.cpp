@@ -13,13 +13,13 @@ CSimpleLogFile::~CSimpleLogFile()
 }
 
 
-bool CSimpleLogFile::Init(const char* pszFileAllName, int nAppendType/* = SIMPLEFILE_APPEND_TYPE_APPEND*/)
+bool CSimpleLogFile::Init(const char* pszFileAllName, int nOpenType/* = SIMPLEFILE_APPEND_TYPE_APPEND*/)
 {
 	std::unique_lock<std::mutex> locker(m_clsLock);
 	if(nullptr == pszFileAllName)
 		return false;
 	strcpy(m_szFileAllName, pszFileAllName);
-	m_nFileAppendType = nAppendType;
+	m_nOpenType = nOpenType;
 	if(m_nFileAppendType == SIMPLEFILE_APPEND_TYPE_OPEN)
 	{
 		m_fd = open(m_szFileAllName, O_CREAT|O_APPEND|O_WRONLY, 0644);
