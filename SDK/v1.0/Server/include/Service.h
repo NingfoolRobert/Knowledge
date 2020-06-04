@@ -6,13 +6,18 @@
 #include <time.h>
 #include <mutex>
 #include <condition_variable>
+#include <vector>
 
 
 
 #include "LogFile.h"
 #include "GlobalVar.h"
 
-
+typedef struct tagVersionInfo 
+{
+	char			szVersionName[32];
+	char			szVersionValue[32];
+}VERSIONINFO, *PVERSIONINFO;
 
 
 class CService
@@ -33,6 +38,7 @@ public:
 	bool	Execute(const char* pszCommand);
 	void	Terminate();
 
+	void	RegisterVersion(const char* pszVersionName, const char* pszVersionValue);
 private:
 	bool	SysRun();
 protected:
@@ -43,6 +49,8 @@ protected:
 	std::condition_variable  m_condStop;
 	
 	char		m_szVersion[128];
+private:
+	std::vector<VERSIONINFO>		m_listVersion;
 };
 
 extern CService* g_Service;

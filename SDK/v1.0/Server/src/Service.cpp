@@ -47,11 +47,17 @@ bool CService::Execute(const char* pszCommand)
 	//
 	Singleton<CLogFile>::GetInstance().WriteData("\n\n", strlen("\n\n"));
 	LogInfo("Init Service ...");
+		
 	if(!OnInitialUpdate())
 	{
 		LogError("Init Service fail....");
 		exit(-1);
 		return false;
+	}
+	
+	for(auto i = 0u; i < m_listVersion.size(); ++i)
+	{
+		LogInfo("%s: %s", m_listVersion[i].szVersionName, m_listVersion[i].szVersionValue);
 	}
 
 	m_bStop = false;	
@@ -83,7 +89,7 @@ bool CService::Execute(const char* pszCommand)
 	}
 
 	OnTerminate();
-	LogInfo("Stop Service ....\n\n");
+	LogInfo("Stop Service ....\r\n");
 	return true;
 }
 
@@ -103,4 +109,16 @@ bool CService::SysRun()
 void CService::OnRegisterVersion()
 {
 	strcpy(m_szVersion, "0.0.0.0");
+}
+	
+void CService::RegisterVersion(const char* pszVersionName, const char* pszVersionValue)
+{
+	if(nullptr == pszVersionName || nullptr == pszVersionValue)
+		return ;
+	
+	VERSIONINFO stInfo;
+	strcpy(stInfo.szVersionName, pszVersionName);
+	strcpy(stInfo.szVersionValue, pszVersionValue);
+
+	m_listVersion.emplace_back(stInfo);
 }
