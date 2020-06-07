@@ -36,7 +36,7 @@ public:
 	CSimpleLogFile();
 	virtual ~CSimpleLogFile();
 public:
-	bool	Init(const char* pszFileAllName, int nOpenType = SIMPLEFILE_APPEND_TYPE_APPEND);
+	bool	Init(const char* pszFileAllName, int nType = SIMPLEFILE_APPEND_TYPE_APPEND);
 	bool	SetFileInfo(const char* pszFileAllName, int nAppendType);
 	bool	WriteLog(const char* pszFormat, ...);
 	bool	WriteLogV(const char* pszFmt, va_list args);
@@ -52,5 +52,5 @@ private:
 	std::mutex			m_clsLock;
 	char				m_szFileAllName[256];
 	int					m_fd;
-	int					m_nOpenType;
+	int					m_nType;			//文件追加方式
 };

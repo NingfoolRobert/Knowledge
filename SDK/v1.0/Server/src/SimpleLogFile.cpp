@@ -19,8 +19,8 @@ bool CSimpleLogFile::Init(const char* pszFileAllName, int nOpenType/* = SIMPLEFI
 	if(nullptr == pszFileAllName)
 		return false;
 	strcpy(m_szFileAllName, pszFileAllName);
-	m_nOpenType = nOpenType;
-	if(m_nOpenType == SIMPLEFILE_APPEND_TYPE_OPEN)
+	m_nType = nOpenType;
+	if(m_nType == SIMPLEFILE_APPEND_TYPE_OPEN)
 	{
 		m_fd = open(m_szFileAllName, O_CREAT|O_APPEND|O_WRONLY, 0644);
 		if(-1 == m_fd)
@@ -53,7 +53,7 @@ bool CSimpleLogFile::Write(CBuffer* pBuffer)
 bool CSimpleLogFile::Terminate()
 {
 	std::unique_lock<std::mutex> locker(m_clsLock);
-	if(m_nOpenType == SIMPLEFILE_APPEND_TYPE_OPEN)
+	if(m_nType == SIMPLEFILE_APPEND_TYPE_OPEN)
 	{
 		close(m_fd);
 		m_fd = -1;
@@ -95,13 +95,9 @@ bool CSimpleLogFile::WriteLog(const char* pszFormat, ...)
 bool CSimpleLogFile::WriteLogV(const char* pszFmt, va_list args)
 {
 	char szTmp[2048] = { 0 };
-	vsprintf(szTmp, pszFmt, args);
-	if(m_nOpenType == SIMPLEFILE_APPEND_TYPE_OPEN)
-	{
-		return Write(szTmp, strlen(szTmp));
-	}
+	int nLen = vsnprintf(szTmp,2047, pszFmt, args);
 
-	return Append(szTmp, strlen(szTmp));
+	return WriteData(szTmp, nLen);
 }
 	
 bool CSimpleLogFile::GetFileName(char* pszFileAllName)
@@ -119,7 +115,7 @@ bool CSimpleLogFile::SetFileInfo(const char* pszFileAllName, int nAppendType)
 	
 bool CSimpleLogFile::WriteData(const char* pszData,  unsigned int dwLength)
 {
-	if(m_nOpenType == SIMPLEFILE_APPEND_TYPE_OPEN)
+	if(m_nType == SIMPLEFILE_APPEND_TYPE_OPEN)
 		return Write(pszData, dwLength);
 
 	return Append(pszData, dwLength);
