@@ -244,3 +244,48 @@ bool GetCurrentPath(char* pszDirName)
 
 	return true;
 }
+
+bool GetXMLAttrString(rapidxml::xml_node<>* pNode,  const char* pszEntry, const char* pszDefault, char* pszValue)
+{
+	if(nullptr == pNode || nullptr == pszEntry || nullptr == pszValue)
+		return false;
+	using namespace rapidxml;
+	
+	xml_attribute<>* pAttr = pNode->first_attribute(pszEntry);
+	if(nullptr == pAttr)
+	{
+		strcpy(pszValue, pszDefault);
+		return true;
+	}
+	
+	strcpy(pszValue, pAttr->value());
+
+
+	return true;
+}
+
+int  GetXMLAttrInt(rapidxml::xml_node<>* pNode, const char* pszEntry, const int nDefault)
+{
+	char szTmp[32] = { 0 };
+	if(!GetXMLAttrString(pNode, pszEntry, "", szTmp))
+		return nDefault;
+
+	if(szTmp[0] == 0)
+		return nDefault;
+	
+	return atoi(szTmp);
+}
+
+time_t GetFileModTime(const char* pszFileName)
+{
+	if(nullptr == pszFileName)
+		return 0;
+
+	struct stat buf;
+	
+	int nRet = stat(pszFileName, &buf);
+	if(nRet != 0)
+		return 0;
+	
+	return static_cast<time_t>(buf.st_mtime);
+}

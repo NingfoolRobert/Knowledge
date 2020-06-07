@@ -2,11 +2,23 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-
-
 project(SDK)
 
 SET(CMAKE_CXX_STANDARD 11)
+
+set(OBJECT_VERSION_MAJOR 1)
+set(OBJECT_VERSION_MINOR 0)
+set(OBJECT_VERSION_PATCH 0)
+set(OBJECT_VERSION_BUILD 1)
+set(OBJECT_VERSION_VALUE "\"${OBJECT_VERSION_MAJOR}.${OBJECT_VERSION_MINOR}.${OBJECT_VERSION_PATCH}.${OBJECT_VERSION_BUILD}\"")
+
+configure_file(
+	"${CMAKE_SOURCE_DIR}/versionObject.h.in"
+	"${CMAKE_SOURCE_DIR}/include/versionObject.h"		
+	)
+
+
+
 
 SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O3 -Wall -lphtread")
 

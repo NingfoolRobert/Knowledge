@@ -116,3 +116,11 @@ bool CSimpleLogFile::SetFileInfo(const char* pszFileAllName, int nAppendType)
 	//
 	return true;
 }
+	
+bool CSimpleLogFile::WriteData(const char* pszData,  unsigned int dwLength)
+{
+	if(m_nOpenType == SIMPLEFILE_APPEND_TYPE_OPEN)
+		return Write(pszData, dwLength);
+
+	return Append(pszData, dwLength);
+}

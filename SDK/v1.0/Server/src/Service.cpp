@@ -9,6 +9,8 @@
 
 #include "version.h"
 #include "marc.h"
+#include "versionBase.h"
+#include "versionObject.h"
 
 
 using namespace std;
@@ -31,6 +33,8 @@ CService::~CService()
 bool CService::Execute(const char* pszCommand)
 {
 	OnRegisterVersion();
+	RegisterVersion("BaseService", BASE_VERSION_VALUE);
+	RegisterVersion("ObjectService", OBJECT_VERSION_VALUE);
 	//
 	if(pszCommand != nullptr && 0 != strlen(pszCommand) )
 	{
@@ -57,7 +61,7 @@ bool CService::Execute(const char* pszCommand)
 	
 	for(auto i = 0u; i < m_listVersion.size(); ++i)
 	{
-		LogInfo("%s: %s", m_listVersion[i].szVersionName, m_listVersion[i].szVersionValue);
+		LogInfo("%s %s", m_listVersion[i].szVersionName, m_listVersion[i].szVersionValue);
 	}
 
 	m_bStop = false;	

@@ -21,6 +21,11 @@
 #include <sys/stat.h>
 #include "GlobalVar.h"
 
+#include "rapidxml.hpp"
+#include "rapidxml_utils.hpp"
+#include "rapidxml_print.hpp"
+
+
 
 bool GlobalBegin(const char* pszSimpleName);
 
@@ -58,3 +63,9 @@ bool GetXMLConfigString(const char* pszNode, const char* pszAttr, const char* ps
 bool CreateAllPath(const char* pszAllDir);
 
 bool GetCurrentPath(char* pszDirName);
+
+bool GetXMLAttrString(rapidxml::xml_node<>* pNode,  const char* pszEntry, const char* pszDefault, char* pszValue);
+
+int  GetXMLAttrInt(rapidxml::xml_node<>* pNode, const char* pszEntry, const int nDefault);
+
+time_t GetFileModTime(const char* pszFileName);

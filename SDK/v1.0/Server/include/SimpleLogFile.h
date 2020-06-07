@@ -40,6 +40,7 @@ public:
 	bool	SetFileInfo(const char* pszFileAllName, int nAppendType);
 	bool	WriteLog(const char* pszFormat, ...);
 	bool	WriteLogV(const char* pszFmt, va_list args);
+	bool	WriteData(const char* pszData,  unsigned int dwLength);
 	bool	Terminate();
 	bool	GetFileName(char* pszFileAllName);
 protected:
