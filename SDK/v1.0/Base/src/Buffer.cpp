@@ -179,9 +179,9 @@ bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 		return false;
 	}
 
-	char szTmp[4096] = { 0 };
-	
-	vsnprintf(szTmp, 4095, pszFmt, args);
+//	char szTmp[4096] = { 0 };
+//	
+//	vsnprintf(szTmp, 4095, pszFmt, args);
 
 	va_list copy;
 	va_copy(copy, args);

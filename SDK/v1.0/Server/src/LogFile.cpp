@@ -78,7 +78,7 @@ bool CLogFile::WriteLogV(int nLevelType, const char* pszfmt, va_list args)
 	sprintf(szThread, "%08X", (unsigned int)GetThreadID());
 	//std::string str;
 	//str.append(szTime).append(szThread).append(szLogLevel[nLevelType]).append(szData).append("\n");
-	char szLog[1024] = { 0 };	
+	char szLog[4096] = { 0 };	
 	sprintf(szLog, "%s %s [%s] %s\n", szTime, szThread, szLogLevel[nLevelType], szData);
 //	std::unique_lock<std::mutex> locker(m_clsLock);
 //	bool bRet = m_bufLog.AppendFormatText("%s %s [%s] %s\n", szTime, szThread, szLogLevel[nLevelType], szData);

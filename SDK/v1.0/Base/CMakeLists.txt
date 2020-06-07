@@ -9,7 +9,7 @@ set(BASE_VERSION_MAJOR 1)
 set(BASE_VERSION_MINOR 0)
 set(BASE_VERSION_PATCH 0)
 set(BASE_VERSION_BUILD 1)
-#set(Hello_world_VERSION_STR "\"${Hello_world_version_major}.${Hello_world_version_minor}.${Hello_world_version_patch}.${Hello_world_version_build}\"")
+set(BASE_VERSION_VALUE "\"${BASE_VERSION_MAJOR}.${BASE_VERSION_MINOR}.${BASE_VERSION_PATCH}.${BASE_VERSION_BUILD}\"")
 
 configure_file(
 	"${CMAKE_SOURCE_DIR}/versionBase.h.in"
