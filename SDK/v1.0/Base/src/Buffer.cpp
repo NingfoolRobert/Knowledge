@@ -192,7 +192,7 @@ bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 		return false;
 	}
 
-	int nCount = vsnprintf(m_pBuf + m_nlenData, nLen,  pszFmt, args);
+	int nCount = vsnprintf(m_pBuf + m_nlenData, nLen + 1,  pszFmt, args);
 	if(nCount < 0)
 		return false;
 	m_nlenData += nCount;
