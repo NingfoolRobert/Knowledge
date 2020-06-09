@@ -51,7 +51,7 @@ bool CService::Execute(const char* pszCommand)
 	//
 	Singleton<CLogFile>::GetInstance().WriteData("\n\n", strlen("\n\n"));
 	LogInfo("Init Service ...");
-		
+	
 	if(!OnInitialUpdate())
 	{
 		LogError("Init Service fail....");
@@ -59,11 +59,7 @@ bool CService::Execute(const char* pszCommand)
 		return false;
 	}
 	
-	for(auto i = 0u; i < m_listVersion.size(); ++i)
-	{
-		LogInfo("%s %s", m_listVersion[i].szVersionName, m_listVersion[i].szVersionValue);
-	}
-
+	LogInfo("%s Start Success...", m_szServiceName);
 	m_bStop = false;	
 	
 	auto now = std::chrono::system_clock::now();
