@@ -34,11 +34,16 @@ void CBuffer::AddDataLen(int nlen)
 	m_nlenData += nlen;
 	m_nlenData  = m_nlenData > 0 ? m_nlenData : 0;
 //capbility 
-	m_nlenCapability = 0;
-	while(m_nlenCapability < m_nlenData + m_nlenHeader)
+	int nlenCapability = 0;
+	while(nlenCapability <= m_nlenData + m_nlenHeader)
 	{
-		m_nlenCapability += m_nlenExpand;
+		nlenCapability += m_nlenExpand;
 	}
+
+	if(m_pBuf)
+		m_nlenCapability = nlenCapability; 
+	else 
+		m_nlenCapability = 0;
 }
 
 void CBuffer::Clear(bool bFree /*= false*/)
@@ -59,7 +64,7 @@ void CBuffer::Clear(bool bFree /*= false*/)
 void CBuffer::SetHeaderLen(int nHeaderLen)
 {
 	m_nlenHeader = nHeaderLen;	
-	if(m_pBuf == nullptr)
+	if(m_pBuf == nullptr && m_nlenHeader > 0)
 		Expand(nHeaderLen);
 }
 
@@ -92,7 +97,7 @@ bool CBuffer::Expand(int nExpand)
 
 bool CBuffer::ExpandTo(int nLength)
 {
-	int nLen = nLength - m_nlenData;
+	int nLen = nLength - m_nlenData - m_nlenHeader;
 	if(nLen > 0)
 	{
 		return Expand(nLen);
@@ -110,21 +115,28 @@ bool CBuffer::Exchange(CBuffer* pBuffer)
 	if(pBuffer == nullptr)
 		return false;
 	
+	
 	char* pTmp = m_pBuf;
 	int nlenData = m_nlenData;
+	int nlenCap = m_nlenCapability;
 	int nlenHeader = m_nlenHeader;
 	int nExpand = m_nlenExpand;
+	
 	//
 	m_pBuf = pBuffer->GetBufPtr();
 	m_nlenData = pBuffer->GetDataLen();
 	m_nlenCapability = pBuffer->GetCapability();
 	m_nlenHeader = pBuffer->GetHeaderLen();
-//
+	m_nlenExpand = pBuffer->GetExpandLen();
+	
+
 	char** pObj = pBuffer->Detach();
-	*pObj  = pTmp;
+	*pObj  = nullptr;
+	pBuffer->Clear(true);
+	*pObj = pTmp;
 	pBuffer->SetExpandLen(nExpand);
 	pBuffer->SetHeaderLen(nlenHeader);
-	pBuffer->AddDataLen(nlenData - m_nlenData);
+	pBuffer->AddDataLen(nlenData);
 }
 
 
