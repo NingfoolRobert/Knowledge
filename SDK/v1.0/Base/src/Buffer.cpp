@@ -34,16 +34,16 @@ void CBuffer::AddDataLen(int nlen)
 	m_nlenData += nlen;
 	m_nlenData  = m_nlenData > 0 ? m_nlenData : 0;
 //capbility 
-	int nlenCapability = 0;
-	while(nlenCapability <= m_nlenData + m_nlenHeader)
-	{
-		nlenCapability += m_nlenExpand;
-	}
-
-	if(m_pBuf)
-		m_nlenCapability = nlenCapability; 
-	else 
-		m_nlenCapability = 0;
+//	int nlenCapability = 0;
+//	while(nlenCapability <= m_nlenData + m_nlenHeader)
+//	{
+//		nlenCapability += m_nlenExpand;
+//	}
+//
+//	if(m_pBuf)
+//		m_nlenCapability = nlenCapability; 
+//	else 
+//		m_nlenCapability = 0;
 }
 
 void CBuffer::Clear(bool bFree /*= false*/)
@@ -110,33 +110,35 @@ bool CBuffer::ExpandTo(int nLength)
 	return false;
 }
 
-bool CBuffer::Exchange(CBuffer* pBuffer)
+void CBuffer::Exchange(CBuffer* pBuffer)
 {
-	if(pBuffer == nullptr)
-		return false;
+	if(pBuffer == nullptr || pBuffer == this)
+		return ;
 	
-	
-	char* pTmp = m_pBuf;
-	int nlenData = m_nlenData;
-	int nlenCap = m_nlenCapability;
-	int nlenHeader = m_nlenHeader;
-	int nExpand = m_nlenExpand;
-	
-	//
-	m_pBuf = pBuffer->GetBufPtr();
-	m_nlenData = pBuffer->GetDataLen();
-	m_nlenCapability = pBuffer->GetCapability();
-	m_nlenHeader = pBuffer->GetHeaderLen();
-	m_nlenExpand = pBuffer->GetExpandLen();
-	
+//	char* pTmp = m_pBuf;
+//	m_pBuf  = nullptr;
+//	pBuffer->Exchange(this);
+//	int nlenData = m_nlenData;
+//	int nlenCap = m_nlenCapability;
+//	int nlenHeader = m_nlenHeader;
+//	int nExpand = m_nlenExpand;
+	Clear(true);
+	m_pBuf				= pBuffer->GetBufPtr();
+	m_nlenData			= pBuffer->GetDataLen();
+	m_nlenCapability	= pBuffer->GetCapability();
+	m_nlenHeader		= pBuffer->GetHeaderLen();
+	m_nlenExpand		= pBuffer->GetExpandLen();
 
 	char** pObj = pBuffer->Detach();
 	*pObj  = nullptr;
-	pBuffer->Clear(true);
-	*pObj = pTmp;
-	pBuffer->SetExpandLen(nExpand);
-	pBuffer->SetHeaderLen(nlenHeader);
-	pBuffer->AddDataLen(nlenData);
+	pBuffer->Clear();
+
+
+//	pBuffer->Clear(true);
+//	*pObj = pTmp;
+//	pBuffer->SetExpandLen(nExpand);
+//	pBuffer->SetHeaderLen(nlenHeader);
+//	pBuffer->AddDataLen(nlenData);
 }
 
 

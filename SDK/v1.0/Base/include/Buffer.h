@@ -28,7 +28,7 @@ public:
 	char**  Detach();
 	bool	Expand(int nExpand);
 	bool	ExpandTo(int nLength);
-	bool	Exchange(CBuffer* pBuffer);
+	void	Exchange(CBuffer* pBuffer);
 
 	bool	Append(const void* pBuf, int nlen);
 	bool	AppendString(const char* pszBuf);
