@@ -7,3 +7,7 @@
 #define BASE_VERSION_VALUE	@BASE_VERSION_VALUE@
 
 
+
+// fix Exchange 
+	// add Detach 
+	// add AddDataLen

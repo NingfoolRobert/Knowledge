@@ -1,5 +1,6 @@
 #include "ObjectService.h"
 #include "BufferMgr.h"
+#include "versionObject.h"
 
 #define WORKTHREAD_COUNT_MULTI	4
 
@@ -28,6 +29,8 @@ bool CObjectService::OnInitialUpdate()
 	LogInfo("Async Object Init Success...");
 
 	CActiveObject::SetPendingCnt(10000);
+
+	LogInfo("ObjectService: %s", OBJECT_VERSION_VALUE);
 	return true;
 }
 

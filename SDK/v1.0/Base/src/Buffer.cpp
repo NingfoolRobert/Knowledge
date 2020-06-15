@@ -28,6 +28,23 @@ void CBuffer::SetExpandLen(int nlenExpand)
 		return ;
 	m_nlenExpand = nlenExpand;
 }
+	
+void CBuffer::AddDataLen(int nlen)
+{
+	m_nlenData += nlen;
+	m_nlenData  = m_nlenData > 0 ? m_nlenData : 0;
+//capbility 
+//	int nlenCapability = 0;
+//	while(nlenCapability <= m_nlenData + m_nlenHeader)
+//	{
+//		nlenCapability += m_nlenExpand;
+//	}
+//
+//	if(m_pBuf)
+//		m_nlenCapability = nlenCapability; 
+//	else 
+//		m_nlenCapability = 0;
+}
 
 void CBuffer::Clear(bool bFree /*= false*/)
 {
@@ -47,13 +64,13 @@ void CBuffer::Clear(bool bFree /*= false*/)
 void CBuffer::SetHeaderLen(int nHeaderLen)
 {
 	m_nlenHeader = nHeaderLen;	
-	Expand(nHeaderLen);
-	m_nlenData = nHeaderLen;
+	if(m_pBuf == nullptr && m_nlenHeader > 0)
+		Expand(nHeaderLen);
 }
 
 bool CBuffer::Expand(int nExpand)
 {
-	int nTotalLen = nExpand + m_nlenData;
+	int nTotalLen = nExpand + m_nlenData + m_nlenHeader;
 	int nOldSize = m_nlenCapability;
 	while (nTotalLen > m_nlenCapability)
 	{
@@ -80,7 +97,7 @@ bool CBuffer::Expand(int nExpand)
 
 bool CBuffer::ExpandTo(int nLength)
 {
-	int nLen = nLength - m_nlenData;
+	int nLen = nLength - m_nlenData - m_nlenHeader;
 	if(nLen > 0)
 	{
 		return Expand(nLen);
@@ -93,17 +110,35 @@ bool CBuffer::ExpandTo(int nLength)
 	return false;
 }
 
-bool CBuffer::Exchange(CBuffer* pBuffer)
+void CBuffer::Exchange(CBuffer* pBuffer)
 {
-	if(pBuffer == nullptr)
-		return false;
+	if(pBuffer == nullptr || pBuffer == this)
+		return ;
 	
-	Clear();
+//	char* pTmp = m_pBuf;
+//	m_pBuf  = nullptr;
+//	pBuffer->Exchange(this);
+//	int nlenData = m_nlenData;
+//	int nlenCap = m_nlenCapability;
+//	int nlenHeader = m_nlenHeader;
+//	int nExpand = m_nlenExpand;
+	Clear(true);
+	m_pBuf				= pBuffer->GetBufPtr();
+	m_nlenData			= pBuffer->GetDataLen();
+	m_nlenCapability	= pBuffer->GetCapability();
+	m_nlenHeader		= pBuffer->GetHeaderLen();
+	m_nlenExpand		= pBuffer->GetExpandLen();
 
-	if(pBuffer->GetBufPtr() == nullptr)
-		return false;
-	
-	return Append(pBuffer->GetBufPtr(), pBuffer->GetBufLen());
+	char** pObj = pBuffer->Detach();
+	*pObj  = nullptr;
+	pBuffer->Clear();
+
+
+//	pBuffer->Clear(true);
+//	*pObj = pTmp;
+//	pBuffer->SetExpandLen(nExpand);
+//	pBuffer->SetHeaderLen(nlenHeader);
+//	pBuffer->AddDataLen(nlenData);
 }
 
 
@@ -113,35 +148,13 @@ bool CBuffer::Append(const void* pBuf, int nlen)
 	{
 		return false;
 	}
-//	int nTotalLen = m_nlenData + nlen;
-//	if (m_nlenCapability < nTotalLen)
-//	{
-//		while (nTotalLen > m_nlenCapability)
-//		{
-//			m_nlenCapability += m_nlenExpand;
-//		}
-//		//
-//		if (m_pBuf == nullptr)
-//		{
-//			m_pBuf = (char*)malloc(m_nlenCapability);
-//			if (m_pBuf == nullptr)
-//				return false;
-//		}
-//		else
-//		{
-//			char* ppBuf = (char*)realloc(m_pBuf, m_nlenCapability);
-//			if (ppBuf == nullptr)
-//				return false;
-//			m_pBuf = ppBuf;
-//		}
-//	}
 
 	if(!Expand(nlen))
 	{
 		return false;
 	}
 
-	memmove(m_pBuf +  m_nlenData, pBuf, nlen);
+	memmove(m_pBuf + m_nlenHeader + m_nlenData, pBuf, nlen);
 
 	m_nlenData += nlen;
 
@@ -155,7 +168,7 @@ bool CBuffer::AppendString(const char* pszBuf)
 		return true;
 	}
 	//	
-	if(m_nlenData > 0 && m_pBuf[m_nlenData - 1] == 0)
+	if(m_nlenData + m_nlenHeader > 0 && m_pBuf[m_nlenData + m_nlenHeader - 1] == 0)
 	{
 		m_nlenData--;
 	}
@@ -179,10 +192,6 @@ bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 		return false;
 	}
 
-//	char szTmp[4096] = { 0 };
-//	
-//	vsnprintf(szTmp, 4095, pszFmt, args);
-
 	va_list copy;
 	va_copy(copy, args);
 	int nLen =  vsnprintf(NULL, 0, pszFmt, copy);
@@ -192,9 +201,14 @@ bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 		return false;
 	}
 
-	int nCount = vsnprintf(m_pBuf + m_nlenData, nLen + 1,  pszFmt, args);
+	int nCount = vsnprintf(m_pBuf + m_nlenHeader + m_nlenData, nLen + 1,  pszFmt, args);
 	if(nCount < 0)
 		return false;
 	m_nlenData += nCount;
 	return true;
+}
+	
+char**   CBuffer::Detach()
+{
+	return &m_pBuf;
 }

@@ -19,15 +19,17 @@ public:
 public:
 	void	SetExpandLen(int nlenExpand);
 	void	SetHeaderLen(int nHeaderLen);
+	void	AddDataLen(int nlen);
 	void	Clear(bool  bFree = false);
 public:
 	char*	GetBufPtr() { return m_pBuf; }
 	char*	GetDataPtr() { if (m_pBuf == NULL) { return NULL; } else { return m_pBuf + m_nlenHeader; } }
-	
+
+	char**  Detach();
 	bool	Expand(int nExpand);
 	bool	ExpandTo(int nLength);
-	bool	Exchange(CBuffer* pBuffer);
-	
+	void	Exchange(CBuffer* pBuffer);
+
 	bool	Append(const void* pBuf, int nlen);
 	bool	AppendString(const char* pszBuf);
 	bool	AppendFormatText(const char* pszFmt, ...);
@@ -35,7 +37,10 @@ public:
 
 
 	int		GetCapability() { return m_nlenCapability; }
-	int		GetBufLen() { return m_nlenData; }
+	int		GetBufLen() { return m_nlenData + m_nlenHeader; }
+	int		GetDataLen() { return m_nlenData; }
+	int		GetHeaderLen(){return m_nlenHeader;}
+	int		GetExpandLen(){ return m_nlenExpand; }
 private:
 	char*		m_pBuf;
 	int			m_nlenData;
