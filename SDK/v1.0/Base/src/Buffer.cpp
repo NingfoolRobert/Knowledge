@@ -203,6 +203,7 @@ bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 char*   CBuffer::Detach()
 {
 	char* pTmp = m_pBuf;
+	m_pBuf = nullptr;
 	Clear(true);
 	return pTmp;
 }
