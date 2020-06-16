@@ -25,16 +25,15 @@ public:
 	char*	GetBufPtr() { return m_pBuf; }
 	char*	GetDataPtr() { if (m_pBuf == NULL) { return NULL; } else { return m_pBuf + m_nlenHeader; } }
 
-	char**  Detach();
+	char*	Detach();
 	bool	Expand(int nExpand);
 	bool	ExpandTo(int nLength);
-	void	Exchange(CBuffer* pBuffer);
+	void	Exchange(CBuffer* pBuffer);				//交换  小换大
 
 	bool	Append(const void* pBuf, int nlen);
 	bool	AppendString(const char* pszBuf);
 	bool	AppendFormatText(const char* pszFmt, ...);
 	bool	AppendFormatTextV(const char* pszFmt, va_list args);
-
 
 	int		GetCapability() { return m_nlenCapability; }
 	int		GetBufLen() { return m_nlenData + m_nlenHeader; }

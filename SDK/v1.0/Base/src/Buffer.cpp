@@ -12,6 +12,7 @@ CBuffer::CBuffer(void)
 	m_nlenHeader = 0;
 	m_nlenExpand = BUFFER_INIT_SIZE;
 }
+	
 
 CBuffer::~CBuffer(void)
 {
@@ -115,30 +116,21 @@ void CBuffer::Exchange(CBuffer* pBuffer)
 	if(pBuffer == nullptr || pBuffer == this)
 		return ;
 	
-//	char* pTmp = m_pBuf;
-//	m_pBuf  = nullptr;
-//	pBuffer->Exchange(this);
-//	int nlenData = m_nlenData;
-//	int nlenCap = m_nlenCapability;
-//	int nlenHeader = m_nlenHeader;
-//	int nExpand = m_nlenExpand;
-	Clear(true);
-	m_pBuf				= pBuffer->GetBufPtr();
+	char* pTmp = m_pBuf;
+	int nlenData = m_nlenData;
+	int nlenCap = m_nlenCapability;
+	int nlenHeader = m_nlenHeader;
+	int nExpand = m_nlenExpand;
+	//
 	m_nlenData			= pBuffer->GetDataLen();
 	m_nlenCapability	= pBuffer->GetCapability();
 	m_nlenHeader		= pBuffer->GetHeaderLen();
 	m_nlenExpand		= pBuffer->GetExpandLen();
+	m_pBuf				= pBuffer->Detach();
 
-	char** pObj = pBuffer->Detach();
-	*pObj  = nullptr;
-	pBuffer->Clear();
-
-
-//	pBuffer->Clear(true);
-//	*pObj = pTmp;
-//	pBuffer->SetExpandLen(nExpand);
-//	pBuffer->SetHeaderLen(nlenHeader);
-//	pBuffer->AddDataLen(nlenData);
+	pBuffer->SetExpandLen(nExpand);
+	pBuffer->SetHeaderLen(nlenHeader);
+	pBuffer->Append(pTmp, nlenData);
 }
 
 
@@ -157,7 +149,6 @@ bool CBuffer::Append(const void* pBuf, int nlen)
 	memmove(m_pBuf + m_nlenHeader + m_nlenData, pBuf, nlen);
 
 	m_nlenData += nlen;
-
 	return true;
 }
 
@@ -208,7 +199,9 @@ bool CBuffer::AppendFormatTextV(const char* pszFmt, va_list args)
 	return true;
 }
 	
-char**   CBuffer::Detach()
+char*   CBuffer::Detach()
 {
-	return &m_pBuf;
+	char* pTmp = m_pBuf;
+	Clear(true);
+	return pTmp;
 }
