@@ -130,6 +130,7 @@ void CBuffer::Exchange(CBuffer* pBuffer)
 
 	pBuffer->SetExpandLen(nExpand);
 	pBuffer->SetHeaderLen(nlenHeader);
+	pBuffer->ExpandTo(nlenCap - 1);
 	pBuffer->Append(pTmp, nlenData);
 }
 

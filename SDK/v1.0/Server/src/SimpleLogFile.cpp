@@ -2,7 +2,9 @@
 #include <fcntl.h>
 #include <stdarg.h>
 #include <string.h>
-	
+
+
+
 CSimpleLogFile::CSimpleLogFile():m_fd(-1)
 {
 }
