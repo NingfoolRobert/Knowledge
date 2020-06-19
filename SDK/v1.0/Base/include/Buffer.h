@@ -29,6 +29,7 @@ public:
 	bool	Expand(int nExpand);
 	bool	ExpandTo(int nLength);
 	void	Exchange(CBuffer* pBuffer);				//交换  小换大
+	void	Move(CBuffer* pBuffer);
 
 	bool	Append(const void* pBuf, int nlen);
 	bool	AppendString(const char* pszBuf);
