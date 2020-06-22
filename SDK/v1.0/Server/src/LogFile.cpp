@@ -59,7 +59,7 @@ bool CLogFile::WriteLogV(int nLevelType, const char* pszfmt, va_list args)
 		return false;
 	}
 
-	char szData[1024] = { 0 };
+	char szData[4000] = { 0 };
 	
 	//va_start(args, pszfmt);
 	vsprintf(szData, pszfmt, args);
