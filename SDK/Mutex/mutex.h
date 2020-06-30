@@ -11,10 +11,9 @@
  * @version:	1.0
  * @date:		2020-06-28
  */
-
+#pragma once 
+#include <unistd.h>
 #include <pthread.h> 
-
-
 
 class CSpinLock
 {
