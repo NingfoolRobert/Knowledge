@@ -7,7 +7,7 @@
  * 
  * @file:		mutex.h
  * @brief:		mutex
- * @author:		mutexnbf,nbf0537@163.com
+ * @author:		nbf,nbf0537@163.com
  * @version:	1.0
  * @date:		2020-06-28
  */
@@ -19,9 +19,9 @@
 class CSpinLock
 {
 public:
-	CSpinLock(){ pthread_spinlock_init(&m_spin, PTHREAD_PROCESS_PRIVATE); }
+	CSpinLock(){ pthread_spin_init(&m_spin, PTHREAD_PROCESS_PRIVATE); }
 	~CSpinLock(){
-		pthread_spinlock_destroy(&m_spin);
+		pthread_spin_destroy(&m_spin);
 	}
 	
 	void Lock(){
