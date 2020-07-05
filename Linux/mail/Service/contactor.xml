@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<Contactor>
-		<User No = "23363" Name = "宁贝飞" Email ="Beifei.Ning@cicc.com.cn" Level ="1">
-			<Focus Type ="FIX" />
-			<Focus Type = "HS" />
-</User>
-</Contactor>

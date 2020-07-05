@@ -1,7 +1,0 @@
-AlarmService  
-
-v0.1
-1) complete  the Service frame
-2) Timer && ThreadPool ( no )
-
-#1 根据报警级别\报警业务类型 通知相应联系人
