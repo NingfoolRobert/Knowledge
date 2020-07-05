@@ -1,5 +1,0 @@
-#pragma once 
-
-
-
-#define SERVICE_VERSION_INFO			"0.0.0.0"
