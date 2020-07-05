@@ -96,7 +96,7 @@ void CTimer::ActiveTimerFunc()
 		tNow =(tmNow.tv_sec) * 1000LL  + tmNow.tv_usec / 1000;
 		while(!m_listTimer.empty())
 		{
-			m_clsLock.lock();
+			m_clsLock.lock();		//自旋锁
 			if(m_listTimer.empty())
 			{
 				m_clsLock.unlock();

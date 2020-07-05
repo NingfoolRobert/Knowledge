@@ -34,17 +34,6 @@ void CBuffer::AddDataLen(int nlen)
 {
 	m_nlenData += nlen;
 	m_nlenData  = m_nlenData > 0 ? m_nlenData : 0;
-//capbility 
-//	int nlenCapability = 0;
-//	while(nlenCapability <= m_nlenData + m_nlenHeader)
-//	{
-//		nlenCapability += m_nlenExpand;
-//	}
-//
-//	if(m_pBuf)
-//		m_nlenCapability = nlenCapability; 
-//	else 
-//		m_nlenCapability = 0;
 }
 
 void CBuffer::Clear(bool bFree /*= false*/)
@@ -115,13 +104,7 @@ void CBuffer::Exchange(CBuffer* pBuffer)
 {
 	if(pBuffer == nullptr || pBuffer == this)
 		return ;
-	
-//	char* pTmp = m_pBuf;
-//	int nlenData = m_nlenData;
-//	int nlenCap = m_nlenCapability;
-//	int nlenHeader = m_nlenHeader;
-//	int nExpand = m_nlenExpand;
-//	//
+	//
 	CBuffer  stBuf;
 	stBuf.Move(pBuffer);
 	
@@ -132,9 +115,6 @@ void CBuffer::Exchange(CBuffer* pBuffer)
 	m_nlenHeader		= stBuf.GetHeaderLen();
 	m_nlenExpand		= stBuf.GetExpandLen();
 	m_pBuf				= stBuf.Detach();
-
-	
-	
 }
 
 void CBuffer::Move(CBuffer* pBuffer)
@@ -144,11 +124,11 @@ void CBuffer::Move(CBuffer* pBuffer)
 
 	Clear(true);
 	
-	m_nlenData = pBuffer->GetDataLen();
-	m_nlenHeader = pBuffer->GetHeaderLen();
-	m_nlenCapability = pBuffer->GetCapability();
-	m_nlenExpand = pBuffer->GetExpandLen();
-	m_pBuf = pBuffer->Detach();
+	m_nlenData			= pBuffer->GetDataLen();
+	m_nlenHeader		= pBuffer->GetHeaderLen();
+	m_nlenCapability	= pBuffer->GetCapability();
+	m_nlenExpand		= pBuffer->GetExpandLen();
+	m_pBuf				= pBuffer->Detach();
 }
 
 bool CBuffer::Append(const void* pBuf, int nlen)
