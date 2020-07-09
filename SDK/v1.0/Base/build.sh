@@ -9,6 +9,6 @@ cd ./build
 
 rm -rf ./*
 
-cmake .. 
+cmake ..  
 
 make -j4
