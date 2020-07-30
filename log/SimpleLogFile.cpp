@@ -3,11 +3,10 @@
 #include <stdarg.h>
 #include <string.h>
 #include <thread>
-
 #include "GFunc.h"
 
 
-CSimpleLogFile::CSimpleLogFile():m_fd(-1)
+CSimpleLogFile::CSimpleLogFile():m_fd(-1),m_nRef(1)
 {
 }
 
@@ -93,7 +92,17 @@ bool CSimpleLogFile::WriteData(const char* pszData, unsigned int dwLength)
 	}
 	return true;
 }
+	
+int	CSimpleLogFile::AddRef()
+{
+	return ++m_nRef;
+}
 
+void CSimpleLogFile::Release()
+{
+	if(--m_nRef <= 0)
+		delete this;
+}
 
 
 

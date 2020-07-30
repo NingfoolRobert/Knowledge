@@ -19,6 +19,7 @@
 #include <stdio.h> 
 #include <unistd.h> 
 #include <mutex> 
+#include <atomic>
 #include <condition_variable>
 #include <list> 
 #include "Buffer.h"
@@ -56,6 +57,8 @@ private:
 	char				m_szFileAllName[256];
 	std::mutex			m_clsLock;
 	CBuffer*			m_pLogBuffer;
+private:
+	std::atomic_int		m_nRef;
 };
 
 
