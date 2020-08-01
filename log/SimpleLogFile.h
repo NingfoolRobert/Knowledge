@@ -39,7 +39,7 @@ public:
 	virtual ~CSimpleLogFile();
 public:
 	bool	InitialUpdate(const char* pszFileAllName);
-	void	SetLineFlags(unsigned int dwLineFlag) { m_nLineFlags = dwLineFlag; }
+	void	SetLineFlags(unsigned int dwLineFlag) { m_dwLineFlags = dwLineFlag; }
 	bool	WriteLog(const char* pszFormat, ...);
 	bool	WriteLogV(const char* pszFmt, va_list args);
 	bool	WriteData(const char* pszData, unsigned int dwLength);
@@ -52,13 +52,13 @@ protected:
 	bool	Write(const char* pszData,  unsigned int dwLength);
 	bool	Write(CBuffer* pBuffer);
 private:
-	int					m_fd;
-	int					m_nLineFlags;
-	char				m_szFileAllName[256];
-	std::mutex			m_clsLock;
-	CBuffer*			m_pLogBuffer;
+	int								m_fd;
+	unsigned int					m_dwLineFlags;
+	char							m_szFileAllName[256];
+	std::mutex						m_clsLock;
+	CBuffer*						m_pLogBuffer;
 private:
-	std::atomic_int		m_nRef;
+	std::atomic_int					m_nRef;
 };
 
 
@@ -87,3 +87,4 @@ private:
 	std::condition_variable			m_condLogFile;
 	std::list<CSimpleLogFile* >		m_listSLF;
 };
+extern class CLogFileMgr*	g_pLogFileMgr;

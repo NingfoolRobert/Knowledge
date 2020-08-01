@@ -4,10 +4,14 @@
 #include <string.h>
 #include <thread>
 #include "GFunc.h"
+#include <pthread.h>
+#include <sys/time.h> 
+
 
 
 CSimpleLogFile::CSimpleLogFile():m_fd(-1),m_nRef(1)
 {
+	m_dwLineFlags = LOGFILE_LINE_FLAG_TYPE_NULL;	
 }
 
 CSimpleLogFile::~CSimpleLogFile()
@@ -69,7 +73,7 @@ bool CSimpleLogFile::WriteLog(const char* pszFormat, ...)
 bool CSimpleLogFile::WriteLogV(const char* pszFmt, va_list args)
 {
 	char szTmp[2048] = { 0 };
-	int nLen = vsnprintf(szTmp,2047, pszFmt, args);
+	int nLen = vsnprintf(szTmp,2047, pszFmt, args) + 1;
 
 	return WriteData(szTmp, nLen);
 }
@@ -85,12 +89,38 @@ bool CSimpleLogFile::WriteData(const char* pszData, unsigned int dwLength)
 	if(nullptr == pszData || 0 == dwLength)
 		return false;
 
-	std::unique_lock<std::mutex> locker(m_clsLock);
-	if(!m_pLogBuffer->Append(pszData, dwLength))
+	//Line Flag
+	char szLineTag[128] = { 0 };
+	struct timeval tv;
+	struct tm tmNow;
+	if(m_dwLineFlags & LOGFILE_LINE_FLAG_TYPE_DATE)
 	{
-		return false;
+		gettimeofday(&tv, nullptr);
+		localtime_r(&tv.tv_sec, &tmNow);
+		sprintf(szLineTag, "%04d-%02d-%02d ", tmNow.tm_year + 1900, tmNow.tm_mon + 1, tmNow.tm_mday);
 	}
-	return true;
+	if(m_dwLineFlags & LOGFILE_LINE_FLAG_TYPE_TIME)
+	{
+		sprintf(szLineTag + 11, "%02d:%02d:%02d.%03ld ", tmNow.tm_hour, tmNow.tm_min, tmNow.tm_sec, tv.tv_usec / 1000);
+	}
+	if(m_dwLineFlags & LOGFILE_LINE_FLAG_TYPE_THREAD)
+	{
+		sprintf(szLineTag + 24, "%08x ", (unsigned int)pthread_self());
+	}
+
+	{
+		std::unique_lock<std::mutex> locker(m_clsLock);
+		if(m_dwLineFlags)
+			if(!m_pLogBuffer->Append(szLineTag, 33))
+				return false;
+		//
+		if(!m_pLogBuffer->Append(pszData, dwLength))
+		{
+			return false;
+		}
+	}
+
+	return g_pLogFileMgr->AddSLF(this);
 }
 	
 int	CSimpleLogFile::AddRef()
@@ -110,10 +140,10 @@ void CSimpleLogFile::Release()
 //
 
 
-
+class CLogFileMgr*	g_pLogFileMgr = nullptr;
 CLogFileMgr::CLogFileMgr():m_bStop(false)
 {
-
+	g_pLogFileMgr = this;
 }
 	
 CLogFileMgr::~CLogFileMgr()
@@ -161,10 +191,10 @@ void CLogFileMgr::ActiveWorkLogThread()
 			if(nullptr == pLogFile)
 				continue;
 			buf.Exchange(*(pLogFile->m_pLogBuffer));
-			
 			pLogFile->Write(&buf);
 			pLogFile->Release();
 			pLogFile = nullptr;
+			buf.Clear();
 		}
 	}
 }
