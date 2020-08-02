@@ -190,8 +190,10 @@ void CLogFileMgr::ActiveWorkLogThread()
 			m_clsLock.unlock();
 			if(nullptr == pLogFile)
 				continue;
+			pLogFile->m_clsLock.lock();
 			buf.Exchange(*(pLogFile->m_pLogBuffer));
 			pLogFile->Write(&buf);
+			pLogFile->m_clsLock.unlock();
 			pLogFile->Release();
 			pLogFile = nullptr;
 			buf.Clear();
