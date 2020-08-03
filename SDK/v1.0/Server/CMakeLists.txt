@@ -19,7 +19,7 @@ configure_file(
 
 
 
-SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -g -O3 -Wall -lphtread")
+SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -g -ggdb  -Wall -lphtread")
 
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
