@@ -1,6 +1,7 @@
 #include "StreamIO.h"
 #include "IOMgr.h"
 #include "GFunc.h"
+#include "LogFile.h"
 #include <string.h>
 
 #define	SOCKET_RECV_CNT			3
@@ -15,6 +16,9 @@ CStreamIO::CStreamIO() :m_tBreak(0),m_pRecvBuf(nullptr), m_pSendBuf(nullptr)
 	
 CStreamIO::~CStreamIO()
 {
+	if(m_pOwner)
+		m_pOwner->SetOwner(nullptr);
+	LogInfo("dtor StreamIO: 0x%08X", this);
 }
 
 bool CStreamIO::SendMsg(Buffer* pBuf)
@@ -159,7 +163,7 @@ bool CStreamIO::OnRecv()
 			{
 				char szIP[16] = { 0 };
 				HostIP2Str(m_dwIP, szIP);
-				LogError("IP:Port=%s:%d, errno= %d.", szIP, m_nPort, errno);
+				//LogError("Recv fail. IP:Port=%s:%d, errno= %d.", szIP, m_nPort, errno);
 				OnClose();
 				return true;
 			}

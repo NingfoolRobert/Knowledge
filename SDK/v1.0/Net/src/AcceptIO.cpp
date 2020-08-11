@@ -44,7 +44,7 @@ bool CAcceptIO::OnInit(int nPort, unsigned int dwHostIP/* = 0*/)
 	{
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -82,14 +82,18 @@ bool CAcceptIO::OnRecv()
 		}
 		pNetClient->SetOwner(pClient);
 		pClient->SetOwner(pNetClient);
+		pNetClient->AddRef(__FUNCTION__);
 		pClient->Attach(fd);
 		struct sockaddr_in sa;
 		socklen_t nlen = sizeof(sa);
 		pClient->GetPeerName((struct sockaddr*)&sa, &nlen);
 		pClient->m_dwIP = ntohl(sa.sin_addr.s_addr);
 		pClient->m_nPort = ntohs(sa.sin_port);
+		pNetClient->m_dwIP = pClient->m_dwIP;
+		pNetClient->m_nPort = pClient->m_nPort;
 		pClient->PermitRead();
 		g_pIOMgr->AddNetIO((CNetIO*)pClient);
+		g_pIOMgr->OnNetConnect(pClient);
 	}
 
 	return true;

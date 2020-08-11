@@ -46,6 +46,8 @@ bool CTcpClient::Init(unsigned int dwHostIP, int nPort, bool bAutoIOMgr/* = fals
 	m_dwHostIP = dwHostIP;
 	m_nPort = nPort;
 	m_bAutoIOMgr = bAutoIOMgr;
+	m_nEventType = 0;
+	m_nNewEventType = 0;
 
 	if(nullptr == m_pOwner)
 	{
@@ -56,8 +58,10 @@ bool CTcpClient::Init(unsigned int dwHostIP, int nPort, bool bAutoIOMgr/* = fals
 			LogError("memmory error. HostIP:Port=%s:%d", HostIP2Str(dwHostIP, szIP), nPort);
 			return false;
 		}
+		LogInfo("new Object: StreamIO: 0x%08X", pStreamIO);
 		pStreamIO->m_dwIP	= m_dwHostIP;
 		pStreamIO->m_nPort	= m_nPort;
+		pStreamIO->AddRef();
 		m_pOwner = pStreamIO;
 	}	
 	
@@ -65,14 +69,16 @@ bool CTcpClient::Init(unsigned int dwHostIP, int nPort, bool bAutoIOMgr/* = fals
 	if(fd < 0)
 	{
 		char szIP[16] = { 0 };
-		LogError("Create Socket fail. errno:%d,  HostIP:Port=%s:%d", errno, HostIP2Str(dwHostIP, szIP), nPort);
+		HostIP2Str(dwHostIP, szIP);
+		LogError("Create Socket fail. errno:%d,  HostIP:Port=%s:%d", errno, szIP, nPort);
 		return false;
 	}
 	
 	if(!m_pOwner->Connect(m_dwHostIP, m_nPort))
 	{
 		char szIP[16] = { 0 };
-		LogError("Connect fail. errno:%d,  HostIP:Port=%s:%d", errno, HostIP2Str(dwHostIP, szIP), nPort);
+		HostIP2Str(dwHostIP, szIP);
+		LogError("Connect fail. errno:%d,  HostIP:Port=%s:%d", errno, szIP,  nPort);
 		return false;
 	}
 
@@ -83,7 +89,9 @@ bool CTcpClient::Init(unsigned int dwHostIP, int nPort, bool bAutoIOMgr/* = fals
 	if(m_bAutoIOMgr)
 	{
 		if(g_pIOMgr)
+		{
 			return g_pIOMgr->AddNetIO(this);		//添加到IO管理模块
+		}
 		return false;
 	}
 
@@ -96,9 +104,17 @@ bool CTcpClient::Reconnect()
 	if(m_pOwner)
 		m_pOwner->Close();
 	
+	if(!Init(m_dwHostIP, m_nPort, m_bAutoIOMgr))
+	{
+		char szIP[16] = { 0 };
+		IPHost2Str(szIP, m_dwHostIP);
+		LogError("Reconnect fail. IP:Port=%s:%d", szIP, m_nPort);
+		return false;
+	}
+	
 	m_tBreak = 0;
 	m_tLastestMsg = 0;
-	return Init(m_dwHostIP, m_nPort, m_bAutoIOMgr);	
+	return true;
 }
 	
 bool CTcpClient::SendSyncMsg(PHEADER pMsg, Buffer* pBuf)

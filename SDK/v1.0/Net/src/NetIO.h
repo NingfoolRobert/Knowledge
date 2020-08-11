@@ -33,8 +33,8 @@ public:
 	CNetIO();
 	virtual ~CNetIO();
 public:
-	int		AddRef();
-	void	Release();
+	int		AddRef(const char* pszFunciton = __FUNCTION__);
+	void	Release(const char* pszFunciton = __FUNCTION__);
 public:
 	virtual void PermitRead();
 	virtual void PermitWrite();

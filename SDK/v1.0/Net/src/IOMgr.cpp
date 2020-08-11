@@ -9,12 +9,16 @@
 #include <unistd.h> 
 #include <signal.h> 
 
+void handle_pipe(int sig)
+{
 
+}
 
 class CIOMgr*		g_pIOMgr = nullptr;
 
 CIOMgr::CIOMgr():m_nTimeOut(10), m_cnWorkThread(1), m_bStop(false)
 {
+	m_cnWaitNet  = 0;
 	g_pIOMgr = this;
 }
 	
@@ -25,7 +29,13 @@ CIOMgr::~CIOMgr()
 
 bool CIOMgr::OnInitialUpdate()
 {
-	signal(SIGPIPE,SIG_IGN);
+//	signal(SIGPIPE,SIG_IGN);
+	
+	struct sigaction sa;
+	sa.sa_handler = handle_pipe;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGPIPE, &sa, NULL);
 
 	m_epFD = epoll_create(1024);
 	if(m_epFD < 0)
@@ -43,6 +53,15 @@ bool CIOMgr::OnInitialUpdate()
 	return true;
 }
 	
+bool CIOMgr::OnTimeOut(struct tm* pTime)
+{
+	if(nullptr == pTime)
+		return false;
+
+	LogInfo("NetIOMgr Cnt: %d/%d, MsgCnt:%d", m_mapNetIO.size(), m_cnWaitNet.load(), m_listWorkNetIO.size());
+	return true;
+}
+	
 void CIOMgr::OnInvokeTerminate()
 {
 	m_clsLock.lock();
@@ -56,6 +75,13 @@ void CIOMgr::OnInvokeTerminate()
 
 bool CIOMgr::OnSecondIdle()
 {
+	std::unique_lock<std::mutex> locker(m_clsLock);
+	for(auto it = m_mapNetIO.begin(); it != m_mapNetIO.end(); ++it)
+	{
+		auto pNetIO = it->second;
+		if(nullptr == pNetIO)	 continue;
+		pNetIO->OnTickCnt();
+	}
 	return true;
 }
 
@@ -72,6 +98,7 @@ bool CIOMgr::AddNetIO(CNetIO* pNetIO)
 {
 	if(nullptr == pNetIO)
 		return false;
+	pNetIO->AddRef();
 	pNetIO->SetBlockMode();
 	std::unique_lock<std::mutex> locker(m_clsLock);
 	auto it = m_mapNetIO.find(pNetIO->Detach());
@@ -79,6 +106,8 @@ bool CIOMgr::AddNetIO(CNetIO* pNetIO)
 	{
 		m_mapNetIO.insert(std::make_pair(pNetIO->Detach(),  pNetIO));
 	}
+
+	m_cnWaitNet++;
 
 	return true;
 }
@@ -143,7 +172,10 @@ void CIOMgr::UpdateEvent()
 				continue;
 			}
 			if(pNetIO->m_nNewEventType)
+			{
+				m_cnWaitNet--;
 				listNetIO.push_back(pNetIO);	
+			}
 			if(pNetIO->m_nNewEventType & EPOLL_EVENT_TYPE_CLOSE)
 			{
 				m_mapNetIO.erase(it++);
@@ -182,6 +214,8 @@ void CIOMgr::LoadEvent(CNetIO* pNetIO)
 		if(dwOldEvent)
 		{	
 			epoll_ctl(m_epFD, EPOLL_CTL_DEL, fd, &ev);	// Del 
+			CNetIO* pOwner = pNetIO->GetOwner();
+			if(pOwner) pOwner->Release();
 			pNetIO->Release();
 		}
 	}	
@@ -199,8 +233,7 @@ void CIOMgr::LoadEvent(CNetIO* pNetIO)
 			int nRet = epoll_ctl(m_epFD, (dwOldEvent & (EPOLLIN | EPOLLOUT))? EPOLL_CTL_MOD: EPOLL_CTL_ADD, fd, &ev);
 			if(nRet) 
 			{
-				LogError("add fd fail.");
-				return ;
+				LogError("add fd fail. %d, %d", nRet, fd);
 			}
 			pNetIO->m_nEventType |= dwNewEvent;
 			pNetIO->m_nNewEventType = 0;
@@ -242,6 +275,16 @@ bool CIOMgr::OnNetTick(CPassiveIO* pClient)					//定时消息调用
 }
 
 bool CIOMgr::OnNetMsg(CPassiveIO* pNetClient, PHEADER& pMsg)
+{
+	return true;
+}
+	
+bool CIOMgr::OnNetBreak(CPassiveIO* pNetClient)				//网络断开
+{
+	return true;
+}
+	
+bool CIOMgr::OnNetConnect(CPassiveIO* pNetClient)			//链接到来
 {
 	return true;
 }

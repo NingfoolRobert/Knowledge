@@ -36,6 +36,8 @@ public:
 public:
 	virtual bool OnInitialUpdate();
 	
+	virtual bool OnTimeOut(struct tm* pTime);
+
 	virtual bool OnSecondIdle();
 	
 	virtual void OnTerminate();
@@ -53,6 +55,10 @@ public:
 	virtual bool	OnNetTick(CPassiveIO* pClient);					//定时消息调用
 
 	virtual bool	OnNetMsg(CPassiveIO* pNetClient, PHEADER& pMsg); //消息到达接口
+
+	virtual bool	OnNetBreak(CPassiveIO* pNetClient);				//网络断开
+
+	virtual bool	OnNetConnect(CPassiveIO* pNetClient);			//链接到来
 public:
 	void	ActiveWorkThread();
 	
@@ -79,6 +85,8 @@ private:
 	std::mutex								m_clsWorkLock;
 	std::condition_variable					m_condWork;
 	std::list<CNetIO*>						m_listWorkNetIO;
+private:
+	std::atomic_int							m_cnWaitNet;
 };
 
 extern class CIOMgr*		g_pIOMgr;

@@ -26,6 +26,7 @@ void CActiveIO::Terminate()				//终止
 	{
 		m_pOwner->OnClose();
 	}
+	
 }
 
 
@@ -42,6 +43,7 @@ bool CActiveIO::OnSend()
 
 bool CActiveIO::OnClose()
 {
+	m_tBreak = time(NULL);
 	OnBreak();
 	m_nNewEventType = EPOLL_EVENT_TYPE_CLOSE;
 	return true;
@@ -53,13 +55,14 @@ bool CActiveIO::SendMsg(PHEADER pHeader)		//Sync Send
 	std::unique_lock<std::mutex>	locker(m_clsSendLock);
 	if(nullptr == pHeader)
 		return false;
+	if(m_tBreak) return false;
 
 	unsigned int dwDataLen = pHeader->dwLength + sizeof(HEADER);
 	pHeader->dwLength = htonl(pHeader->dwLength);		//
 	unsigned int dwSended = 0;
 	while(true)
 	{
-		int nSend = m_pOwner->Send((char*)pHeader + dwSended,  dwDataLen - dwSended);
+		int nSend = Send((char*)pHeader + dwSended,  dwDataLen - dwSended);
 		if(nSend <= 0)
 		{
 			if(EINTR == errno || EAGAIN == errno)

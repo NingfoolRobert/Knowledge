@@ -1,11 +1,14 @@
 #include "NetIO.h"
+#include "LogFile.h"
 	
 CNetIO::CNetIO():m_pOwner(nullptr),m_nEventType(0), m_nNewEventType(0)
 {
-	m_nRef = 1;
+	m_nRef = 0;
 }
 CNetIO::~CNetIO()
 {
+	if(m_pOwner) 
+		m_pOwner->SetOwner(NULL);
 }
 
 bool CNetIO::OnRecv()
@@ -28,16 +31,21 @@ bool CNetIO::OnClose()
 }
 	
 	
-int	CNetIO::AddRef()
+int	CNetIO::AddRef(const char* pszFunciton)
 {
+	LogTrace("%s, %08X,  ADD %d", pszFunciton, this, m_nRef.load() + 1);	
 	return ++m_nRef;
 }
 
-void CNetIO::Release()
+void CNetIO::Release(const char* pszFunciton)
 {
-	--m_nRef;
-	if(m_nRef <= 0)
+	if(--m_nRef <= 0)
+	{
+		LogTrace("%s, %08X, DEL %d", pszFunciton, this, m_nRef.load());	
 		delete this;
+		return ;
+	}
+	LogTrace("%s %08X, RELEASE %d", pszFunciton, this, m_nRef.load());	
 }
 	
 void CNetIO::PermitRead()
@@ -95,6 +103,8 @@ void CNetIO::OnTickCnt()							//定时调用
 {
 	if(m_pOwner)
 	{
+		m_pOwner->AddRef();
 		m_pOwner->OnTickCnt();
+		m_pOwner->Release();
 	}
 }

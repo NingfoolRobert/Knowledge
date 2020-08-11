@@ -2,7 +2,7 @@
 #include "IOMgr.h"
 
 	
-CPassiveIO::CPassiveIO(): m_tLastMsg(0),m_tBreak(0)
+CPassiveIO::CPassiveIO(): m_tLastMsg(time(NULL)),m_tBreak(0)
 {
 	m_fd = 0;
 }
@@ -41,7 +41,9 @@ bool CPassiveIO::OnMsg(PHEADER& pMsg)
 	
 void CPassiveIO::OnBreak()
 {
-	
+	AddRef();
+	g_pIOMgr->OnNetBreak(this);	
+	Release();
 }
 	
 void CPassiveIO::OnTickCnt()
