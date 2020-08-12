@@ -27,6 +27,13 @@
 #include <mutex> 
 #include <condition_variable> 
 
+typedef struct tagNetMgrStat 
+{
+	int		cnWaitNet;
+	int		cnCloseNet;
+
+}NETMGRSTAT, *PNETMGRSTAT;
+
 typedef std::unordered_map<int, CNetIO*>	MAPEvent;
 class CIOMgr 
 {
@@ -72,7 +79,7 @@ public:
 	void	LoadEvent(CNetIO* pNetIO);
 public:
 	unsigned int		m_nTimeOut;
-	int					m_cnWorkThread;
+	int					m_cnWorkNetThread;
 private:
 	bool				m_bStop;
 private:

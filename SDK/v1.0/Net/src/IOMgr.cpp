@@ -16,9 +16,8 @@ void handle_pipe(int sig)
 
 class CIOMgr*		g_pIOMgr = nullptr;
 
-CIOMgr::CIOMgr():m_nTimeOut(10), m_cnWorkThread(1), m_bStop(false)
+CIOMgr::CIOMgr():m_nTimeOut(10), m_cnWorkNetThread(1), m_bStop(false)
 {
-	m_cnWaitNet  = 0;
 	g_pIOMgr = this;
 }
 	
@@ -43,7 +42,7 @@ bool CIOMgr::OnInitialUpdate()
 		LogError("create epoll fd fail.");
 		return  false;
 	}
-	for(auto i = 0; i < m_cnWorkThread; ++i)
+	for(auto i = 0; i < m_cnWorkNetThread; ++i)
 	{
 		std::thread tr(&CIOMgr::ActiveWorkThread, this);
 		tr.detach();
@@ -58,7 +57,7 @@ bool CIOMgr::OnTimeOut(struct tm* pTime)
 	if(nullptr == pTime)
 		return false;
 
-	LogInfo("NetIOMgr Cnt: %d/%d, MsgCnt:%d", m_mapNetIO.size(), m_cnWaitNet.load(), m_listWorkNetIO.size());
+	LogInfo("NetIOMgr Cnt: %d, MsgCnt:%d", m_mapNetIO.size(),  m_listWorkNetIO.size());
 	return true;
 }
 	
@@ -173,7 +172,6 @@ void CIOMgr::UpdateEvent()
 			}
 			if(pNetIO->m_nNewEventType)
 			{
-				m_cnWaitNet--;
 				listNetIO.push_back(pNetIO);	
 			}
 			if(pNetIO->m_nNewEventType & EPOLL_EVENT_TYPE_CLOSE)
