@@ -16,6 +16,7 @@
 
 
 #include "NetIO.h"
+#include <mutex>
 
 class CPassiveIO:
 	public CNetIO
@@ -33,6 +34,8 @@ public:
 public:
 	virtual bool OnMsg(PHEADER& pMsg);
 public:
+	bool SendMsg(PHEADER pMsg);
+
 	void Terminate();
 public:
 	unsigned int	m_dwIP;
@@ -40,5 +43,7 @@ public:
 public:
 	time_t			m_tLastMsg;
 	time_t			m_tBreak;
+private:
+	std::mutex		m_clsSendLock;
 };
 
