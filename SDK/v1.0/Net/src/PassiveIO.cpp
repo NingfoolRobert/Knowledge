@@ -70,7 +70,7 @@ bool CPassiveIO::SendMsg(PHEADER pMsg)
 	unsigned int dwSended = 0;
 	while(true)
 	{
-		int nSend = Send((char*)pHeader + dwSended,  dwDataLen - dwSended);
+		int nSend = Send((char*)pMsg + dwSended,  dwDataLen - dwSended);
 		if(nSend <= 0)
 		{
 			if(EINTR == errno || EAGAIN == errno)
