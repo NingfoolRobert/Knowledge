@@ -3,6 +3,8 @@
 #include <stdlib.h> 
 #include <stdio.h> 
 
+#include <unistd.h> 
+
 
 #define rdtscll(val)  __asm__ __volatile__("rdtsc" : "=A" (val)) 
 
