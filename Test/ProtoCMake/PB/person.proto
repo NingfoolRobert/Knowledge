@@ -1,0 +1,10 @@
+syntax="proto3";
+
+package PB;
+
+
+message Person 
+{
+	int32	 uID		= 1;
+	string	 sName		= 2; 
+}
