@@ -148,10 +148,10 @@ CLogFileMgr::CLogFileMgr():m_bStop(false)
 	
 CLogFileMgr::~CLogFileMgr()
 {
-
+	
 }
 
-bool CLogFileMgr::Init()
+bool CLogFileMgr::InitialUpdate()
 {
 	std::thread tr1(&CLogFileMgr::ActiveWorkLogThread, this);
 	tr1.detach();
@@ -208,7 +208,12 @@ int	CLogFileMgr::GetSLFCount()
 	
 void CLogFileMgr::Stop()
 {
+	while(0 == m_listSLF.size())
+	{
+		usleep(10);
+	}
 	std::unique_lock<std::mutex> locker(m_clsLock);
 	m_bStop = true;
 	m_condLogFile.notify_all();
 }
+	

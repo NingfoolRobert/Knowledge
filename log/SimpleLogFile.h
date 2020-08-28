@@ -68,8 +68,7 @@ public:
 	CLogFileMgr();
 	virtual ~CLogFileMgr();
 public:
-
-	bool	Init();
+	bool	InitialUpdate();
 
 	bool	AddSLF(CSimpleLogFile* pLogFile);
 
@@ -78,6 +77,7 @@ public:
 	int		GetSLFCount();
 	
 	void	Stop();
+	
 public:
 	void	ActiveWorkLogThread();
 private:
