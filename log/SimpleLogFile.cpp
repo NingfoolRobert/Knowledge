@@ -26,7 +26,13 @@ bool CSimpleLogFile::InitialUpdate(const char* pszFileAllName)
 		return false;
 	strcpy(m_szFileAllName, pszFileAllName);
 
-	//TODO Create Dir		
+	char szAllDirPath[256] = { 0 };
+	GetDirPath(pszFileAllName, szAllDirPath);
+	if(!CreateAllPath(szAllDirPath))
+	{
+		return false;
+	}
+	//
 	m_fd = open(m_szFileAllName, O_CREAT|O_APPEND|O_WRONLY, 0644);
 	if(-1 == m_fd)
 	{
@@ -177,7 +183,7 @@ void CLogFileMgr::ActiveWorkLogThread()
 	while(!m_bStop)
 	{
 		std::unique_lock<std::mutex> locker(m_clsLock);
-		m_condLogFile.wait(locker, [&]()->bool{ return !m_listSLF.empty(); });
+		m_condLogFile.wait(locker, [&]()->bool{ return !m_listSLF.empty() || m_bStop; });
 		m_clsLock.unlock();
 		while(!m_listSLF.empty())
 		{

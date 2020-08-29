@@ -53,10 +53,12 @@ bool CLogFile::WriteLog(const char* pszFmt, ...)
 	if(nullptr == m_pSimpleLogFile)
 		return false;
 	//
+	m_pSimpleLogFile->AddRef();
 	va_list args;
 	va_start(args, pszFmt);
 	bool bRet = m_pSimpleLogFile->WriteLogV(pszFmt, args);
 	va_end(args);	
+	m_pSimpleLogFile->Release();
 	return bRet;
 }
 
@@ -64,7 +66,10 @@ bool CLogFile::WriteLogV(const char* pszFmt, va_list args)
 {
 	if(nullptr == m_pSimpleLogFile)
 		return false;
-	return m_pSimpleLogFile->WriteLogV(pszFmt, args);
+	m_pSimpleLogFile->AddRef();
+	bool bRet = m_pSimpleLogFile->WriteLogV(pszFmt, args);
+	m_pSimpleLogFile->Release();
+	return bRet;
 }
 
 bool CLogFile::WritelLevelLogV(enumLogLevel nLogLevel, const char* pszFmt, va_list args)
