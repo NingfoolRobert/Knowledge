@@ -59,6 +59,8 @@ bool Compress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen);
 bool UnCompress(char* pszDst, int nDstLen, const char* pszSrc, int nSrcLen);
 
 bool GetXMLConfigString(const char* pszNode, const char* pszAttr, const char* pszDefault,  char* pszValue);
+//
+bool GetDirPath(const char* pszAllFileName, char* pszAllDirPath);
 
 bool CreateAllPath(const char* pszAllDir);
 

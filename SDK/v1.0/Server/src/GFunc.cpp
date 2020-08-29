@@ -199,6 +199,18 @@ bool GetXMLConfigString(const char* pszNode, const char* pszAttr, const char* ps
 	return true;
 }
 
+bool GetDirPath(const char* pszAllFileName, char* pszAllDirPath)
+{
+	if(pszAllFileName == nullptr  || nullptr == pszAllDirPath)
+		return false;
+	
+	char* pEnd = strrch(pszAllFileName, '/');
+	if(nullptr == pEnd) return false;
+	
+	strncpy(pszAllDirPath,  pszAllFileName, pEnd - pszAllFileName);
+	return true;
+}
+
 bool CreateAllPath(const char* pszAllDir)
 {
 	if(nullptr == pszAllDir)
