@@ -204,7 +204,7 @@ bool GetDirPath(const char* pszAllFileName, char* pszAllDirPath)
 	if(pszAllFileName == nullptr  || nullptr == pszAllDirPath)
 		return false;
 	
-	char* pEnd = strrch(pszAllFileName, '/');
+	char* pEnd = strrchr(pszAllFileName, '/');
 	if(nullptr == pEnd) return false;
 	
 	strncpy(pszAllDirPath,  pszAllFileName, pEnd - pszAllFileName);
