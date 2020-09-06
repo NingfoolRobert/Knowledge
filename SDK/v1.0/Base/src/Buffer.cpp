@@ -2,6 +2,7 @@
 #include <stdarg.h> 
 #include <string.h>
 #include <iostream> 
+#include <algorithm>
 #include <vector> 
 
 CBuffer::CBuffer(void)
@@ -202,4 +203,13 @@ char*   CBuffer::Detach()
 	m_pBuf = nullptr;
 	Clear(true);
 	return pTmp;
+}
+	
+void CBuffer::Swap(CBuffer& rhs)
+{
+	std::swap(m_pBuf, rhs.m_pBuf);
+	std::swap(m_nlenCapability, rhs.m_nlenCapability);
+	std::swap(m_nlenData, rhs.m_nlenData);
+	std::swap(m_nlenExpand, rhs.m_nlenExpand);
+	std::swap(m_nlenHeader, rhs.m_nlenHeader);
 }
