@@ -68,6 +68,8 @@ bool GetCurrentPath(char* pszDirName);
 
 bool GetXMLAttrString(rapidxml::xml_node<>* pNode,  const char* pszEntry, const char* pszDefault, char* pszValue);
 
-int  GetXMLAttrInt(rapidxml::xml_node<>* pNode, const char* pszEntry, const int nDefault);
+int  GetXMLAttrInt(rapidxml::xml_node<>* pNode, const char* pszEntry, const int nDefault = 0);
+
+long GetXMLAttrLong(rapidxml::xml_node<>* pNode, const char* pszEntry, long lDefault = 0);
 
 time_t GetFileModTime(const char* pszFileName);
