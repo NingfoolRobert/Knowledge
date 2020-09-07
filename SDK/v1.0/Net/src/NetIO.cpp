@@ -33,7 +33,9 @@ bool CNetIO::OnClose()
 	
 int	CNetIO::AddRef(const char* pszFunciton)
 {
+#if _TEST
 	LogTrace("%s, %08X,  ADD %d", pszFunciton, this, m_nRef.load() + 1);	
+#endif 
 	return ++m_nRef;
 }
 
@@ -41,11 +43,15 @@ void CNetIO::Release(const char* pszFunciton)
 {
 	if(--m_nRef <= 0)
 	{
+#if _TEST
 		LogTrace("%s, %08X, DEL %d", pszFunciton, this, m_nRef.load());	
+#endif 
 		delete this;
 		return ;
 	}
+#if _TEST 
 	LogTrace("%s %08X, RELEASE %d", pszFunciton, this, m_nRef.load());	
+#endif
 }
 	
 void CNetIO::PermitRead()

@@ -89,7 +89,7 @@ bool CActiveObject::PostEvent(CBuffer* pBuffer)
 		return false;
 	}
 
-	pBuf->Exchange(pBuffer);
+	pBuf->Swap(*pBuffer);
 	m_listEvent.Add(pBuf);
 	m_condEvent.notify_one();
 	return true;
@@ -102,7 +102,7 @@ void CActiveObject::ActiveEventThreadFunc()
 	while(!m_bStop)
 	{
 		std::unique_lock<std::mutex> locker(m_clsLock);
-		m_condEvent.wait(locker, [&]()->bool{return !m_listEvent.IsEmpty();});
+		m_condEvent.wait(locker, [&]()->bool{return !m_listEvent.IsEmpty() || m_bStop;});
 		locker.unlock();
 		while(!m_listEvent.IsEmpty())
 		{
@@ -113,7 +113,6 @@ void CActiveObject::ActiveEventThreadFunc()
 				continue;
 			pEvent = (PEVENTHEADER) pBuffer->GetBufPtr();
 			OnEvent(pEvent);
-			
 			g_pBufferMgr->ReleaseBuffer(pBuffer);
 		}
 	}

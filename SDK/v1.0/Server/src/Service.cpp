@@ -19,6 +19,27 @@ std::atomic<int> nTimeCount(0);
 
 class CService* g_Service = nullptr;
 
+
+void GraceExit(int sig)
+{
+	switch(sig)
+	{
+		case SIGTERM:
+			LogInfo("Terminate %s...", m_szServiceName);
+			break;
+		case SIGSEGV:
+			LogError("SIGSEGV  Exception ...");
+			break;
+		default:
+			LogInfo("Stop %s  not define signal:%d", m_szServiceName, sig);
+			break;
+
+	}
+
+	g_Service->Terminate();
+}
+
+
 CService::CService()
 {	
 	g_Service = this;
@@ -35,6 +56,13 @@ bool CService::Execute(const char* pszCommand)
 	OnRegisterVersion();
 	RegisterVersion("BaseService", BASE_VERSION_VALUE);
 	RegisterVersion("ObjectService", OBJECT_VERSION_VALUE);
+	//
+	struct sigaction act;
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	act.sa_handler = GraceExit;
+	sigaction(SIGTERM, &act, NULL);
+	sigaction(SIGSEGV, &act, NULL);
 	//
 	if(pszCommand != nullptr && 0 != strlen(pszCommand) )
 	{
@@ -89,7 +117,8 @@ bool CService::Execute(const char* pszCommand)
 	}
 
 	OnTerminate();
-	LogInfo("Stop Service ....\r\n");
+	exit(1);		//
+	//LogInfo("Stop Service ....\r\n");
 	return true;
 }
 

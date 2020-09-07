@@ -118,7 +118,7 @@ void CIOMgr::ActiveWorkThread()
 	while(!m_bStop)
 	{
 		std::unique_lock<std::mutex> locker(m_clsWorkLock);
-		m_condWork.wait(locker, [&]()->bool{return m_listWorkNetIO.size();});
+		m_condWork.wait(locker, [&]()->bool{return m_listWorkNetIO.size() || m_bStop;});
 		locker.unlock();
 		while(m_listWorkNetIO.size())
 		{

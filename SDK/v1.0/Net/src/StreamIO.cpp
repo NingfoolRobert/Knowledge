@@ -18,7 +18,9 @@ CStreamIO::~CStreamIO()
 {
 	if(m_pOwner)
 		m_pOwner->SetOwner(nullptr);
-	LogInfo("dtor StreamIO: 0x%08X", this);
+#if _TEST
+	LogTrace("dtor StreamIO: 0x%08X", this);
+#endif 
 }
 
 bool CStreamIO::SendMsg(Buffer* pBuf)
@@ -29,7 +31,7 @@ bool CStreamIO::SendMsg(Buffer* pBuf)
 	Buffer* pTmp = new Buffer;
 	if(nullptr == pBuf)
 	{
-		LogError("memory error.");
+		LogError("%s memory error.", __FUNCTION__);
 		return false;
 	}
 	
@@ -50,7 +52,7 @@ bool CStreamIO::SendMsg(PHEADER pMsg)
 	Buffer* pBuf = new Buffer;
 	if(nullptr == pBuf)
 	{
-		LogError("memory error");
+		LogError("%s memory error", __FUNCTION__);
 		return false;
 	}
 	
