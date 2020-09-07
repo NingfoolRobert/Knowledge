@@ -288,6 +288,17 @@ int  GetXMLAttrInt(rapidxml::xml_node<>* pNode, const char* pszEntry, const int 
 	return atoi(szTmp);
 }
 
+long GetXMLAttrLong(rapidxml::xml_node<>* pNode, const char* pszEntry, long lDefault = 0)
+{
+	char szTmp[64] = { 0 };
+	if(!GetXMLAttrString(pNode, pszEntry, "", szTmp))
+		return lDefault;
+	if(szTmp[0] == 0) return lDefault; 
+	
+
+	return strtol(szTmp, nullptr, 10);
+}
+
 time_t GetFileModTime(const char* pszFileName)
 {
 	if(nullptr == pszFileName)
