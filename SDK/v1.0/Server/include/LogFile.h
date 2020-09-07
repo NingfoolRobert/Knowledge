@@ -48,6 +48,8 @@ public:
 	bool WriteData(const char* pszData, unsigned int dwLength);
 
 	unsigned int GetFileLength() { return m_dwFileLength; }
+	
+	void Terminate();
 public:
 	bool Fatal(const char* pszFmt, ...);
 	bool Error(const char* pszFmt, ...);

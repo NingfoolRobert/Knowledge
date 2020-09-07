@@ -36,6 +36,8 @@ bool GlobalEnd()
 {
 	memset(m_szServiceName, 0, sizeof(m_szServiceName));
 	memset(m_szConfigureFileName, 0, sizeof(m_szConfigureFileName));
+	
+	Singleton<CLogFile>::GetInstance().Terminate();
 	return true;
 }
 

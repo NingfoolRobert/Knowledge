@@ -193,3 +193,10 @@ void CLogFile::Run()
 		buf.Clear();
 	}
 }
+	
+void CLogFile::Terminate()
+{
+	std::unique_lock<std::mutex> locker(m_clsLock);
+	m_bStop = true;
+	m_condLog.notify_all();
+}
