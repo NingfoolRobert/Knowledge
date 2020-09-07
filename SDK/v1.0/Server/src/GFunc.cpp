@@ -276,7 +276,7 @@ bool GetXMLAttrString(rapidxml::xml_node<>* pNode,  const char* pszEntry, const 
 	return true;
 }
 
-int  GetXMLAttrInt(rapidxml::xml_node<>* pNode, const char* pszEntry, const int nDefault)
+int  GetXMLAttrInt(rapidxml::xml_node<>* pNode, const char* pszEntry, const int nDefault/*= 0*/)
 {
 	char szTmp[32] = { 0 };
 	if(!GetXMLAttrString(pNode, pszEntry, "", szTmp))
@@ -288,7 +288,7 @@ int  GetXMLAttrInt(rapidxml::xml_node<>* pNode, const char* pszEntry, const int 
 	return atoi(szTmp);
 }
 
-long GetXMLAttrLong(rapidxml::xml_node<>* pNode, const char* pszEntry, long lDefault = 0)
+long GetXMLAttrLong(rapidxml::xml_node<>* pNode, const char* pszEntry, long lDefault/* = 0*/)
 {
 	char szTmp[64] = { 0 };
 	if(!GetXMLAttrString(pNode, pszEntry, "", szTmp))
