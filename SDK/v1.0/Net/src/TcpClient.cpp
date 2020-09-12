@@ -81,6 +81,9 @@ bool CTcpClient::Init(unsigned int dwHostIP, int nPort, bool bAutoIOMgr/* = fals
 		LogError("Connect fail. errno:%d,  HostIP:Port=%s:%d", errno, szIP,  nPort);
 		return false;
 	}
+	//
+	int on = 1;
+	m_pOwner->SetSockOpt(IPPROTO_TCP, TCP_NODELAY, &on, sizeof(on));
 
 	if(!CActiveIO::OnInit(m_pOwner))
 		return false;

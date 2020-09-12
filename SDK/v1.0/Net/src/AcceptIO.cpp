@@ -80,6 +80,10 @@ bool CAcceptIO::OnRecv()
 			LogError("memory error.");
 			return false;
 		}
+		//
+		int on = 1;
+		pNetClient->SetSockOpt(IPPROTO_TCP, TCP_NODELAY, &on, sizeof(int));
+		//
 		pNetClient->SetOwner(pClient);
 		pClient->SetOwner(pNetClient);
 		pNetClient->AddRef(__FUNCTION__);
