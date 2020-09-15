@@ -62,7 +62,6 @@ bool CService::Execute(const char* pszCommand)
 	act.sa_flags = 0;
 	act.sa_handler = GraceExit;
 	sigaction(SIGTERM, &act, NULL);
-	sigaction(SIGSEGV, &act, NULL);
 	//
 	if(pszCommand != nullptr && 0 != strlen(pszCommand) )
 	{
