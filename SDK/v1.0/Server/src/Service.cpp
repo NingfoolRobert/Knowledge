@@ -12,6 +12,8 @@
 #include "versionBase.h"
 #include "versionObject.h"
 
+#include <sys/time.h>
+#include <sys/resource.h> 
 
 using namespace std;
 
@@ -53,6 +55,12 @@ CService::~CService()
 
 bool CService::Execute(const char* pszCommand)
 {
+#ifndef WIN32 
+	struct rlimit r;
+	getrlimit(RLIMIT_CORE, &r);
+	r.rlim_cur = r.rlim_max;
+	setrlimit(RLIMIT_CORE, &r);
+#endif 
 	OnRegisterVersion();
 	RegisterVersion("BaseService", BASE_VERSION_VALUE);
 	RegisterVersion("ObjectService", OBJECT_VERSION_VALUE);
