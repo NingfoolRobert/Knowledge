@@ -30,14 +30,18 @@ public:
 public:
 	virtual bool OnInitialUpdate(std::string ip, int port, std::string username, std::string pwd, std::string  dbname);
 	
-	virtual mysqlpp::Connection*	create();
+	virtual mysqlpp::Connection* create();
 	
 	virtual void destory(mysqlpp::Connection* pConn);
 
 	virtual void release(const mysqlpp::Connection* pConn);
+	
+	virtual void remove(const mysqlpp::Connection* pConn);
 public:
 	mysqlpp::Connection* GetConn();
 
+protected:
+	unsigned int max_idle_time() { return _idle_time; }
 
 private:
 	std::string			 _dbname;
@@ -45,6 +49,7 @@ private:
 	std::string			_username;
 	std::string			_password;
 	int					_port;
+	unsigned int		_idle_time;
 private:
 	std::atomic_int		_max_conn; 
 	std::atomic_int		_cur_conn;

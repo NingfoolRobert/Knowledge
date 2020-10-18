@@ -14,13 +14,19 @@ CMySqlUtil::~CMySqlUtil()
 
 bool CMySqlUtil::OnInitialUpdate(std::string ip, int port, std::string username, std::string pwd, std::string  dbname)
 {
-
+	_ip = ip;
+	_port = port;
+	_username = username;
+	_password = pwd;
+	_dbname = dbname;
 	return true;
 }
 	
 mysqlpp::Connection* CMySqlUtil::GetConn()
 {
-	return mysqlpp::safe_grab();
+	mysqlpp::Connection* pConn = mysqlpp::safe_grab();
+	_cur_conn++;
+	return pConn;
 }
 
 mysqlpp::Connection*	CMySqlUtil::create()
@@ -37,5 +43,13 @@ void CMySqlUtil::destory(mysqlpp::Connection* pConn)
 
 void CMySqlUtil::release(const mysqlpp::Connection* pConn)
 {
-
+	if(nullptr == pConn) return;
+	
+	mysqlpp::ConnectionPool::release(pConn);
+}
+	
+void CMySqlUtil::remove(const mysqlpp::Connection* pConn)
+{
+	if(pConn == nullptr)  return ;
+	mysqlpp::ConnectionPool::remove(pConn);
 }
