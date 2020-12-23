@@ -5,11 +5,11 @@
  * proprietary information that should be used or copied only within
  * xxx, except with written permission of xxx.
  * 
- * @file:xxxEventDef.h
- * @brief:xxxEventDef 
- * @author:xxxEventDefnbf,nbf0537@163.com
- * @version:com 1.0
- * @date:com2020-04-21
+ * @file:EventDef.h
+ * @brief:EventDef 
+ * @author:nbf,nbf0537@163.com
+ * @version:1.0
+ * @date:2020-04-21
  */
 
 
@@ -18,7 +18,8 @@
 
 typedef struct tagEventHeader 
 {
-	unsigned int dwType;
-	unsigned int dwLength;
-	unsigned int dwParam; 
+	unsigned int	dwType;
+	unsigned int	dwLength;
+	unsigned int	dwParam; 
+	unsigned long	ulParam;
 }EVENTHEADER, *PEVENTHEADER;
