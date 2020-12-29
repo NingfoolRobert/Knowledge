@@ -19,10 +19,13 @@ int main()
 		return 0;
 	}
 
-	struct ifreq requ;
+	char buf[1024] = { 0 };
+	struct ifreq *requ;
 	struct ifconf ifc;
-	ifc.ifc_len = sizeof(requ);
-	ifc.ifc_buf = (caddr_t)&requ;
+//	ifc.ifc_len = sizeof(requ);
+//	ifc.ifc_buf = (caddr_t)&requ;
+	ifc.ifc_len = 1024;
+	ifc.ifc_buf = buf;
 	
 	if(!ioctl(fd, SIOCGIFCONF, (char*)&ifc))
 	{
@@ -32,11 +35,21 @@ int main()
 			printf("Acquire faile\n");
 			return 0;
 		}
-		if(!(ioctl(fd, SIOCGIFADDR, (char*)&requ)))
+			requ = (struct ifreq*)ifc.ifc_buf;
+//		if(!(ioctl(fd, SIOCGIFADDR, (char*)&requ)))
 		{
-			sprintf(szIP, "%s", inet_ntoa(((struct sockaddr_in*)(&requ.ifr_addr))->sin_addr));
+			for(int i = (ifc.ifc_len /sizeof(struct ifreq)); i > 0; --i)
+			{
+				if(requ->ifr_flags == AF_INET)
+				{
+					printf("ethname=%s\n", requ->ifr_name);
+					sprintf(szIP, "%s", inet_ntoa(((struct sockaddr_in*)(&requ->ifr_addr))->sin_addr));
+					printf("%s\n", szIP);
+				}
+				++requ;
+			}
 			close(fd);
-			printf("%s\n", szIP);
+//			printf("%s\n", szIP);
 			return 0;
 		}
 	}
